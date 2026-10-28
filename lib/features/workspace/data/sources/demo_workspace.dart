@@ -68,15 +68,14 @@ WorkspaceSnapshot demoWorkspace() {
       ),
     ),
     permissions: const {
-      'chiefManager': [
+      'manager': [
         'viewTotals',
         'managePayroll',
         'manageNursing',
         'editClosedShifts',
         'manageManagers',
       ],
-      'financeManager': ['viewTotals', 'managePayroll'],
-      'operationsManager': ['manageNursing'],
+      'nursing': ['addCase', 'addExpense', 'addAdvance'],
     },
   );
 }

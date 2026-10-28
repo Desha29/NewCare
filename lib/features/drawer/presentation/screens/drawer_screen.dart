@@ -21,7 +21,7 @@ class DrawerScreen extends StatelessWidget {
     return NcPageColumn(
       maxWidth: 900,
       children: [
-        const MovementForm(),
+        const MovementForm(allowAdvances: true, allowIncome: false),
         NcNotice(
           title: context.t('shiftOnly'),
           detail: context.t('noFinancialAccess'),

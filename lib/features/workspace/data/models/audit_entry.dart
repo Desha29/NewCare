@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class AuditEntry {
   const AuditEntry({
     required this.id,
@@ -7,6 +9,15 @@ class AuditEntry {
   });
   final String id, action, detail;
   final DateTime at;
+  String get reason {
+    try {
+      final value = jsonDecode(detail);
+      return value is Map ? value['reason']?.toString() ?? '' : '';
+    } catch (_) {
+      return '';
+    }
+  }
+
   Map<String, dynamic> toJson() => {
     'id': id,
     'action': action,

@@ -52,7 +52,7 @@ class NcNotice extends StatelessWidget {
                   title,
                   style: TextStyle(
                     fontSize: 12,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w700,
                     color: color,
                   ),
                 ),

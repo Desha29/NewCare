@@ -31,7 +31,7 @@ class AuditScreen extends StatelessWidget {
                 leading: const Icon(Icons.history, size: 18),
                 title: Text(context.t(entry.action)),
                 subtitle: Text(
-                  '${context.date(entry.at)} · ${context.time(entry.at)}',
+                  '${context.date(entry.at)} · ${context.time(entry.at)}${entry.reason.isEmpty ? '' : '\n${context.t('changeReason')}: ${entry.reason}'}',
                 ),
                 trailing: Text(
                   context.t('queueLocal'),

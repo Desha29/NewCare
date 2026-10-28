@@ -18,6 +18,7 @@ class ManagerCaseLogScreen extends StatelessWidget {
     return NcPageColumn(
       children: [
         const PeriodFilter(),
+        const CaseHistoryScreen(manager: true),
         NcBarChart(
           title: context.t('cases'),
           values: data.procedures
@@ -33,7 +34,6 @@ class ManagerCaseLogScreen extends StatelessWidget {
               )
               .toList(),
         ),
-        const CaseHistoryScreen(manager: true),
       ],
     );
   }

@@ -4,6 +4,7 @@ import '../../../catalogue/data/models/procedure.dart';
 import '../../../drawer/data/models/cash_movement.dart';
 import '../models/workspace_snapshot.dart';
 import '../../../catalogue/data/models/supply_item.dart';
+import '../../../management/data/managed_record_kind.dart';
 
 class WorkspaceException implements Exception {
   const WorkspaceException(this.code);
@@ -34,4 +35,11 @@ abstract interface class WorkspaceRepository {
     bool? setupDone,
   });
   Future<void> dispose();
+  Future<void> updateRecord(
+    ManagedRecordKind kind,
+    String id,
+    Map<String, dynamic> fields,
+    String reason,
+  );
+  Future<void> deleteRecord(ManagedRecordKind kind, String id, String reason);
 }

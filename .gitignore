@@ -46,3 +46,14 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# Local configuration and test output
+.env
+.env.*
+!.env.example
+config/local.json
+*.keystore
+*.jks
+android/key.properties
+test-results/
+screenshots/

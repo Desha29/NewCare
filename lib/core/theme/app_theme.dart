@@ -10,7 +10,7 @@ abstract final class AppTheme {
       secondary: AppColors.teal,
       surface: Colors.white,
     );
-    return ThemeData(
+    final theme = ThemeData(
       useMaterial3: true,
       fontFamily: 'Cairo',
       colorScheme: scheme,
@@ -23,7 +23,7 @@ abstract final class AppTheme {
         ),
         titleMedium: TextStyle(
           fontSize: 15,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w700,
           color: AppColors.text,
         ),
         bodyMedium: TextStyle(fontSize: 13, color: AppColors.text),
@@ -45,7 +45,11 @@ abstract final class AppTheme {
           borderRadius: BorderRadius.circular(8),
           borderSide: const BorderSide(color: AppColors.border),
         ),
-        labelStyle: const TextStyle(fontSize: 12, color: AppColors.muted),
+        labelStyle: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w700,
+          color: AppColors.muted,
+        ),
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
@@ -53,7 +57,7 @@ abstract final class AppTheme {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           textStyle: const TextStyle(
             fontFamily: 'Cairo',
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
             fontSize: 13,
           ),
         ),
@@ -65,7 +69,7 @@ abstract final class AppTheme {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           textStyle: const TextStyle(
             fontFamily: 'Cairo',
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
             fontSize: 13,
           ),
         ),
@@ -81,5 +85,27 @@ abstract final class AppTheme {
         ),
       ),
     );
+    return theme.copyWith(
+      textTheme: _bold(theme.textTheme),
+      primaryTextTheme: _bold(theme.primaryTextTheme),
+    );
   }
+
+  static TextTheme _bold(TextTheme t) => TextTheme(
+    displayLarge: t.displayLarge?.copyWith(fontWeight: FontWeight.w700),
+    displayMedium: t.displayMedium?.copyWith(fontWeight: FontWeight.w700),
+    displaySmall: t.displaySmall?.copyWith(fontWeight: FontWeight.w700),
+    headlineLarge: t.headlineLarge?.copyWith(fontWeight: FontWeight.w700),
+    headlineMedium: t.headlineMedium?.copyWith(fontWeight: FontWeight.w700),
+    headlineSmall: t.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+    titleLarge: t.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+    titleMedium: t.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+    titleSmall: t.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+    bodyLarge: t.bodyLarge?.copyWith(fontWeight: FontWeight.w700),
+    bodyMedium: t.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
+    bodySmall: t.bodySmall?.copyWith(fontWeight: FontWeight.w700),
+    labelLarge: t.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+    labelMedium: t.labelMedium?.copyWith(fontWeight: FontWeight.w700),
+    labelSmall: t.labelSmall?.copyWith(fontWeight: FontWeight.w700),
+  );
 }

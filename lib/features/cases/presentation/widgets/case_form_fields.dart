@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/localization/localization_extensions.dart';
 import '../../../../core/widgets/nc_field.dart';
 import '../../../../core/utils/money.dart';
+import '../../../../core/widgets/nc_status_badge.dart';
 import '../../data/models/case_record.dart';
 import '../../../workspace/data/models/workspace_snapshot.dart';
 
@@ -55,7 +56,9 @@ class CaseFormFields extends StatelessWidget {
           value: staffId,
           items: workspace.staff
               .where(
-                (n) => workspace.activeShift?.memberIds.contains(n.id) ?? false,
+                (n) =>
+                    n.active &&
+                    (workspace.activeShift?.memberIds.contains(n.id) ?? false),
               )
               .map(
                 (n) => DropdownMenuItem(
@@ -82,6 +85,7 @@ class CaseFormFields extends StatelessWidget {
           label: '${context.t('procedure')} *',
           value: procedureId,
           items: workspace.procedures
+              .where((p) => p.active)
               .map(
                 (p) =>
                     DropdownMenuItem(value: p.id, child: Text(p.name(locale))),
@@ -140,7 +144,16 @@ class PaymentFields extends StatelessWidget {
         children: [
           for (final p in PaymentMethod.values)
             ChoiceChip(
-              label: Text(context.t(p.name)),
+              label: Text(
+                context.t(p.name),
+                style: TextStyle(
+                  color: NcStatusBadge.colors(p.name).$2,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              selectedColor: NcStatusBadge.colors(p.name).$1,
+              backgroundColor: NcStatusBadge.colors(p.name).$1
+                  .withValues(alpha: .5),
               selected: method == p,
               onSelected: (_) => onMethod(p),
             ),

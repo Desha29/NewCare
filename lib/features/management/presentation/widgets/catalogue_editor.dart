@@ -13,21 +13,19 @@ import '../../../catalogue/data/models/supply_item.dart';
 import '../cubit/management_cubit.dart';
 
 class CatalogueEditor extends StatefulWidget {
-  const CatalogueEditor({super.key, this.supply = false});
+  const CatalogueEditor({super.key, this.supply = false, this.onSaved});
   final bool supply;
+  final VoidCallback? onSaved;
   @override
   State<CatalogueEditor> createState() => _CatalogueEditorState();
 }
 
 class _CatalogueEditorState extends State<CatalogueEditor> {
   final form = GlobalKey<FormState>();
-  final ar = TextEditingController(),
-      en = TextEditingController(),
-      price = TextEditingController();
+  final ar = TextEditingController(), price = TextEditingController();
   @override
   void dispose() {
     ar.dispose();
-    en.dispose();
     price.dispose();
     super.dispose();
   }
@@ -42,12 +40,6 @@ class _CatalogueEditorState extends State<CatalogueEditor> {
         NcField(
           label: context.t('procedureNameAr'),
           controller: ar,
-          validator: (v) =>
-              v == null || v.trim().isEmpty ? context.t('requiredField') : null,
-        ),
-        NcField(
-          label: context.t('procedureNameEn'),
-          controller: en,
           validator: (v) =>
               v == null || v.trim().isEmpty ? context.t('requiredField') : null,
         ),
@@ -75,21 +67,21 @@ class _CatalogueEditorState extends State<CatalogueEditor> {
                     SupplyItem(
                       id: const Uuid().v4(),
                       nameAr: ar.text.trim(),
-                      nameEn: en.text.trim(),
+                      nameEn: ar.text.trim(),
                     ),
                   )
                 : await cubit.addProcedure(
                     Procedure(
                       id: const Uuid().v4(),
                       nameAr: ar.text.trim(),
-                      nameEn: en.text.trim(),
+                      nameEn: ar.text.trim(),
                       priceMinor: Money.parse(price.text),
                     ),
                   );
             if (success && context.mounted) {
               ar.clear();
-              en.clear();
               price.clear();
+              widget.onSaved?.call();
               ScaffoldMessenger.of(context)
                   .showSnackBar(SnackBar(content: Text(context.t('added'))));
             }

@@ -13,6 +13,8 @@ import '../models/workspace_snapshot.dart';
 import '../models/audit_entry.dart';
 import '../sources/demo_workspace.dart';
 import 'workspace_repository.dart';
+import '../../../management/data/managed_record_kind.dart';
+import '../../../management/data/record_mutations.dart';
 import '../../../catalogue/data/models/supply_item.dart';
 
 /// Serialized repository writes prevent lost updates and confirm durable storage
@@ -47,6 +49,7 @@ class LocalWorkspaceRepository implements WorkspaceRepository {
     String action,
     WorkspaceSnapshot Function(WorkspaceSnapshot) change, {
     String detail = '',
+    String Function(WorkspaceSnapshot)? detailBuilder,
   }) {
     final operation = _tail.then((_) async {
       final next = change(_current);
@@ -58,7 +61,7 @@ class LocalWorkspaceRepository implements WorkspaceRepository {
             id: _uuid.v4(),
             action: action,
             at: DateTime.now(),
-            detail: detail,
+            detail: detailBuilder?.call(_current) ?? detail,
           ),
         ],
       );
@@ -145,6 +148,7 @@ class LocalWorkspaceRepository implements WorkspaceRepository {
     if (shift == null || shift.id != record.shiftId) {
       throw const WorkspaceException('noOpenShift');
     }
+    _member(s, record.staffId);
     if (!shift.memberIds.contains(record.staffId)) {
       throw const WorkspaceException('staffNotInShift');
     }
@@ -156,7 +160,7 @@ class LocalWorkspaceRepository implements WorkspaceRepository {
       throw const WorkspaceException('requiredField');
     }
     if (record.amountMinor < 0) throw const WorkspaceException('invalidAmount');
-    if (!s.procedures.any((x) => x.id == record.procedureId)) {
+    if (!s.procedures.any((x) => x.id == record.procedureId && x.active)) {
       throw const WorkspaceException('invalidProcedure');
     }
     return s.copyWith(cases: [...s.cases, record]);
@@ -168,7 +172,10 @@ class LocalWorkspaceRepository implements WorkspaceRepository {
     if (shift == null || shift.id != movement.shiftId) {
       throw const WorkspaceException('noOpenShift');
     }
-    if (!shift.memberIds.contains(movement.staffId)) {
+    _member(s, movement.staffId);
+    if (movement.kind != CashKind.advance &&
+        movement.kind != CashKind.award &&
+        !shift.memberIds.contains(movement.staffId)) {
       throw const WorkspaceException('staffNotInShift');
     }
     if (movement.amountMinor <= 0) {
@@ -181,6 +188,7 @@ class LocalWorkspaceRepository implements WorkspaceRepository {
   }, detail: movement.id);
   @override
   Future<void> addStaff(NursingMember member) => _update('staffAdded', (s) {
+    if (member.salaryMinor < 0) throw const WorkspaceException('invalidAmount');
     if (member.name.trim().isEmpty) {
       throw const WorkspaceException('requiredField');
     }
@@ -232,5 +240,49 @@ class LocalWorkspaceRepository implements WorkspaceRepository {
   Future<void> dispose() async {
     await _tail;
     await _controller.close();
+  }
+
+  @override
+  Future<void> updateRecord(
+    ManagedRecordKind kind,
+    String id,
+    Map<String, dynamic> fields,
+    String reason,
+  ) {
+    return _update(
+      'recordUpdated',
+      (s) {
+        if (reason.trim().isEmpty) {
+          throw const WorkspaceException('reasonRequired');
+        }
+        return RecordMutations.update(s, kind, id, fields);
+      },
+      detailBuilder: (previous) => jsonEncode({
+        'kind': kind.name,
+        'id': id,
+        'reason': reason,
+        'before': RecordMutations.read(previous, kind, id),
+        'after': fields,
+      }),
+    );
+  }
+
+  @override
+  Future<void> deleteRecord(ManagedRecordKind kind, String id, String reason) {
+    return _update(
+      kind == ManagedRecordKind.shift ? 'shiftArchived' : 'recordDeleted',
+      (s) {
+        if (reason.trim().isEmpty) {
+          throw const WorkspaceException('reasonRequired');
+        }
+        return RecordMutations.delete(s, kind, id);
+      },
+      detailBuilder: (previous) => jsonEncode({
+        'kind': kind.name,
+        'id': id,
+        'reason': reason,
+        'before': RecordMutations.read(previous, kind, id),
+      }),
+    );
   }
 }

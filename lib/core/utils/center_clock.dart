@@ -12,6 +12,8 @@ abstract final class CenterClock {
   }
 
   static DateTime now() => tz.TZDateTime.now(location);
+  static DateTime at(DateTime day, int hour, int minute) =>
+      tz.TZDateTime(location, day.year, day.month, day.day, hour, minute);
   static DateTime dayStart(DateTime date) =>
       tz.TZDateTime(location, date.year, date.month, date.day);
   static DateTime dayAfter(DateTime date) =>

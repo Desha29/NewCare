@@ -6,17 +6,20 @@ class ShiftRecord {
     required this.openingMinor,
     this.closedAt,
     this.note = '',
+    this.archived = false,
   });
   final String id, note;
   final DateTime openedAt;
   final DateTime? closedAt;
   final List<String> memberIds;
   final int openingMinor;
-  bool get isOpen => closedAt == null;
+  final bool archived;
+  bool get isOpen => closedAt == null && !archived;
   ShiftRecord copyWith({
     List<String>? memberIds,
     DateTime? closedAt,
     String? note,
+    bool? archived,
   }) => ShiftRecord(
     id: id,
     openedAt: openedAt,
@@ -24,6 +27,7 @@ class ShiftRecord {
     openingMinor: openingMinor,
     closedAt: closedAt ?? this.closedAt,
     note: note ?? this.note,
+    archived: archived ?? this.archived,
   );
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -32,6 +36,7 @@ class ShiftRecord {
     'members': memberIds,
     'opening': openingMinor,
     'note': note,
+    'archived': archived,
   };
   factory ShiftRecord.fromJson(Map<String, dynamic> j) => ShiftRecord(
     id: j['id'] as String,
@@ -42,5 +47,6 @@ class ShiftRecord {
         ? null
         : DateTime.parse(j['closed'] as String),
     note: j['note'] as String? ?? '',
+    archived: j['archived'] as bool? ?? false,
   );
 }

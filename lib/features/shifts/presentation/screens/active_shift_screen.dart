@@ -4,14 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../app/cubit/app_cubit.dart';
 import '../../../../app/navigation/app_page.dart';
 import '../../../../core/localization/localization_extensions.dart';
-import '../../../../core/widgets/nc_action_row.dart';
 import '../../../../core/widgets/nc_button.dart';
 import '../../../../core/widgets/nc_card.dart';
 import '../../../../core/widgets/nc_empty.dart';
 import '../../../../core/widgets/nc_notice.dart';
 import '../../../../core/widgets/nc_page_column.dart';
-import '../../../../core/widgets/nc_staff_tile.dart';
-import '../../../cases/presentation/widgets/case_list.dart';
+import '../widgets/shift_nursing_grid.dart';
+import '../widgets/recent_cases_table.dart';
+import '../../../cases/presentation/widgets/add_case_dialog.dart';
 import '../../../workspace/presentation/cubit/workspace_cubit.dart';
 
 class ActiveShiftScreen extends StatelessWidget {
@@ -31,11 +31,8 @@ class ActiveShiftScreen extends StatelessWidget {
         ),
       );
     }
-    final records = data.cases
-        .where((c) => c.shiftId == shift.id)
-        .toList()
-        .reversed
-        .toList();
+    final records = data.cases.where((c) => c.shiftId == shift.id).toList()
+      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
     return NcPageColumn(
       children: [
         if (localQueue)
@@ -47,15 +44,7 @@ class ActiveShiftScreen extends StatelessWidget {
         NcCard(
           title: context.t('currentNursing'),
           children: [
-            for (final member in data.staff.where(
-              (n) => shift.memberIds.contains(n.id),
-            ))
-              NcStaffTile(
-                member: member,
-                selected: context.watch<AppCubit>().state.staffId == member.id,
-                subtitle: context.t('active'),
-                onTap: () => app.selectStaff(member.id),
-              ),
+            const ShiftNursingGrid(),
             Align(
               alignment: AlignmentDirectional.centerStart,
               child: TextButton.icon(
@@ -66,38 +55,33 @@ class ActiveShiftScreen extends StatelessWidget {
             ),
           ],
         ),
-        NcActionRow(
-          children: [
-            NcButton(
-              label: context.t('addInside'),
-              icon: Icons.add,
-              onPressed: () => app.navigate(AppPage.insideCase),
-            ),
-            NcButton(
-              label: context.t('addOutside'),
-              icon: Icons.add,
-              secondary: true,
-              onPressed: () => app.navigate(AppPage.outsideCase),
-            ),
-          ],
+        Align(
+          alignment: AlignmentDirectional.centerEnd,
+          child: NcButton(
+            label: context.t('addCase'),
+            icon: Icons.add,
+            onPressed: () async {
+              final saved = await AddCaseDialog.open(context);
+              if (saved == true && context.mounted) {
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text(context.t('savedNote'))));
+              }
+            },
+          ),
         ),
         NcCard(
           title: '${context.t('lastCases')} · ${records.length}',
           children: [
-            CaseList(records: records.take(3).toList(), workspace: data),
+            RecentCasesTable(
+              records: records.take(5).toList(),
+              workspace: data,
+            ),
             TextButton(
               onPressed: () => app.navigate(AppPage.shiftCases),
               child: Text(context.t('viewHistory')),
             ),
           ],
-        ),
-        Align(
-          alignment: AlignmentDirectional.centerStart,
-          child: TextButton.icon(
-            onPressed: () => app.navigate(AppPage.endShift),
-            icon: const Icon(Icons.logout, size: 18),
-            label: Text(context.t('endShift')),
-          ),
         ),
       ],
     );

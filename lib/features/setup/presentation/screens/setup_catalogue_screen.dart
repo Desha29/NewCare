@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../app/cubit/app_cubit.dart';
-import '../../../../app/navigation/app_page.dart';
 import '../../../../core/localization/localization_extensions.dart';
 import '../../../../core/utils/money.dart';
 import '../../../../core/widgets/nc_button.dart';

@@ -14,14 +14,23 @@ import '../../../../core/widgets/nc_card.dart';
 import '../../../../core/widgets/nc_empty.dart';
 import '../../../../core/widgets/nc_page_column.dart';
 import '../../../../core/widgets/operation_error.dart';
+import '../../../../core/widgets/nc_status_badge.dart';
 import '../../../workspace/presentation/cubit/workspace_cubit.dart';
 import '../../data/models/case_record.dart';
 import '../cubit/case_cubit.dart';
 import '../widgets/case_form_fields.dart';
 
 class CaseFormScreen extends StatefulWidget {
-  const CaseFormScreen({super.key, required this.outside});
+  const CaseFormScreen({
+    super.key,
+    required this.outside,
+    this.inDialog = false,
+    this.onSaved,
+    this.onCancel,
+  });
   final bool outside;
+  final bool inDialog;
+  final VoidCallback? onSaved, onCancel;
   @override
   State<CaseFormScreen> createState() => _CaseFormScreenState();
 }
@@ -36,6 +45,13 @@ class _CaseFormScreenState extends State<CaseFormScreen> {
   final id = const Uuid().v4();
   String? staff, procedure;
   PaymentMethod payment = PaymentMethod.cash;
+  late bool outside;
+  @override
+  void initState() {
+    super.initState();
+    outside = widget.outside;
+  }
+
   @override
   void dispose() {
     for (final c in [title, address, phone, supplies, amount]) {
@@ -58,21 +74,46 @@ class _CaseFormScreenState extends State<CaseFormScreen> {
         ),
       );
     }
-    staff ??= shift.memberIds.contains(context.read<AppCubit>().state.staffId)
-        ? context.read<AppCubit>().state.staffId
-        : shift.memberIds.first;
+    final available = data.staff
+        .where((n) => n.active && shift.memberIds.contains(n.id))
+        .map((n) => n.id)
+        .toList();
+    if (available.isEmpty) {
+      return NcEmpty(
+        message: context.t('selectStaff'),
+        action: NcButton(
+          label: context.t('joinShift'),
+          onPressed: () => context.read<AppCubit>().navigate(AppPage.joinShift),
+        ),
+      );
+    }
+    final preferred = staff ?? context.read<AppCubit>().state.staffId;
+    staff = available.contains(preferred) ? preferred : available.first;
     return Form(
       key: form,
       child: NcPageColumn(
         maxWidth: 900,
         children: [
+          if (widget.inDialog)
+            DefaultTabController(
+              length: 2,
+              child: TabBar(
+                onTap: (index) => setState(() => outside = index == 1),
+                tabs: [
+                  const Tab(child: NcStatusBadge('inside')),
+                  const Tab(child: NcStatusBadge('outside')),
+                ],
+              ),
+            ),
           const OperationError<CaseCubit>(),
           NcCard(
-            title: context.t(widget.outside ? 'outsideCase' : 'insideCase'),
+            title: widget.inDialog
+                ? null
+                : context.t(outside ? 'outsideCase' : 'insideCase'),
             children: [
               CaseFormFields(
                 workspace: data,
-                outside: widget.outside,
+                outside: outside,
                 title: title,
                 address: address,
                 phone: phone,
@@ -119,16 +160,20 @@ class _CaseFormScreenState extends State<CaseFormScreen> {
                           .toList(),
                       amountMinor: Money.parse(amount.text),
                       payment: payment,
-                      location: widget.outside
+                      location: outside
                           ? CaseLocation.outside
                           : CaseLocation.inside,
                       createdAt: CenterClock.now(),
-                      address: widget.outside ? address.text.trim() : '',
-                      phone: widget.outside ? phone.text.trim() : '',
+                      address: outside ? address.text.trim() : '',
+                      phone: outside ? phone.text.trim() : '',
                     );
                     if (await context.read<CaseCubit>().save(record) &&
                         context.mounted) {
-                      context.read<AppCubit>().showSaved();
+                      if (widget.onSaved != null) {
+                        widget.onSaved!();
+                      } else {
+                        context.read<AppCubit>().showSaved();
+                      }
                     }
                   },
                 ),
@@ -136,8 +181,10 @@ class _CaseFormScreenState extends State<CaseFormScreen> {
               NcButton(
                 label: context.t('cancel'),
                 secondary: true,
-                onPressed: () =>
-                    context.read<AppCubit>().navigate(AppPage.activeShift),
+                onPressed:
+                    widget.onCancel ??
+                    () =>
+                        context.read<AppCubit>().navigate(AppPage.activeShift),
               ),
             ],
           ),

@@ -26,6 +26,7 @@ import '../../features/setup/presentation/screens/setup_nursing_screen.dart';
 import '../../features/setup/presentation/screens/setup_catalogue_screen.dart';
 import '../../features/setup/presentation/screens/ready_screen.dart';
 import 'app_page.dart';
+import '../../features/transactions/presentation/screens/transactions_screen.dart';
 
 Widget buildPage(AppPage page) => switch (page) {
   AppPage.startShift => const StartShiftScreen(),
@@ -57,4 +58,5 @@ Widget buildPage(AppPage page) => switch (page) {
   AppPage.setupNursing => const SetupNursingScreen(),
   AppPage.setupCatalogue => const SetupCatalogueScreen(),
   AppPage.ready => const ReadyScreen(),
+  AppPage.transactions => const TransactionsScreen(),
 };

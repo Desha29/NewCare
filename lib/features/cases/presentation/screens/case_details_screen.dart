@@ -10,6 +10,7 @@ import '../../../../core/widgets/nc_card.dart';
 import '../../../../core/widgets/nc_empty.dart';
 import '../../../../core/widgets/nc_notice.dart';
 import '../../../../core/widgets/nc_page_column.dart';
+import '../../../../core/widgets/nc_status_badge.dart';
 import '../../../workspace/presentation/cubit/workspace_cubit.dart';
 
 class CaseDetailsScreen extends StatelessWidget {
@@ -46,6 +47,14 @@ class CaseDetailsScreen extends StatelessWidget {
         NcCard(
           title: record.title,
           children: [
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                NcStatusBadge(record.location.name),
+                NcStatusBadge(record.payment.name),
+              ],
+            ),
             for (final e in rows.entries)
               ListTile(
                 contentPadding: EdgeInsets.zero,

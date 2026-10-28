@@ -27,7 +27,8 @@ enum AppPage {
   dateRange,
   setupNursing,
   setupCatalogue,
-  ready;
+  ready,
+  transactions;
 
   bool get isManager => index >= AppPage.overview.index;
   bool get needsManager =>

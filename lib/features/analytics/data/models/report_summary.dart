@@ -30,9 +30,12 @@ class ReportSummary {
       .fold<int>(0, (s, c) => s + c.amountMinor);
   int get walletMinor => revenueMinor - cashMinor;
   int get expenseMinor => movements
-      .where((m) => m.kind == CashKind.expense)
+      .where((m) => m.kind == CashKind.expense || m.kind == CashKind.award)
       .fold<int>(0, (s, m) => s + m.amountMinor);
   int get advanceMinor => movements
       .where((m) => m.kind == CashKind.advance)
+      .fold<int>(0, (s, m) => s + m.amountMinor);
+  int get awardMinor => movements
+      .where((m) => m.kind == CashKind.award)
       .fold<int>(0, (s, m) => s + m.amountMinor);
 }

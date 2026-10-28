@@ -5,6 +5,8 @@ import '../localization/localization_extensions.dart';
 import 'center_clock.dart';
 
 extension AppFormatters on BuildContext {
+  String calendarDate(DateTime value) =>
+      DateFormat.yMMMd(Localizations.localeOf(this).languageCode).format(value);
   String money(int minor) => NumberFormat.currency(
     locale: Localizations.localeOf(this).languageCode == 'ar' ? 'ar_EG' : 'en',
     symbol: t('currency'),

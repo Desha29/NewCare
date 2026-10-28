@@ -181,7 +181,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get procedure => 'Procedure';
 
   @override
-  String get supplies => 'Supplies and quantities';
+  String get supplies => 'Medical supplies';
 
   @override
   String get address => 'Visit address';
@@ -573,7 +573,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get titleHint => 'Brief description of the case';
 
   @override
-  String get supplyHint => 'One item and quantity per line';
+  String get supplyHint => 'For example: cannula, saline, gauze';
 
   @override
   String get noShift => 'No active shift';
@@ -690,4 +690,165 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get close => 'Close';
+
+  @override
+  String get loadingWorkspace => 'Preparing your workspace';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get confirmDelete => 'Confirm deletion';
+
+  @override
+  String get deleteRecord => 'Delete record';
+
+  @override
+  String get changeReason => 'Reason for change';
+
+  @override
+  String get deleteNote => 'This action is recorded in the audit history';
+
+  @override
+  String get recordUpdated => 'Record updated';
+
+  @override
+  String get recordDeleted => 'Record deleted';
+
+  @override
+  String get shiftArchived => 'Shift archived';
+
+  @override
+  String get supplyAdded => 'Supply added';
+
+  @override
+  String get archiveShift => 'Archive shift';
+
+  @override
+  String get recordNotFound => 'The record no longer exists';
+
+  @override
+  String get dependencyExists => 'This record is linked to existing cases';
+
+  @override
+  String get invalidDates => 'End time must follow start time';
+
+  @override
+  String get welcomeBack => 'Welcome back';
+
+  @override
+  String get signInSubtitle => 'Open the NewCare manager workspace';
+
+  @override
+  String get memberInactive => 'Inactive nursing member';
+
+  @override
+  String get viewRecord => 'View record';
+
+  @override
+  String get transactions => 'Transactions';
+
+  @override
+  String get casePayment => 'Case payment';
+
+  @override
+  String get dateAndTime => 'Date & time';
+
+  @override
+  String get searchTransactions =>
+      'Search by description, nursing or reference';
+
+  @override
+  String get allTransactions => 'All types';
+
+  @override
+  String get allNursing => 'All nursing staff';
+
+  @override
+  String get newTransaction => 'Add cash movement';
+
+  @override
+  String get cashIn => 'Cash received';
+
+  @override
+  String get cashOut => 'Cash paid out';
+
+  @override
+  String get walletReceipts => 'Wallet receipts';
+
+  @override
+  String get netCashFlow => 'Net cash flow';
+
+  @override
+  String get transactionTotalsNote =>
+      'Totals follow the selected filters. Net cash flow excludes wallet receipts and opening drawer balances.';
+
+  @override
+  String get transactionBreakdown => 'Transaction breakdown';
+
+  @override
+  String get monthlySalary => 'Monthly salary';
+
+  @override
+  String get setSalary => 'Set nursing salary';
+
+  @override
+  String get salaryRegister => 'Nursing salaries';
+
+  @override
+  String get salaryAfterAdvances => 'Salary less selected advances';
+
+  @override
+  String get salaryNote =>
+      'Monthly base salary less advances in the selected period. Awards are paid cash movements, shown separately to avoid counting them twice.';
+
+  @override
+  String get addProcedure => 'Add procedure';
+
+  @override
+  String get addSupply => 'Add supply';
+
+  @override
+  String get accessLevels => 'Access levels';
+
+  @override
+  String get nursingAccess =>
+      'Add cases, expenses and advances; start, end and hand over shifts.';
+
+  @override
+  String get managerAccess =>
+      'Manage nursing, salaries, catalogue and records; view totals and reports. Managers may also work on a shift.';
+
+  @override
+  String get shiftOpen => 'Shift is open';
+
+  @override
+  String get shiftClosed => 'Shift is closed';
+
+  @override
+  String get addCase => 'Add case';
+
+  @override
+  String get caseType => 'Case type';
+
+  @override
+  String get cardView => 'Cards';
+
+  @override
+  String get tableView => 'Table';
+
+  @override
+  String get award => 'Award';
+
+  @override
+  String get newAward => 'Add nursing award';
+
+  @override
+  String get saveAward => 'Save award';
+
+  @override
+  String get awardsTotal => 'Awards paid';
+
+  @override
+  String get salaryUpdated => 'Monthly salary updated';
 }

@@ -15,8 +15,15 @@ import '../../data/models/cash_movement.dart';
 import '../cubit/drawer_cubit.dart';
 
 class MovementForm extends StatefulWidget {
-  const MovementForm({super.key, this.advance = false});
-  final bool advance;
+  const MovementForm({
+    super.key,
+    this.advance = false,
+    this.allowAdvances = false,
+    this.managerMode = false,
+    this.allowIncome = true,
+    this.award = false,
+  });
+  final bool advance, allowAdvances, managerMode, allowIncome, award;
   @override
   State<MovementForm> createState() => _MovementFormState();
 }
@@ -39,22 +46,49 @@ class _MovementFormState extends State<MovementForm> {
   Widget build(BuildContext context) {
     final data = context.watch<WorkspaceCubit>().state;
     final shift = data.activeShift;
+    final effectiveKind = widget.award
+        ? CashKind.award
+        : widget.advance
+        ? CashKind.advance
+        : kind;
+    final staffPayment =
+        effectiveKind == CashKind.advance || effectiveKind == CashKind.award;
+    final members = data.staff
+        .where(
+          (n) =>
+              n.active &&
+              ((widget.managerMode && staffPayment) ||
+                  (shift?.memberIds.contains(n.id) ?? false)),
+        )
+        .toList();
+    final selectedStaff = members.any((n) => n.id == staff) ? staff : null;
     return Form(
       key: form,
       child: NcCard(
-        title: context.t(widget.advance ? 'newAdvance' : 'cashMovement'),
+        title: context.t(
+          widget.award
+              ? 'newAward'
+              : widget.advance
+              ? 'newAdvance'
+              : 'cashMovement',
+        ),
         children: [
           const OperationError<DrawerCubit>(),
           if (saved)
             NcNotice(title: context.t('savedNote'), tone: NoticeTone.success),
           if (shift == null)
             NcNotice(title: context.t('noOpenShift'), tone: NoticeTone.warning),
-          if (!widget.advance)
+          if (!widget.advance && !widget.award)
             NcSelect<CashKind>(
               label: context.t('movementKind'),
               value: kind,
               items: [
-                for (final k in [CashKind.income, CashKind.expense])
+                for (final k in [
+                  if (widget.allowIncome) CashKind.income,
+                  CashKind.expense,
+                  if (widget.allowAdvances) CashKind.advance,
+                  if (widget.managerMode) CashKind.award,
+                ])
                   DropdownMenuItem(value: k, child: Text(context.t(k.name))),
               ],
               onChanged: (v) => setState(() => kind = v!),
@@ -74,25 +108,38 @@ class _MovementFormState extends State<MovementForm> {
               }
             },
           ),
-          NcField(
-            label: '${context.t('reason')} *',
-            controller: reason,
-            validator: (v) => v == null || v.trim().isEmpty
-                ? context.t('requiredField')
-                : null,
-          ),
+          if (!staffPayment)
+            NcField(
+              label: '${context.t('reason')} *',
+              controller: reason,
+              validator: (v) => v == null || v.trim().isEmpty
+                  ? context.t('requiredField')
+                  : null,
+            ),
           NcSelect<String>(
-            label: context.t('recordedBy'),
-            value: staff,
-            items: data.staff
-                .where((n) => shift?.memberIds.contains(n.id) ?? false)
-                .map((n) => DropdownMenuItem(value: n.id, child: Text(n.name)))
+            label: context.t(staffPayment ? 'nursing' : 'recordedBy'),
+            value: selectedStaff,
+            items: members
+                .map(
+                  (n) => DropdownMenuItem(
+                    value: n.id,
+                    child: Text(
+                      '${n.name}${n.isManager ? ' · ${context.t('manager')}' : ''}',
+                    ),
+                  ),
+                )
                 .toList(),
             onChanged: (v) => setState(() => staff = v),
             validator: (v) => v == null ? context.t('requiredField') : null,
           ),
           NcButton(
-            label: context.t(widget.advance ? 'saveAdvance' : 'saveMovement'),
+            label: context.t(
+              widget.award
+                  ? 'saveAward'
+                  : widget.advance
+                  ? 'saveAdvance'
+                  : 'saveMovement',
+            ),
             onPressed: shift == null
                 ? null
                 : () async {
@@ -100,10 +147,12 @@ class _MovementFormState extends State<MovementForm> {
                     final movement = CashMovement(
                       id: operationId,
                       shiftId: shift.id,
-                      staffId: staff!,
-                      kind: widget.advance ? CashKind.advance : kind,
+                      staffId: selectedStaff!,
+                      kind: effectiveKind,
                       amountMinor: Money.parse(amount.text),
-                      reason: reason.text.trim(),
+                      reason: staffPayment
+                          ? context.t(effectiveKind.name)
+                          : reason.text.trim(),
                       createdAt: CenterClock.now(),
                     );
                     if (await context.read<DrawerCubit>().save(movement) &&

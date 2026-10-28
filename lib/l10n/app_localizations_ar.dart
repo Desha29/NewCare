@@ -181,7 +181,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get procedure => 'الإجراء';
 
   @override
-  String get supplies => 'المستلزمات والكميات';
+  String get supplies => 'المستلزمات';
 
   @override
   String get address => 'عنوان الزيارة';
@@ -567,7 +567,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get titleHint => 'وصف مختصر للحالة';
 
   @override
-  String get supplyHint => 'مستلزم وكميته في كل سطر';
+  String get supplyHint => 'مثل: كانولا، محلول ملحي، شاش';
 
   @override
   String get noShift => 'لا يوجد شيفت نشط';
@@ -683,4 +683,164 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get close => 'إغلاق';
+
+  @override
+  String get loadingWorkspace => 'جارٍ تجهيز مساحة العمل';
+
+  @override
+  String get delete => 'حذف';
+
+  @override
+  String get confirmDelete => 'تأكيد الحذف';
+
+  @override
+  String get deleteRecord => 'حذف السجل';
+
+  @override
+  String get changeReason => 'سبب التغيير';
+
+  @override
+  String get deleteNote => 'يُسجل هذا التغيير في سجل التدقيق';
+
+  @override
+  String get recordUpdated => 'تعديل سجل';
+
+  @override
+  String get recordDeleted => 'حذف سجل';
+
+  @override
+  String get shiftArchived => 'أرشفة شيفت';
+
+  @override
+  String get supplyAdded => 'إضافة مستلزم';
+
+  @override
+  String get archiveShift => 'أرشفة الشيفت';
+
+  @override
+  String get recordNotFound => 'السجل لم يعد موجودًا';
+
+  @override
+  String get dependencyExists => 'هذا السجل مرتبط بحالات موجودة';
+
+  @override
+  String get invalidDates => 'وقت النهاية يجب أن يكون بعد البداية';
+
+  @override
+  String get welcomeBack => 'مرحبًا بعودتك';
+
+  @override
+  String get signInSubtitle => 'افتح مساحة إدارة نيو كير';
+
+  @override
+  String get memberInactive => 'فرد تمريض غير نشط';
+
+  @override
+  String get viewRecord => 'عرض السجل';
+
+  @override
+  String get transactions => 'حركات الفلوس';
+
+  @override
+  String get casePayment => 'مدفوعات الحالات';
+
+  @override
+  String get dateAndTime => 'التاريخ والوقت';
+
+  @override
+  String get searchTransactions => 'ابحث بالوصف أو التمريض أو رقم المرجع';
+
+  @override
+  String get allTransactions => 'كل أنواع الحركات';
+
+  @override
+  String get allNursing => 'كل التمريض';
+
+  @override
+  String get newTransaction => 'إضافة حركة خزنة';
+
+  @override
+  String get cashIn => 'الكاش الوارد';
+
+  @override
+  String get cashOut => 'الكاش الصادر';
+
+  @override
+  String get walletReceipts => 'وارد المحفظة';
+
+  @override
+  String get netCashFlow => 'صافي حركة الكاش';
+
+  @override
+  String get transactionTotalsNote =>
+      'الإجماليات حسب الفلاتر المختارة. صافي حركة الكاش لا يشمل المحفظة أو الرصيد الافتتاحي للدرج.';
+
+  @override
+  String get transactionBreakdown => 'توزيع حركات الفلوس';
+
+  @override
+  String get monthlySalary => 'المرتب الشهري';
+
+  @override
+  String get setSalary => 'تحديد مرتب التمريض';
+
+  @override
+  String get salaryRegister => 'مرتبات التمريض';
+
+  @override
+  String get salaryAfterAdvances => 'المرتب بعد سلف الفترة';
+
+  @override
+  String get salaryNote =>
+      'المرتب الأساسي الشهري بعد خصم سلف الفترة. المكافآت حركات صرف كاش فعلية وتظهر منفصلة حتى لا تُحتسب مرتين.';
+
+  @override
+  String get addProcedure => 'إضافة إجراء';
+
+  @override
+  String get addSupply => 'إضافة مستلزم';
+
+  @override
+  String get accessLevels => 'مستويات الوصول';
+
+  @override
+  String get nursingAccess =>
+      'إضافة الحالات والمصروفات والسلف، وبدء الشيفت وإنهاؤه وتسليمه.';
+
+  @override
+  String get managerAccess =>
+      'إدارة التمريض والمرتبات والإجراءات والسجلات، وعرض الإجماليات والتقارير. ويمكن للمدير العمل في الشيفت.';
+
+  @override
+  String get shiftOpen => 'الشيفت مفتوح';
+
+  @override
+  String get shiftClosed => 'الشيفت مغلق';
+
+  @override
+  String get addCase => 'إضافة حالة';
+
+  @override
+  String get caseType => 'نوع الحالة';
+
+  @override
+  String get cardView => 'كروت';
+
+  @override
+  String get tableView => 'جدول';
+
+  @override
+  String get award => 'مكافأة';
+
+  @override
+  String get newAward => 'إضافة مكافأة للتمريض';
+
+  @override
+  String get saveAward => 'حفظ المكافأة';
+
+  @override
+  String get awardsTotal => 'المكافآت المصروفة';
+
+  @override
+  String get salaryUpdated => 'تحديث المرتب الشهري';
 }

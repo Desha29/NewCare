@@ -13,8 +13,11 @@ void main() {
     (const Size(1024, 900), 'ar'),
     (const Size(1440, 960), 'ar'),
     (const Size(390, 844), 'en'),
+    (const Size(1024, 1024), 'ar'),
+    (const Size(1280, 1024), 'ar'),
+    (const Size(768, 768), 'ar'),
   ]) {
-    testWidgets('all 29 routes fit ${config.$1} ${config.$2}', (tester) async {
+    testWidgets('all routes fit ${config.$1} ${config.$2}', (tester) async {
       tester.view.physicalSize = config.$1;
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.resetPhysicalSize);

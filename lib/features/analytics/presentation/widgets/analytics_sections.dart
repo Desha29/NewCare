@@ -11,6 +11,8 @@ import '../../../../core/utils/center_clock.dart';
 import '../../../workspace/presentation/cubit/workspace_cubit.dart';
 import '../../data/models/report_summary.dart';
 import 'period_filter.dart';
+import '../../../management/data/managed_record_kind.dart';
+import '../../../management/presentation/widgets/record_actions.dart';
 
 ReportSummary summaryFor(BuildContext context) {
   context.watch<AppCubit>();
@@ -70,17 +72,21 @@ class StaffCasesChart extends StatelessWidget {
 }
 
 class NursingListPanel extends StatelessWidget {
-  const NursingListPanel({super.key});
+  const NursingListPanel({super.key, this.editable = false});
+  final bool editable;
   @override
   Widget build(BuildContext context) {
     final data = context.watch<WorkspaceCubit>().state;
     return NcCard(
       title: context.t('nursing'),
       children: [
-        for (final member in data.staff)
+        for (final member in data.staff.where((n) => n.active))
           NcStaffTile(
             member: member,
             subtitle: context.t(member.active ? 'active' : 'closed'),
+            trailing: editable
+                ? RecordActions(kind: ManagedRecordKind.nursing, id: member.id)
+                : null,
           ),
       ],
     );

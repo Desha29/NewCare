@@ -10,7 +10,7 @@ class NcPageColumn extends StatelessWidget {
   final double maxWidth;
   @override
   Widget build(BuildContext context) => Align(
-    alignment: AlignmentDirectional.topStart,
+    alignment: Alignment.topCenter,
     child: ConstrainedBox(
       constraints: BoxConstraints(maxWidth: maxWidth),
       child: Column(

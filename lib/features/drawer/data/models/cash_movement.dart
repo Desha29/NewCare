@@ -1,4 +1,4 @@
-enum CashKind { income, expense, advance }
+enum CashKind { income, expense, advance, award }
 
 class CashMovement {
   const CashMovement({

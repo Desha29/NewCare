@@ -13,6 +13,7 @@ import 'navigation/page_builder.dart';
 import 'widgets/workspace_header.dart';
 import 'widgets/workspace_sidebar.dart';
 import 'widgets/workspace_bottom_navigation.dart';
+import 'widgets/workspace_navigation_rail.dart';
 
 class WorkspaceShell extends StatefulWidget {
   const WorkspaceShell({super.key});
@@ -24,10 +25,14 @@ class _WorkspaceShellState extends State<WorkspaceShell> {
   final scaffold = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
+    if (context.watch<AppCubit>().state.page == AppPage.login) {
+      return buildPage(AppPage.login);
+    }
     final app = context.watch<AppCubit>().state;
     final data = context.watch<WorkspaceCubit>().state;
     final size = AppBreakpoints.of(context);
     final compact = size == WindowClass.compact;
+    final rail = !compact && MediaQuery.sizeOf(context).width < 960;
     final shift = data.activeShift;
     final duration = shift == null
         ? Duration.zero
@@ -51,8 +56,14 @@ class _WorkspaceShellState extends State<WorkspaceShell> {
           children: [
             if (!compact)
               SizedBox(
-                width: size == WindowClass.expanded ? 224 : 188,
-                child: const WorkspaceSidebar(),
+                width: rail
+                    ? 80
+                    : size == WindowClass.expanded
+                    ? 224
+                    : 188,
+                child: rail
+                    ? const WorkspaceNavigationRail()
+                    : const WorkspaceSidebar(),
               ),
             Expanded(
               child: Padding(

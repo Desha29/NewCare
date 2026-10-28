@@ -11,6 +11,9 @@ import '../../../../core/widgets/nc_card.dart';
 import '../../../../core/widgets/nc_page_column.dart';
 import '../../../analytics/presentation/widgets/period_filter.dart';
 import '../../../workspace/presentation/cubit/workspace_cubit.dart';
+import '../../../management/data/managed_record_kind.dart';
+import '../../../management/presentation/widgets/record_actions.dart';
+import '../../../management/presentation/widgets/cash_movements_panel.dart';
 
 class ManagerShiftsScreen extends StatelessWidget {
   const ManagerShiftsScreen({super.key});
@@ -23,6 +26,7 @@ class ManagerShiftsScreen extends StatelessWidget {
     final shifts = data.shifts
         .where(
           (s) =>
+              !s.archived &&
               !s.openedAt.isBefore(CenterClock.dayStart(range.start)) &&
               s.openedAt.isBefore(CenterClock.dayAfter(range.end)),
         )
@@ -63,9 +67,14 @@ class ManagerShiftsScreen extends StatelessWidget {
                   )
                   .toList(),
               emptyLabel: context.t('noResults'),
+              actions: (i) => RecordActions(
+                kind: ManagedRecordKind.shift,
+                id: shifts.reversed.toList()[i].id,
+              ),
             ),
           ],
         ),
+        const CashMovementsPanel(),
       ],
     );
   }

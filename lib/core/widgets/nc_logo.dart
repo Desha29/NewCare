@@ -8,8 +8,9 @@ class NcLogo extends StatelessWidget {
     this.dark = false,
     this.full = false,
     this.size = 48,
+    this.wordmark = true,
   });
-  final bool dark, full;
+  final bool dark, full, wordmark;
   final double size;
   @override
   Widget build(BuildContext context) {
@@ -21,27 +22,33 @@ class NcLogo extends StatelessWidget {
         semanticLabel: 'NewCare',
       );
     }
+    final icon = ClipRRect(
+      borderRadius: BorderRadius.circular(10),
+      child: Image.asset(
+        'assets/branding/newcare-icon.png',
+        width: size,
+        height: size,
+        fit: BoxFit.contain,
+        semanticLabel: 'NewCare',
+      ),
+    );
+    if (!wordmark) return icon;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: Image.asset(
-            'assets/branding/newcare-icon.png',
-            width: size,
-            height: size,
-            fit: BoxFit.contain,
-            semanticLabel: 'NewCare',
-          ),
-        ),
+        icon,
         const SizedBox(width: 8),
         Flexible(
-          child: Text(
-            'NewCare',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-              color: dark ? Colors.white : AppColors.navyDark,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              'NewCare',
+              maxLines: 1,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+                color: dark ? Colors.white : AppColors.navyDark,
+              ),
             ),
           ),
         ),

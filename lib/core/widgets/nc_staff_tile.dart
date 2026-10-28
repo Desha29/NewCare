@@ -51,7 +51,7 @@ class NcStaffTile extends StatelessWidget {
                       Text(
                         member.name,
                         style: const TextStyle(
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w700,
                           fontSize: 14,
                         ),
                       ),

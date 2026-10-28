@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../core/localization/localization_extensions.dart';
+import '../../../../core/utils/money.dart';
 import '../../../../core/widgets/nc_button.dart';
 import '../../../../core/widgets/nc_card.dart';
 import '../../../../core/widgets/nc_field.dart';
@@ -19,10 +20,14 @@ class NursingEditor extends StatefulWidget {
 
 class _NursingEditorState extends State<NursingEditor> {
   final name = TextEditingController(), form = GlobalKey<FormState>();
+  final salary = TextEditingController(text: '0'),
+      phone = TextEditingController();
   bool manager = false;
   @override
   void dispose() {
     name.dispose();
+    salary.dispose();
+    phone.dispose();
     super.dispose();
   }
 
@@ -39,6 +44,24 @@ class _NursingEditorState extends State<NursingEditor> {
           validator: (v) =>
               v == null || v.trim().isEmpty ? context.t('requiredField') : null,
         ),
+        NcField(
+          label: context.t('phoneOptional'),
+          controller: phone,
+          keyboardType: TextInputType.phone,
+        ),
+        NcField(
+          label: context.t('monthlySalary'),
+          controller: salary,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          validator: (v) {
+            try {
+              Money.parse(v ?? '');
+              return null;
+            } catch (_) {
+              return context.t('invalidAmount');
+            }
+          },
+        ),
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
           title: Text(context.t('isManager')),
@@ -54,6 +77,8 @@ class _NursingEditorState extends State<NursingEditor> {
                     id: const Uuid().v4(),
                     name: name.text.trim(),
                     isManager: manager,
+                    salaryMinor: Money.parse(salary.text),
+                    phone: phone.text.trim(),
                   ),
                 ) &&
                 context.mounted) {

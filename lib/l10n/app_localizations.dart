@@ -443,7 +443,7 @@ abstract class AppLocalizations {
   /// No description provided for @supplies.
   ///
   /// In en, this message translates to:
-  /// **'Supplies and quantities'**
+  /// **'Medical supplies'**
   String get supplies;
 
   /// No description provided for @address.
@@ -1211,7 +1211,7 @@ abstract class AppLocalizations {
   /// No description provided for @supplyHint.
   ///
   /// In en, this message translates to:
-  /// **'One item and quantity per line'**
+  /// **'For example: cannula, saline, gauze'**
   String get supplyHint;
 
   /// No description provided for @noShift.
@@ -1441,6 +1441,318 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Close'**
   String get close;
+
+  /// No description provided for @loadingWorkspace.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing your workspace'**
+  String get loadingWorkspace;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @confirmDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm deletion'**
+  String get confirmDelete;
+
+  /// No description provided for @deleteRecord.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete record'**
+  String get deleteRecord;
+
+  /// No description provided for @changeReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason for change'**
+  String get changeReason;
+
+  /// No description provided for @deleteNote.
+  ///
+  /// In en, this message translates to:
+  /// **'This action is recorded in the audit history'**
+  String get deleteNote;
+
+  /// No description provided for @recordUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Record updated'**
+  String get recordUpdated;
+
+  /// No description provided for @recordDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Record deleted'**
+  String get recordDeleted;
+
+  /// No description provided for @shiftArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'Shift archived'**
+  String get shiftArchived;
+
+  /// No description provided for @supplyAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Supply added'**
+  String get supplyAdded;
+
+  /// No description provided for @archiveShift.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive shift'**
+  String get archiveShift;
+
+  /// No description provided for @recordNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'The record no longer exists'**
+  String get recordNotFound;
+
+  /// No description provided for @dependencyExists.
+  ///
+  /// In en, this message translates to:
+  /// **'This record is linked to existing cases'**
+  String get dependencyExists;
+
+  /// No description provided for @invalidDates.
+  ///
+  /// In en, this message translates to:
+  /// **'End time must follow start time'**
+  String get invalidDates;
+
+  /// No description provided for @welcomeBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back'**
+  String get welcomeBack;
+
+  /// No description provided for @signInSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the NewCare manager workspace'**
+  String get signInSubtitle;
+
+  /// No description provided for @memberInactive.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive nursing member'**
+  String get memberInactive;
+
+  /// No description provided for @viewRecord.
+  ///
+  /// In en, this message translates to:
+  /// **'View record'**
+  String get viewRecord;
+
+  /// No description provided for @transactions.
+  ///
+  /// In en, this message translates to:
+  /// **'Transactions'**
+  String get transactions;
+
+  /// No description provided for @casePayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Case payment'**
+  String get casePayment;
+
+  /// No description provided for @dateAndTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Date & time'**
+  String get dateAndTime;
+
+  /// No description provided for @searchTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by description, nursing or reference'**
+  String get searchTransactions;
+
+  /// No description provided for @allTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'All types'**
+  String get allTransactions;
+
+  /// No description provided for @allNursing.
+  ///
+  /// In en, this message translates to:
+  /// **'All nursing staff'**
+  String get allNursing;
+
+  /// No description provided for @newTransaction.
+  ///
+  /// In en, this message translates to:
+  /// **'Add cash movement'**
+  String get newTransaction;
+
+  /// No description provided for @cashIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash received'**
+  String get cashIn;
+
+  /// No description provided for @cashOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash paid out'**
+  String get cashOut;
+
+  /// No description provided for @walletReceipts.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet receipts'**
+  String get walletReceipts;
+
+  /// No description provided for @netCashFlow.
+  ///
+  /// In en, this message translates to:
+  /// **'Net cash flow'**
+  String get netCashFlow;
+
+  /// No description provided for @transactionTotalsNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Totals follow the selected filters. Net cash flow excludes wallet receipts and opening drawer balances.'**
+  String get transactionTotalsNote;
+
+  /// No description provided for @transactionBreakdown.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction breakdown'**
+  String get transactionBreakdown;
+
+  /// No description provided for @monthlySalary.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly salary'**
+  String get monthlySalary;
+
+  /// No description provided for @setSalary.
+  ///
+  /// In en, this message translates to:
+  /// **'Set nursing salary'**
+  String get setSalary;
+
+  /// No description provided for @salaryRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'Nursing salaries'**
+  String get salaryRegister;
+
+  /// No description provided for @salaryAfterAdvances.
+  ///
+  /// In en, this message translates to:
+  /// **'Salary less selected advances'**
+  String get salaryAfterAdvances;
+
+  /// No description provided for @salaryNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly base salary less advances in the selected period. Awards are paid cash movements, shown separately to avoid counting them twice.'**
+  String get salaryNote;
+
+  /// No description provided for @addProcedure.
+  ///
+  /// In en, this message translates to:
+  /// **'Add procedure'**
+  String get addProcedure;
+
+  /// No description provided for @addSupply.
+  ///
+  /// In en, this message translates to:
+  /// **'Add supply'**
+  String get addSupply;
+
+  /// No description provided for @accessLevels.
+  ///
+  /// In en, this message translates to:
+  /// **'Access levels'**
+  String get accessLevels;
+
+  /// No description provided for @nursingAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Add cases, expenses and advances; start, end and hand over shifts.'**
+  String get nursingAccess;
+
+  /// No description provided for @managerAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage nursing, salaries, catalogue and records; view totals and reports. Managers may also work on a shift.'**
+  String get managerAccess;
+
+  /// No description provided for @shiftOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Shift is open'**
+  String get shiftOpen;
+
+  /// No description provided for @shiftClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Shift is closed'**
+  String get shiftClosed;
+
+  /// No description provided for @addCase.
+  ///
+  /// In en, this message translates to:
+  /// **'Add case'**
+  String get addCase;
+
+  /// No description provided for @caseType.
+  ///
+  /// In en, this message translates to:
+  /// **'Case type'**
+  String get caseType;
+
+  /// No description provided for @cardView.
+  ///
+  /// In en, this message translates to:
+  /// **'Cards'**
+  String get cardView;
+
+  /// No description provided for @tableView.
+  ///
+  /// In en, this message translates to:
+  /// **'Table'**
+  String get tableView;
+
+  /// No description provided for @award.
+  ///
+  /// In en, this message translates to:
+  /// **'Award'**
+  String get award;
+
+  /// No description provided for @newAward.
+  ///
+  /// In en, this message translates to:
+  /// **'Add nursing award'**
+  String get newAward;
+
+  /// No description provided for @saveAward.
+  ///
+  /// In en, this message translates to:
+  /// **'Save award'**
+  String get saveAward;
+
+  /// No description provided for @awardsTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Awards paid'**
+  String get awardsTotal;
+
+  /// No description provided for @salaryUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly salary updated'**
+  String get salaryUpdated;
 }
 
 class _AppLocalizationsDelegate

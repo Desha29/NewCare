@@ -17,6 +17,7 @@ const managerNavigation = [
   AppPage.overview,
   AppPage.shifts,
   AppPage.caseLog,
+  AppPage.transactions,
   AppPage.payroll,
   AppPage.nursing,
   AppPage.catalogue,
@@ -31,6 +32,7 @@ IconData pageIcon(AppPage p) => switch (p) {
   AppPage.handover => Icons.swap_horiz,
   AppPage.overview => Icons.bar_chart,
   AppPage.payroll => Icons.account_balance_wallet_outlined,
+  AppPage.transactions => Icons.receipt_long_outlined,
   AppPage.nursing => Icons.groups_outlined,
   AppPage.catalogue => Icons.medical_services_outlined,
   AppPage.reports => Icons.assessment_outlined,
@@ -100,7 +102,7 @@ class WorkspaceSidebar extends StatelessWidget {
                                         fontSize: 11,
                                         fontWeight: state.page == page
                                             ? FontWeight.w700
-                                            : FontWeight.w400,
+                                            : FontWeight.w700,
                                         color: Colors.white,
                                       ),
                                     ),

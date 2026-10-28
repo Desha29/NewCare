@@ -60,7 +60,7 @@ class PeriodFilter extends StatelessWidget {
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
-                      '${context.date(selected.start)} — ${context.date(selected.end)}',
+                      '${context.calendarDate(selected.start)} — ${context.calendarDate(selected.end)}',
                       style: const TextStyle(fontSize: 12),
                     ),
                   ),
