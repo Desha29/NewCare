@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../core/storage/string_store.dart';
@@ -45,12 +44,16 @@ class AppState {
 }
 
 class AppCubit extends Cubit<AppState> {
-  AppCubit(this.store) : super(AppState());
+  AppCubit(this.store, {bool configured = true})
+    : _configured = configured,
+      super(AppState(page: configured ? AppPage.activeShift : AppPage.setup));
+  bool _configured;
   final StringStore store;
   Future<void> loadLocale() async {
     final locale = await store.read('newcare.locale');
-    if (!isClosed && ['en', 'ar'].contains(locale))
+    if (!isClosed && ['en', 'ar'].contains(locale)) {
       emit(state.copyWith(locale: Locale(locale!)));
+    }
   }
 
   Future<void> toggleLocale() async {
@@ -60,7 +63,14 @@ class AppCubit extends Cubit<AppState> {
   }
 
   void navigate(AppPage page) {
-    if (page.needsManager && !state.managerUnlocked) {
+    final setupPage = [
+      AppPage.setup,
+      AppPage.setupNursing,
+      AppPage.setupCatalogue,
+      AppPage.ready,
+    ].contains(page);
+    if ((page.needsManager || (_configured && setupPage)) &&
+        !state.managerUnlocked) {
       emit(state.copyWith(page: AppPage.login, returnPage: page));
     } else {
       emit(state.copyWith(page: page));
@@ -90,4 +100,8 @@ class AppCubit extends Cubit<AppState> {
     ),
   );
   void showSaved() => emit(state.copyWith(page: AppPage.saved));
+  void completeSetup() {
+    _configured = true;
+    emit(state.copyWith(managerUnlocked: true, page: AppPage.ready));
+  }
 }

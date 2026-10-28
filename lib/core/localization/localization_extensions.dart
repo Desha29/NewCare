@@ -1,8 +1,10 @@
 import 'package:flutter/widgets.dart';
+
 import '../../l10n/app_localizations.dart';
+
 extension LocalizedContext on BuildContext {
   AppLocalizations get l10n => AppLocalizations.of(this);
-  String t(String key) => switch(key) {
+  String t(String key) => switch (key) {
     'appTitle' => l10n.appTitle,
     'localPreview' => l10n.localPreview,
     'localSaved' => l10n.localSaved,
@@ -230,4 +232,3 @@ extension LocalizedContext on BuildContext {
     _ => key,
   };
 }
-

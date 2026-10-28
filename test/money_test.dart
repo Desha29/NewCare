@@ -14,7 +14,13 @@ void main() {
     }
   });
   test('drawer includes only cash payments and signed cash movements', () {
-    expect(Money.drawerBalance(opening: 20000, cashPayments: [25000], movements: [-5000, -3000, 1000]), 38000);
+    expect(
+      Money.drawerBalance(
+        opening: 20000,
+        cashPayments: [25000],
+        movements: [-5000, -3000, 1000],
+      ),
+      38000,
+    );
   });
 }
-
