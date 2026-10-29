@@ -36,11 +36,7 @@ class OverviewScreen extends StatelessWidget {
             ),
             MetricValue(
               context.t('expectedCash'),
-              context.money(
-                data.shifts.isEmpty
-                    ? data.openingMinor
-                    : data.expectedCash(data.shifts.last),
-              ),
+              context.money(data.drawerBalance),
             ),
           ],
         ),

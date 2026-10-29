@@ -1,3 +1,5 @@
+import '../localization/localization_extensions.dart';
+
 import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
@@ -19,7 +21,7 @@ class NcLogo extends StatelessWidget {
         'assets/branding/newcare-logo.png',
         height: size,
         fit: BoxFit.contain,
-        semanticLabel: 'NewCare',
+        semanticLabel: context.t('brandName'),
       );
     }
     final icon = ClipRRect(
@@ -29,7 +31,7 @@ class NcLogo extends StatelessWidget {
         width: size,
         height: size,
         fit: BoxFit.contain,
-        semanticLabel: 'NewCare',
+        semanticLabel: context.t('brandName'),
       ),
     );
     if (!wordmark) return icon;
@@ -42,7 +44,7 @@ class NcLogo extends StatelessWidget {
           child: FittedBox(
             fit: BoxFit.scaleDown,
             child: Text(
-              'NewCare',
+              context.t('brandName'),
               maxLines: 1,
               style: TextStyle(
                 fontSize: 20,

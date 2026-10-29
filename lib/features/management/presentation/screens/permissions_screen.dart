@@ -4,11 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/localization/localization_extensions.dart';
 import '../../../../core/widgets/nc_card.dart';
 import '../../../../core/widgets/nc_button.dart';
-import '../../../../core/widgets/nc_notice.dart';
 import '../../../../core/widgets/nc_page_column.dart';
 import '../../../workspace/presentation/cubit/workspace_cubit.dart';
 import '../widgets/manager_profile_editor.dart';
 import '../widgets/management_form_dialog.dart';
+import '../widgets/manager_password_editor.dart';
+import '../widgets/navigation_labels_editor.dart';
 
 class PermissionsScreen extends StatelessWidget {
   const PermissionsScreen({super.key});
@@ -35,25 +36,8 @@ class PermissionsScreen extends StatelessWidget {
             ),
           ],
         ),
-        NcCard(
-          title: context.t('accessLevels'),
-          children: [
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const Icon(Icons.medical_services_outlined),
-              title: Text(context.t('nursing')),
-              subtitle: Text(context.t('nursingAccess')),
-            ),
-            const Divider(),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const Icon(Icons.admin_panel_settings_outlined),
-              title: Text(context.t('manager')),
-              subtitle: Text(context.t('managerAccess')),
-            ),
-          ],
-        ),
-        NcNotice(title: context.t('previewGate'), tone: NoticeTone.warning),
+        const ManagerPasswordEditor(),
+        const NavigationLabelsEditor(),
       ],
     );
   }

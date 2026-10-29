@@ -58,10 +58,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get payroll => 'المرتبات والسلف';
 
   @override
-  String get catalogue => 'الإجراءات والمستلزمات';
+  String get catalogue => 'الإجراءات';
 
   @override
-  String get permissions => 'الإعدادات والصلاحيات';
+  String get permissions => 'الإعدادات';
 
   @override
   String get reports => 'التقارير';
@@ -244,7 +244,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get newCase => 'تسجيل حالة أخرى';
 
   @override
-  String get returnShift => 'العودة إلى الشيفت';
+  String get returnShift => 'العودة لتسجيل الحالات';
 
   @override
   String get addInside => 'إضافة حالة داخل المركز';
@@ -304,7 +304,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get income => 'وارد نقدي';
 
   @override
-  String get expense => 'مصروف';
+  String get expense => 'خوارج';
 
   @override
   String get advance => 'سلفة';
@@ -331,7 +331,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get caseCount => 'عدد الحالات';
 
   @override
-  String get expenses => 'المصروفات';
+  String get expenses => 'الخوارج';
 
   @override
   String get dailyRevenue => 'الإيراد اليومي';
@@ -595,7 +595,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get cashFormula =>
-      'البداية + كاش الحالات + الوارد − المصروفات − السلف';
+      'الرصيد الافتتاحي + مدفوعات الكاش + الوارد − الخوارج − السلف − المكافآت + فروق عدّ الدرج';
 
   @override
   String get showSetup => 'إعداد أول تشغيل';
@@ -805,11 +805,11 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get nursingAccess =>
-      'إضافة الحالات والمصروفات والسلف، وبدء الشيفت وإنهاؤه وتسليمه.';
+      'تسجيل الحالات وتحصيل دفعاتها وإضافة الخوارج والسلف.';
 
   @override
   String get managerAccess =>
-      'إدارة التمريض والمرتبات والإجراءات والسجلات، وعرض الإجماليات والتقارير. ويمكن للمدير العمل في الشيفت.';
+      'إدارة التمريض والمرتبات والإجراءات والسجلات والدرج، وعرض الإجماليات والتقارير. ويمكن للمدير تسجيل الحالات باسمه.';
 
   @override
   String get shiftOpen => 'الشيفت مفتوح';
@@ -839,8 +839,411 @@ class AppLocalizationsAr extends AppLocalizations {
   String get saveAward => 'حفظ المكافأة';
 
   @override
-  String get awardsTotal => 'المكافآت المصروفة';
+  String get awardsTotal => 'المكافآت الخارجة';
 
   @override
   String get salaryUpdated => 'تحديث المرتب الشهري';
+
+  @override
+  String get ended => 'انتهى';
+
+  @override
+  String get shiftTiming => 'توقيت الشيفت';
+
+  @override
+  String get checkDrawerFirst => 'راجع الدرج قبل إنهاء الشيفت';
+
+  @override
+  String get checkDrawerExplanation =>
+      'اختر من عدّ الدرج، وسجّل النقدية الفعلية، ثم أكد المراجعة قبل إنهاء الشيفت.';
+
+  @override
+  String get drawerReview => 'مراجعة الدرج';
+
+  @override
+  String get drawerCheckedBy => 'من راجع وأغلق الدرج';
+
+  @override
+  String get confirmDrawerReview => 'تأكيد عدّ الدرج';
+
+  @override
+  String get drawerReviewDone =>
+      'تم تأكيد مراجعة الدرج. يمكنك الآن إنهاء الشيفت.';
+
+  @override
+  String get drawerChanged => 'تغيرت بيانات الدرج. أعد العدّ وتأكيد المراجعة.';
+
+  @override
+  String get lastShiftClosed => 'إغلاق الشيفت السابق';
+
+  @override
+  String get drawerUnchecked => 'لم يُراجع';
+
+  @override
+  String get drawerMatched => 'مطابق';
+
+  @override
+  String get drawerShortage => 'عجز';
+
+  @override
+  String get drawerExcess => 'زيادة';
+
+  @override
+  String get proceduresUsed => 'الإجراءات المنفذة';
+
+  @override
+  String get selectedSupplies => 'المستلزمات المستخدمة';
+
+  @override
+  String get caseTotal => 'الإجمالي المحسوب';
+
+  @override
+  String get procedureTotal => 'إجمالي الإجراءات';
+
+  @override
+  String get supplyTotal => 'إجمالي المستلزمات';
+
+  @override
+  String get priceBreakdown => 'الحساب والمدفوع';
+
+  @override
+  String get selectItems => 'اختر العناصر';
+
+  @override
+  String get noPricedSupplies => 'لا توجد مستلزمات في الكتالوج';
+
+  @override
+  String get chooseDay => 'اختر اليوم';
+
+  @override
+  String get caseFormSubtitle =>
+      'اختر الإجراءات، وأدخل إجمالي الحساب والمدفوع؛ المتبقي يتحسب تلقائيًا.';
+
+  @override
+  String get procedureRequired => 'اختر إجراء واحدًا على الأقل';
+
+  @override
+  String get itemName => 'الاسم';
+
+  @override
+  String get price => 'السعر';
+
+  @override
+  String get supplyNameHint => 'مثال: كانولا';
+
+  @override
+  String get procedureNameHint => 'مثال: تركيب محلول';
+
+  @override
+  String get priceHint => 'أدخل السعر بالجنيه المصري';
+
+  @override
+  String get shiftDetails => 'تفاصيل الشيفت';
+
+  @override
+  String get allPayments => 'كل طرق الدفع';
+
+  @override
+  String get translationUnavailable => 'غير متاح';
+
+  @override
+  String get caseUpdated => 'تم تعديل الحالة';
+
+  @override
+  String get brandName => 'NewCare';
+
+  @override
+  String get nursingCareServices => 'خدمات الرعاية التمريضية';
+
+  @override
+  String get caseRegister => 'تسجيل الحالات';
+
+  @override
+  String get caseBook => 'دفتر الحالات';
+
+  @override
+  String get catalogueTotal => 'مجموع أسعار الإجراءات';
+
+  @override
+  String get agreedPrice => 'إجمالي الحساب';
+
+  @override
+  String get paidNow => 'المدفوع عند التسجيل';
+
+  @override
+  String get remainingAmount => 'المتبقي';
+
+  @override
+  String get paidTotal => 'إجمالي المدفوع';
+
+  @override
+  String get laterPayments => 'دفعات لاحقة مسجلة';
+
+  @override
+  String get paymentHistory => 'سجل دفعات الحالة';
+
+  @override
+  String get initialPayment => 'دفعة التسجيل';
+
+  @override
+  String get receivePayment => 'تحصيل دفعة';
+
+  @override
+  String get paymentAmount => 'مبلغ الدفعة';
+
+  @override
+  String get savePayment => 'تسجيل الدفعة';
+
+  @override
+  String get casePaymentAdded => 'تم تحصيل دفعة للحالة';
+
+  @override
+  String get invalidPaymentAmount =>
+      'أدخل مبلغًا صحيحًا لا يتجاوز المتبقي، ولا يقل إجمالي السعر عن المدفوع';
+
+  @override
+  String get searchCatalogue => 'ابحث واختر إجراء…';
+
+  @override
+  String get caseReference => 'رقم الحالة';
+
+  @override
+  String get searchCaseBook =>
+      'ابحث بالإجراء أو العنوان أو التمريض أو رقم الحالة';
+
+  @override
+  String get outstandingCases => 'حالات عليها متبقي';
+
+  @override
+  String get outstandingAllDates => 'كل الحالات التي عليها متبقي، من أي تاريخ';
+
+  @override
+  String get drawerBalance => 'رصيد الدرج الحالي';
+
+  @override
+  String get payInFull => 'دفع بالكامل';
+
+  @override
+  String get externalAdvance => 'سلفة';
+
+  @override
+  String get centerExpense => 'خوارج المركز';
+
+  @override
+  String get externalRecipient => 'اسم المستلم';
+
+  @override
+  String get recipientRequired => 'أدخل اسم الشخص المستلم';
+
+  @override
+  String get drawerHandover => 'تسليم واستلام الدرج';
+
+  @override
+  String get drawerHandoverNote =>
+      'عدّ النقدية، واختر المسلِّم والمستلم. يسجل فرق العدّ بشكل مستقل ولا يُحسب إيرادًا أو ضمن الخوارج.';
+
+  @override
+  String get drawerFrom => 'المسلِّم';
+
+  @override
+  String get drawerTo => 'المستلم';
+
+  @override
+  String get drawerHolder => 'مسؤول عهدة الدرج';
+
+  @override
+  String get drawerHandoverHistory => 'سجل تسليم واستلام الدرج';
+
+  @override
+  String get confirmDrawerHandover => 'تأكيد تسليم الدرج';
+
+  @override
+  String get handoverDifferenceReason => 'ملاحظات وسبب العجز أو الزيادة إن وجد';
+
+  @override
+  String get invalidHandoverStaff =>
+      'اختر المستلم الحالي للعهدة للتسليم وشخصًا آخر للاستلام';
+
+  @override
+  String get drawerHandedOver => 'تم تسليم واستلام عهدة الدرج';
+
+  @override
+  String get refreshDrawer => 'تحديث رصيد المراجعة';
+
+  @override
+  String get editCasePrice => 'تعديل إجمالي الحالة';
+
+  @override
+  String get priceBelowPaid => 'لا يمكن أن يكون السعر أقل من المبلغ المحصّل';
+
+  @override
+  String get priceEditNote =>
+      'تعديل إجمالي الحالة لا يغيّر الدفعات التي تم تحصيلها.';
+
+  @override
+  String get casePriceUpdated => 'تم تعديل سعر الحالة';
+
+  @override
+  String get notes => 'ملاحظات';
+
+  @override
+  String get personOutgoings => 'خوارج أشخاص';
+
+  @override
+  String get recordOutgoing => 'تسجيل الخوارج';
+
+  @override
+  String get outgoings => 'خوارج';
+
+  @override
+  String get saveOutgoing => 'حفظ الخارج';
+
+  @override
+  String get personPaymentPurpose => 'نوع الصرف';
+
+  @override
+  String get otherPersonOutgoing => 'صرف آخر';
+
+  @override
+  String get otherPerson => 'شخص آخر';
+
+  @override
+  String get personName => 'اسم الشخص';
+
+  @override
+  String get personNursingRecipient => 'مستلم المبلغ من التمريض';
+
+  @override
+  String get outgoingDescription => 'البيان';
+
+  @override
+  String get centerOutgoingHint => 'مثل: الإيجار أو الكهرباء أو المشتريات';
+
+  @override
+  String get personOutgoingHint => 'مثل: أتعاب أو رد مبلغ';
+
+  @override
+  String get incomeDescriptionHint => 'مثل: إيداع نقدي للدرج';
+
+  @override
+  String get personOutgoingHelp =>
+      'اختر نوع الصرف والمستلم، ثم سجّل المبلغ. السلف ضمن خوارج الأشخاص.';
+
+  @override
+  String get centerOutgoingHelp =>
+      'للإيجار والكهرباء والمشتريات وغيرها من خوارج المركز.';
+
+  @override
+  String get noOtherDrawerReceiver =>
+      'يلزم وجود شخص آخر لاستلام الدرج. لا يمكن للمسلِّم استلام العهدة من نفسه.';
+
+  @override
+  String get openNavigation => 'فتح القائمة';
+
+  @override
+  String get closeNavigation => 'إغلاق القائمة';
+
+  @override
+  String get hideSidebar => 'إخفاء القائمة الجانبية';
+
+  @override
+  String get showSidebar => 'إظهار القائمة الجانبية';
+
+  @override
+  String get devicePreview => 'معاينة الأجهزة';
+
+  @override
+  String get previewDebugOnly => 'أدوات المعاينة متاحة في وضع التطوير فقط';
+
+  @override
+  String get previewDevice => 'الجهاز والمقاس';
+
+  @override
+  String get previewPlatform => 'المنصة';
+
+  @override
+  String get previewTextScale => 'حجم الخط';
+
+  @override
+  String get previewRotate => 'تدوير الشاشة';
+
+  @override
+  String get previewKeyboard => 'إظهار أو إخفاء لوحة المفاتيح';
+
+  @override
+  String get previewReset => 'المقاس الحقيقي';
+
+  @override
+  String get previewFailed => 'تعذّر تغيير المعاينة';
+
+  @override
+  String get squareMonitor => 'شاشة مربعة 1024 × 1024';
+
+  @override
+  String get platformandroid => 'Android';
+
+  @override
+  String get platformiOS => 'iOS';
+
+  @override
+  String get platformwindows => 'Windows';
+
+  @override
+  String get platformmacOS => 'macOS';
+
+  @override
+  String get platformlinux => 'Linux';
+
+  @override
+  String get platformfuchsia => 'Fuchsia';
+
+  @override
+  String get changePassword => 'تغيير كلمة المرور';
+
+  @override
+  String get currentPassword => 'كلمة المرور الحالية';
+
+  @override
+  String get newPassword => 'كلمة المرور الجديدة';
+
+  @override
+  String get passwordTooShort => 'استخدم ٨ أحرف على الأقل';
+
+  @override
+  String get passwordUpdated => 'تم تغيير كلمة المرور';
+
+  @override
+  String get settingsSaveFailed => 'تعذّر حفظ التعديلات. حاول مرة أخرى.';
+
+  @override
+  String get navigationLabels => 'أسماء أقسام القائمة';
+
+  @override
+  String get navigationLabelsHelp =>
+      'عدّل أسماء الأقسام باللغة الحالية. اترك الحقل فارغًا لاستخدام الاسم الأصلي.';
+
+  @override
+  String get restoreNavigationLabels => 'استعادة الأسماء الأصلية';
+
+  @override
+  String get navigationLabelTooLong => 'الحد الأقصى ٤٠ حرفًا';
+
+  @override
+  String get drawerStatus => 'حالة الدرج';
+
+  @override
+  String get cashDrawerHint =>
+      'الرصيد يتحدّث تلقائيًا مع التحصيل بالكاش والخوارج. مدفوعات المحفظة لا تدخل الدرج.';
+
+  @override
+  String get unassignedDrawerHolder => 'لم يُحدّد مستلم للعهدة بعد';
+
+  @override
+  String get lastDrawerCheck => 'نتيجة آخر مراجعة نقدية';
+
+  @override
+  String get allPaymentMethods => 'الكل';
+
+  @override
+  String get caseAddedAt => 'تاريخ ووقت الإضافة';
 }

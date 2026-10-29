@@ -6,12 +6,15 @@ import '../../core/theme/app_colors.dart';
 import '../../features/workspace/presentation/cubit/workspace_cubit.dart';
 import '../cubit/app_cubit.dart';
 import '../navigation/app_page.dart';
+import '../../core/utils/formatters.dart';
 
 class ShiftHeaderControls extends StatelessWidget {
   const ShiftHeaderControls({super.key});
   @override
   Widget build(BuildContext context) {
-    final open = context.watch<WorkspaceCubit>().state.activeShift != null;
+    final data = context.watch<WorkspaceCubit>().state;
+    final open = data.activeShift != null;
+    final shift = data.activeShift ?? data.shifts.lastOrNull;
     return Row(
       children: [
         Expanded(
@@ -27,13 +30,28 @@ class ShiftHeaderControls extends StatelessWidget {
               ),
               const SizedBox(width: 6),
               Flexible(
-                child: Text(
-                  context.t(open ? 'shiftOpen' : 'shiftClosed'),
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    color: open ? AppColors.teal : AppColors.muted,
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      context.t(open ? 'shiftOpen' : 'shiftClosed'),
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: open ? AppColors.teal : AppColors.muted,
+                      ),
+                    ),
+                    if (shift != null)
+                      Text(
+                        '${context.t('started')}: ${context.time(shift.openedAt)}',
+                        style: const TextStyle(fontSize: 10),
+                      ),
+                    if (shift?.closedAt != null)
+                      Text(
+                        '${context.t('ended')}: ${context.time(shift!.closedAt!)}',
+                        style: const TextStyle(fontSize: 10),
+                      ),
+                  ],
                 ),
               ),
             ],

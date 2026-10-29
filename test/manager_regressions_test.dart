@@ -22,7 +22,16 @@ void main() {
     await store.write('newcare.locale', 'en');
     final repo = LocalWorkspaceRepository(store);
     await repo.initialize();
-    if (closed) await repo.endShift('');
+    if (closed) {
+      await repo.endShift(
+        '',
+        countedMinor: repo.current.expectedCash(repo.current.activeShift!),
+        checkedBy: 'n1',
+        verifiedExpectedMinor: repo.current.expectedCash(
+          repo.current.activeShift!,
+        ),
+      );
+    }
     await tester.pumpWidget(NewCareApp(repository: repo, store: store));
     await tester.pumpAndSettle();
     final app = tester.element(find.byType(Scaffold).first).read<AppCubit>();

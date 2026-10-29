@@ -29,6 +29,9 @@ class NcField extends StatelessWidget {
     obscureText: obscure,
     maxLines: lines,
     keyboardType: keyboardType,
+    style: keyboardType?.index == TextInputType.number.index
+        ? const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)
+        : null,
     validator: validator,
     decoration: InputDecoration(labelText: label, hintText: hint),
     textInputAction: lines > 1 ? TextInputAction.newline : TextInputAction.next,

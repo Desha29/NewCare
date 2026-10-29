@@ -27,7 +27,7 @@ class ManagerCaseLogScreen extends StatelessWidget {
                 (p) => ChartValue(
                   p.name(Localizations.localeOf(context).languageCode),
                   summary.cases
-                      .where((c) => c.procedureId == p.id)
+                      .where((c) => c.effectiveProcedureIds.contains(p.id))
                       .length
                       .toDouble(),
                 ),

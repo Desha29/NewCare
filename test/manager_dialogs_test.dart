@@ -14,7 +14,7 @@ import 'package:newcare/features/workspace/data/repositories/local_workspace_rep
 void main() {
   for (final size in [const Size(390, 844), const Size(1024, 1024)]) {
     testWidgets(
-      'manager forms are dialogs and Arabic procedure needs only name and price at $size',
+      'manager forms are dialogs and procedure catalogue needs only a name at $size',
       (tester) async {
         tester.view.physicalSize = size;
         tester.view.devicePixelRatio = 1;
@@ -37,17 +37,16 @@ void main() {
         );
         await tester.pumpAndSettle();
         expect(find.byType(Dialog), findsOneWidget);
-        expect(find.byType(TextFormField), findsNWidgets(2));
+        expect(find.byType(TextFormField), findsOneWidget);
         final fields = tester
             .widgetList<NcField>(find.byType(NcField))
             .toList();
         fields.first.controller.text = 'قياس ضغط';
-        fields.last.controller.text = '50';
         await tester.tap(find.widgetWithText(FilledButton, context.t('add')));
         await tester.pumpAndSettle();
         expect(find.byType(Dialog), findsNothing);
         expect(repo.current.procedures.last.nameAr, 'قياس ضغط');
-        expect(repo.current.procedures.last.priceMinor, 5000);
+        expect(repo.current.procedures.last.priceMinor, 0);
         app.navigate(AppPage.payroll);
         await tester.pumpAndSettle();
         expect(find.byType(SalaryEditor), findsNothing);

@@ -38,7 +38,7 @@ void main() {
     String staff = 'n1',
   }) => CaseRecord(
     id: 'c1',
-    shiftId: repo.current.activeShift!.id,
+    shiftId: repo.current.activeShift?.id ?? '',
     staffId: staff,
     title: 'IV',
     procedureId: 'p1',
@@ -65,17 +65,8 @@ void main() {
     );
     expect(repo.current.cases.single.phone, isEmpty);
   });
-  test('rejects parallel open shifts and non-member case owners', () async {
-    await repo.startShift('n1', 20000);
-    await expectLater(
-      repo.startShift('n2', 20000),
-      throwsA(isA<WorkspaceException>()),
-    );
-    await expectLater(
-      repo.addCase(record(staff: 'n2')),
-      throwsA(isA<WorkspaceException>()),
-    );
-    await repo.joinShift('n2');
+  test('all active nursing staff can record cases without a shift', () async {
+    expect(repo.current.shifts, isEmpty);
     await repo.addCase(record(staff: 'n2'));
     expect(repo.current.cases.single.staffId, 'n2');
   });

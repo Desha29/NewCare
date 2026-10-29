@@ -1,3 +1,6 @@
+import '../../../drawer/data/models/drawer_handover.dart';
+import '../../../cases/data/models/case_payment.dart';
+
 import 'dart:async';
 import 'dart:convert';
 
@@ -92,7 +95,7 @@ class LocalWorkspaceRepository implements WorkspaceRepository {
     if (countedMinor < 0) throw const WorkspaceException('invalidAmount');
     final expected = s.shifts.isEmpty
         ? s.openingMinor
-        : s.expectedCash(s.shifts.last);
+        : s.shifts.last.closingCountedMinor ?? s.expectedCash(s.shifts.last);
     if (expected != countedMinor && reason.trim().isEmpty) {
       throw const WorkspaceException('reasonRequired');
     }
@@ -128,14 +131,41 @@ class LocalWorkspaceRepository implements WorkspaceRepository {
     );
   });
   @override
-  Future<void> endShift(String note) => _update('shiftEnded', (s) {
+  Future<void> endShift(
+    String note, {
+    required int countedMinor,
+    required String checkedBy,
+    required int verifiedExpectedMinor,
+    String differenceReason = '',
+  }) => _update('shiftEnded', (s) {
     final shift = s.activeShift;
     if (shift == null) throw const WorkspaceException('noOpenToClose');
+    _member(s, checkedBy);
+    if (!shift.memberIds.contains(checkedBy)) {
+      throw const WorkspaceException('staffNotInShift');
+    }
+    if (countedMinor < 0) throw const WorkspaceException('invalidAmount');
+    final expected = s.expectedCash(shift);
+    if (expected != verifiedExpectedMinor) {
+      throw const WorkspaceException('drawerChanged');
+    }
+    if (countedMinor != expected && differenceReason.trim().isEmpty) {
+      throw const WorkspaceException('reasonRequired');
+    }
+    final closedAt = DateTime.now();
     return s.copyWith(
       shifts: s.shifts
           .map(
             (x) => x.id == shift.id
-                ? x.copyWith(closedAt: DateTime.now(), note: note)
+                ? x.copyWith(
+                    closedAt: closedAt,
+                    note: note,
+                    drawerCheckedBy: checkedBy,
+                    drawerCheckedAt: closedAt,
+                    closingCountedMinor: countedMinor,
+                    closingExpectedMinor: expected,
+                    closingDifferenceReason: differenceReason.trim(),
+                  )
                 : x,
           )
           .toList(),
@@ -144,13 +174,11 @@ class LocalWorkspaceRepository implements WorkspaceRepository {
   @override
   Future<void> addCase(CaseRecord record) => _update('caseAdded', (s) {
     if (s.cases.any((x) => x.id == record.id)) return s;
-    final shift = s.activeShift;
-    if (shift == null || shift.id != record.shiftId) {
-      throw const WorkspaceException('noOpenShift');
-    }
     _member(s, record.staffId);
-    if (!shift.memberIds.contains(record.staffId)) {
-      throw const WorkspaceException('staffNotInShift');
+    if (record.invoiceMinor < 0 ||
+        record.amountMinor < 0 ||
+        record.amountMinor > record.invoiceMinor) {
+      throw const WorkspaceException('invalidPaymentAmount');
     }
     if (record.location == CaseLocation.outside &&
         record.address.trim().isEmpty) {
@@ -166,17 +194,25 @@ class LocalWorkspaceRepository implements WorkspaceRepository {
     return s.copyWith(cases: [...s.cases, record]);
   }, detail: record.id);
   @override
+  Future<void> addCasePayment(CasePayment payment) =>
+      _update('casePaymentAdded', (s) {
+        if (s.payments.any((p) => p.id == payment.id)) return s;
+        _member(s, payment.staffId);
+        final record = s.cases.where((c) => c.id == payment.caseId).firstOrNull;
+        if (record == null) throw const WorkspaceException('recordNotFound');
+        if (payment.amountMinor <= 0 ||
+            payment.amountMinor > s.remainingFor(record)) {
+          throw const WorkspaceException('invalidPaymentAmount');
+        }
+        return s.copyWith(payments: [...s.payments, payment]);
+      }, detail: payment.caseId);
+  @override
   Future<void> addMovement(CashMovement movement) => _update('cashAdded', (s) {
     if (s.movements.any((x) => x.id == movement.id)) return s;
-    final shift = s.activeShift;
-    if (shift == null || shift.id != movement.shiftId) {
-      throw const WorkspaceException('noOpenShift');
-    }
     _member(s, movement.staffId);
-    if (movement.kind != CashKind.advance &&
-        movement.kind != CashKind.award &&
-        !shift.memberIds.contains(movement.staffId)) {
-      throw const WorkspaceException('staffNotInShift');
+    if (movement.kind == CashKind.externalAdvance &&
+        movement.recipient.trim().isEmpty) {
+      throw const WorkspaceException('recipientRequired');
     }
     if (movement.amountMinor <= 0) {
       throw const WorkspaceException('invalidAmount');
@@ -186,6 +222,32 @@ class LocalWorkspaceRepository implements WorkspaceRepository {
     }
     return s.copyWith(movements: [...s.movements, movement]);
   }, detail: movement.id);
+  @override
+  Future<void> handoverDrawer(DrawerHandover handover) => _update(
+    'drawerHandedOver',
+    (s) {
+      if (s.handovers.any((h) => h.id == handover.id)) return s;
+      if (s.drawerHolder != handover.fromStaffId) {
+        _member(s, handover.fromStaffId);
+      }
+      _member(s, handover.toStaffId);
+      if (handover.fromStaffId == handover.toStaffId ||
+          (s.drawerHolder != null && s.drawerHolder != handover.fromStaffId)) {
+        throw const WorkspaceException('invalidHandoverStaff');
+      }
+      if (handover.expectedMinor != s.drawerBalance) {
+        throw const WorkspaceException('drawerChanged');
+      }
+      if (handover.countedMinor < 0) {
+        throw const WorkspaceException('invalidAmount');
+      }
+      if (handover.differenceMinor != 0 && handover.note.trim().isEmpty) {
+        throw const WorkspaceException('reasonRequired');
+      }
+      return s.copyWith(handovers: [...s.handovers, handover]);
+    },
+    detail: jsonEncode(handover.toJson()),
+  );
   @override
   Future<void> addStaff(NursingMember member) => _update('staffAdded', (s) {
     if (member.salaryMinor < 0) throw const WorkspaceException('invalidAmount');
@@ -215,9 +277,6 @@ class LocalWorkspaceRepository implements WorkspaceRepository {
     Map<String, List<String>>? permissions,
     bool? setupDone,
   }) => _update('settingsSaved', (s) {
-    if (openingMinor != null && s.shifts.isNotEmpty) {
-      throw const WorkspaceException('shiftAlreadyOpen');
-    }
     if (openingMinor != null && openingMinor < 0) {
       throw const WorkspaceException('invalidAmount');
     }
@@ -231,6 +290,7 @@ class LocalWorkspaceRepository implements WorkspaceRepository {
   });
   @override
   Future<void> addSupply(SupplyItem supply) => _update('procedureAdded', (s) {
+    if (supply.priceMinor < 0) throw const WorkspaceException('invalidAmount');
     if (supply.nameAr.trim().isEmpty || supply.nameEn.trim().isEmpty) {
       throw const WorkspaceException('requiredField');
     }
@@ -282,6 +342,11 @@ class LocalWorkspaceRepository implements WorkspaceRepository {
         'id': id,
         'reason': reason,
         'before': RecordMutations.read(previous, kind, id),
+        if (kind == ManagedRecordKind.caseRecord)
+          'relatedPayments': previous.payments
+              .where((p) => p.caseId == id)
+              .map((p) => p.toJson())
+              .toList(),
       }),
     );
   }

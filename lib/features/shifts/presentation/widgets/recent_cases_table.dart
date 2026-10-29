@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../cases/presentation/screens/case_details_screen.dart';
+import '../../../../core/widgets/nc_detail_page.dart';
 
-import '../../../../app/cubit/app_cubit.dart';
+import 'package:flutter/material.dart';
+
 import '../../../../core/localization/localization_extensions.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../../../core/widgets/nc_adaptive_table.dart';
@@ -20,7 +21,9 @@ class RecentCasesTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) => NcAdaptiveTable(
     alwaysTable: true,
-    cellBuilder: (row, column, value) => column == 2
+    cellBuilder: (row, column, value) => column == 0
+        ? NcHeroTitle(tag: 'recent-case-${records[row].id}', title: value)
+        : column == 2
         ? NcStatusBadge(records[row].location.name)
         : column == 4
         ? NcStatusBadge(records[row].payment.name)
@@ -47,6 +50,14 @@ class RecentCasesTable extends StatelessWidget {
       ];
     }).toList(),
     emptyLabel: context.t('noCases'),
-    onRowTap: (i) => context.read<AppCubit>().selectCase(records[i].id),
+    onRowTap: (i) => NcDetailPage.open(
+      context,
+      tag: 'recent-case-${records[i].id}',
+      title: records[i].title,
+      child: CaseDetailsScreen(
+        caseId: records[i].id,
+        onBack: () => Navigator.pop(context),
+      ),
+    ),
   );
 }

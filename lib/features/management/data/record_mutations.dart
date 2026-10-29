@@ -1,3 +1,4 @@
+import '../../cases/data/models/case_payment.dart';
 import '../../workspace/data/models/workspace_snapshot.dart';
 import '../../workspace/data/repositories/workspace_repository.dart';
 import '../../cases/data/models/case_record.dart';
@@ -17,6 +18,8 @@ abstract final class RecordMutations {
   ) {
     Map<String, dynamic>? result;
     switch (kind) {
+      case ManagedRecordKind.caseReceipt:
+        result = data.payments.where((p) => p.id == id).firstOrNull?.toJson();
       case ManagedRecordKind.caseRecord:
         result = data.cases.where((x) => x.id == id).firstOrNull?.toJson();
       case ManagedRecordKind.nursing:
@@ -59,14 +62,32 @@ abstract final class RecordMutations {
         if (!data.procedures.any((p) => p.id == value.procedureId)) {
           throw const WorkspaceException('invalidProcedure');
         }
-        final shift = data.shifts
-            .where((s) => s.id == value.shiftId)
-            .firstOrNull;
-        if (shift == null || !shift.memberIds.contains(value.staffId)) {
-          throw const WorkspaceException('staffNotInShift');
+        if (!data.staff.any((n) => n.id == value.staffId)) {
+          throw const WorkspaceException('unknownStaff');
+        }
+        if (value.amountMinor < 0 || data.paidFor(value) > value.invoiceMinor) {
+          throw const WorkspaceException('invalidPaymentAmount');
         }
         return data.copyWith(
           cases: data.cases.map((x) => x.id == id ? value : x).toList(),
+        );
+      case ManagedRecordKind.caseReceipt:
+        json['caseId'] = before['caseId'];
+        final payment = CasePayment.fromJson(json);
+        final record = data.cases
+            .where((c) => c.id == payment.caseId)
+            .firstOrNull;
+        if (record == null) throw const WorkspaceException('recordNotFound');
+        final old = data.payments.firstWhere((p) => p.id == id);
+        if (payment.amountMinor <= 0 ||
+            payment.amountMinor > data.remainingFor(record) + old.amountMinor) {
+          throw const WorkspaceException('invalidPaymentAmount');
+        }
+        if (!data.staff.any((n) => n.id == payment.staffId)) {
+          throw const WorkspaceException('unknownStaff');
+        }
+        return data.copyWith(
+          payments: data.payments.map((p) => p.id == id ? payment : p).toList(),
         );
       case ManagedRecordKind.nursing:
         final value = NursingMember.fromJson(json);
@@ -96,6 +117,9 @@ abstract final class RecordMutations {
       case ManagedRecordKind.supply:
         if (fields.containsKey('ar')) json['en'] = fields['ar'];
         final value = SupplyItem.fromJson(json);
+        if (value.priceMinor < 0) {
+          throw const WorkspaceException('invalidAmount');
+        }
         if (value.nameAr.trim().isEmpty || value.nameEn.trim().isEmpty) {
           throw const WorkspaceException('requiredField');
         }
@@ -105,6 +129,10 @@ abstract final class RecordMutations {
       case ManagedRecordKind.movement:
         json['shift'] = before['shift'];
         final value = CashMovement.fromJson(json);
+        if (value.kind == CashKind.externalAdvance &&
+            value.recipient.trim().isEmpty) {
+          throw const WorkspaceException('recipientRequired');
+        }
         if (!data.staff.any((n) => n.id == value.staffId)) {
           throw const WorkspaceException('unknownStaff');
         }
@@ -113,14 +141,6 @@ abstract final class RecordMutations {
         }
         if (value.reason.trim().isEmpty) {
           throw const WorkspaceException('requiredField');
-        }
-        if (value.kind != CashKind.advance &&
-            value.kind != CashKind.award &&
-            !data.shifts.any(
-              (s) =>
-                  s.id == value.shiftId && s.memberIds.contains(value.staffId),
-            )) {
-          throw const WorkspaceException('staffNotInShift');
         }
         return data.copyWith(
           movements: data.movements.map((x) => x.id == id ? value : x).toList(),
@@ -152,6 +172,10 @@ abstract final class RecordMutations {
     return switch (kind) {
       ManagedRecordKind.caseRecord => data.copyWith(
         cases: data.cases.where((x) => x.id != id).toList(),
+        payments: data.payments.where((p) => p.caseId != id).toList(),
+      ),
+      ManagedRecordKind.caseReceipt => data.copyWith(
+        payments: data.payments.where((p) => p.id != id).toList(),
       ),
       ManagedRecordKind.nursing => data.copyWith(
         staff: data.staff

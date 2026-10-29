@@ -8,6 +8,7 @@ import '../../data/managed_record_kind.dart';
 import '../models/record_editor_specs.dart';
 import 'record_editor_dialog.dart';
 import 'delete_record_dialog.dart';
+import '../../../cases/presentation/widgets/add_case_dialog.dart';
 
 class RecordActions extends StatelessWidget {
   const RecordActions({super.key, required this.kind, required this.id});
@@ -40,6 +41,16 @@ class RecordActions extends StatelessWidget {
 
   Future<void> _open(BuildContext context, String action) async {
     if (!context.read<AppCubit>().state.managerUnlocked) return;
+    if (action == 'edit' && kind == ManagedRecordKind.caseRecord) {
+      final record = context
+          .read<WorkspaceCubit>()
+          .state
+          .cases
+          .where((c) => c.id == id)
+          .firstOrNull;
+      if (record != null) await AddCaseDialog.open(context, initial: record);
+      return;
+    }
     final spec = RecordEditorSpecs.create(
       context,
       context.read<WorkspaceCubit>().state,

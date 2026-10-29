@@ -15,6 +15,9 @@ extension AppFormatters on BuildContext {
   String date(DateTime value) =>
       DateFormat.yMMMd(Localizations.localeOf(this).languageCode)
           .format(CenterClock.local(value));
+  String shortDate(DateTime value) =>
+      DateFormat.yMd(Localizations.localeOf(this).languageCode)
+          .format(CenterClock.local(value));
   String time(DateTime value) =>
       DateFormat.jm(Localizations.localeOf(this).languageCode)
           .format(CenterClock.local(value));

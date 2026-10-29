@@ -63,9 +63,9 @@ class _SplashScreenState extends State<SplashScreen>
               const SizedBox(height: 24),
               FadeTransition(
                 opacity: reveal,
-                child: const Text(
-                  'NewCare',
-                  style: TextStyle(
+                child: Text(
+                  context.t('brandName'),
+                  style: const TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.w700,
                     color: AppColors.navy,
@@ -75,9 +75,9 @@ class _SplashScreenState extends State<SplashScreen>
               const SizedBox(height: 4),
               FadeTransition(
                 opacity: reveal,
-                child: const Text(
-                  'NURSING CARE SERVICES',
-                  style: TextStyle(
+                child: Text(
+                  context.t('nursingCareServices'),
+                  style: const TextStyle(
                     fontSize: 10,
                     letterSpacing: 1.5,
                     color: AppColors.teal,

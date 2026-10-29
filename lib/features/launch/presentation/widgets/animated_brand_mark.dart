@@ -1,3 +1,5 @@
+import '../../../../core/localization/localization_extensions.dart';
+
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
@@ -41,7 +43,7 @@ class AnimatedBrandMark extends StatelessWidget {
             child: Image.asset(
               'assets/branding/newcare-icon.png',
               fit: BoxFit.contain,
-              semanticLabel: 'NewCare',
+              semanticLabel: context.t('brandName'),
             ),
           ),
         ),

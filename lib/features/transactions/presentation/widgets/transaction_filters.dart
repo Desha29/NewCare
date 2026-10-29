@@ -49,11 +49,8 @@ class TransactionFilters extends StatelessWidget {
                       value: 'all',
                       child: Text(context.t('allTransactions')),
                     ),
-                    for (final k in TransactionKind.values)
-                      DropdownMenuItem(
-                        value: k.name,
-                        child: Text(context.t(k.name)),
-                      ),
+                    for (final k in TransactionEntry.categoryKeys)
+                      DropdownMenuItem(value: k, child: Text(context.t(k))),
                   ],
                   onChanged: (v) => onKind(v!),
                 ),

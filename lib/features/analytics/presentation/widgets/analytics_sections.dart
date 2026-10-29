@@ -44,7 +44,19 @@ class DailyRevenueChart extends StatelessWidget {
                   d.day == day.day;
             })
             .fold<int>(0, (v, c) => v + c.amountMinor);
-        return ChartValue(DateFormat('EEE', locale).format(day), sum / 100);
+        return ChartValue(
+          DateFormat('EEE', locale).format(day),
+          (sum +
+                  summary.payments
+                      .where((p) {
+                        final d = CenterClock.local(p.paidAt);
+                        return d.year == day.year &&
+                            d.month == day.month &&
+                            d.day == day.day;
+                      })
+                      .fold<int>(0, (s, p) => s + p.amountMinor)) /
+              100,
+        );
       }),
     );
   }

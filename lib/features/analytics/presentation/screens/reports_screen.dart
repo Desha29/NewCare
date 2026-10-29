@@ -1,3 +1,6 @@
+import '../../../transactions/presentation/widgets/transaction_labels.dart';
+import '../../../transactions/data/models/transaction_entry.dart';
+
 import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -36,16 +39,16 @@ class ReportsScreen extends StatelessWidget {
           ],
         ),
         NcBarChart(
-          title: context.t('totalRevenue'),
+          title: context.t('caseCount'),
           values: data.procedures
               .take(5)
               .map(
                 (p) => ChartValue(
                   p.name(Localizations.localeOf(context).languageCode),
                   summary.cases
-                          .where((c) => c.procedureId == p.id)
-                          .fold<int>(0, (v, c) => v + c.amountMinor) /
-                      100,
+                      .where((c) => c.effectiveProcedureIds.contains(p.id))
+                      .length
+                      .toDouble(),
                 ),
               )
               .toList(),
@@ -58,27 +61,34 @@ class ReportsScreen extends StatelessWidget {
             icon: Icons.download_outlined,
             secondary: true,
             onPressed: () async {
+              final range = PeriodFilter.range(context);
+              final entries = TransactionEntry.forRange(
+                data,
+                range.start,
+                range.end,
+              );
               final rows = [
                 [
-                  context.t('caseTitle'),
-                  context.t('caseOwner'),
-                  context.t('amount'),
+                  context.t('dateAndTime'),
+                  context.t('movementKind'),
+                  context.t('reason'),
+                  context.t('nursing'),
                   context.t('paymentMethod'),
-                  context.t('time'),
+                  context.t('amount'),
                 ],
-                ...summary.cases.map(
-                  (c) => [
-                    c.title,
+                for (final entry in entries)
+                  [
+                    '${context.date(entry.at)} · ${context.time(entry.at)}',
+                    transactionCategory(context, entry),
+                    transactionDescription(context, entry),
                     data.staff
-                            .where((n) => n.id == c.staffId)
+                            .where((n) => n.id == entry.staffId)
                             .firstOrNull
                             ?.name ??
-                        c.staffId,
-                    (c.amountMinor / 100).toStringAsFixed(2),
-                    context.t(c.payment.name),
-                    c.createdAt.toIso8601String(),
+                        '',
+                    context.t(entry.payment.name),
+                    (entry.signedMinor / 100).toStringAsFixed(2),
                   ],
-                ),
               ];
               try {
                 await FileSaver.instance.saveFile(

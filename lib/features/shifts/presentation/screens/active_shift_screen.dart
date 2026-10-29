@@ -6,13 +6,13 @@ import '../../../../app/navigation/app_page.dart';
 import '../../../../core/localization/localization_extensions.dart';
 import '../../../../core/widgets/nc_button.dart';
 import '../../../../core/widgets/nc_card.dart';
-import '../../../../core/widgets/nc_empty.dart';
 import '../../../../core/widgets/nc_notice.dart';
 import '../../../../core/widgets/nc_page_column.dart';
 import '../widgets/shift_nursing_grid.dart';
 import '../widgets/recent_cases_table.dart';
 import '../../../cases/presentation/widgets/add_case_dialog.dart';
 import '../../../workspace/presentation/cubit/workspace_cubit.dart';
+import 'start_shift_screen.dart';
 
 class ActiveShiftScreen extends StatelessWidget {
   const ActiveShiftScreen({super.key, this.localQueue = false});
@@ -22,15 +22,7 @@ class ActiveShiftScreen extends StatelessWidget {
     final data = context.watch<WorkspaceCubit>().state;
     final shift = data.activeShift;
     final app = context.read<AppCubit>();
-    if (shift == null) {
-      return NcEmpty(
-        message: context.t('noShift'),
-        action: NcButton(
-          label: context.t('startShift'),
-          onPressed: () => app.navigate(AppPage.startShift),
-        ),
-      );
-    }
+    if (shift == null) return const StartShiftScreen();
     final records = data.cases.where((c) => c.shiftId == shift.id).toList()
       ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
     return NcPageColumn(

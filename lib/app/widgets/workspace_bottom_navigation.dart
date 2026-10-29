@@ -1,3 +1,5 @@
+import '../navigation/navigation_label.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -25,7 +27,9 @@ class WorkspaceBottomNavigation extends StatelessWidget {
             AppPage.cashMovement,
             AppPage.login,
           ];
-    final index = pages.indexOf(state.page);
+    final index = pages.indexOf(
+      state.page.isCaseBook ? AppPage.shiftCases : state.page,
+    );
     return NavigationBar(
       selectedIndex: index < 0 ? 0 : index,
       onDestinationSelected: (i) => context.read<AppCubit>().navigate(pages[i]),
@@ -38,7 +42,9 @@ class WorkspaceBottomNavigation extends StatelessWidget {
               p == AppPage.login ? Icons.lock_outline : pageIcon(p),
               size: 20,
             ),
-            label: context.t(p == AppPage.login ? 'manager' : p.labelKey),
+            label: p == AppPage.login
+                ? context.t('manager')
+                : context.pageLabel(p),
           ),
       ],
     );

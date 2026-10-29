@@ -44,12 +44,12 @@ void main() {
         DateTime(2026, 10, 28),
         DateTime(2026, 10, 28),
       );
-      expect(rows.length, 6);
+      expect(rows.length, 7);
       final totals = TransactionTotals(rows);
       expect(totals.cashIn, 11000);
-      expect(totals.cashOut, 3000);
+      expect(totals.cashOut, 4000);
       expect(totals.walletIn, 10000);
-      expect(totals.netCash, 8000);
+      expect(totals.netCash, 7000);
       expect(
         rows.singleWhere((r) => r.kind == TransactionKind.advance).signedMinor,
         -1000,

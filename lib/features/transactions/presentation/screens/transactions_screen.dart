@@ -1,3 +1,5 @@
+import '../widgets/transaction_labels.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -34,12 +36,12 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     ) {
       final nurse =
           data.staff.where((n) => n.id == r.staffId).firstOrNull?.name ?? '';
-      return (kind == 'all' || r.kind.name == kind) &&
+      return (kind == 'all' || r.categoryKey == kind) &&
           (payment == 'all' || r.payment.name == payment) &&
           (member == 'all' || r.staffId == member) &&
-          '${r.description} $nurse ${r.id}'.toLowerCase().contains(
-            query.trim().toLowerCase(),
-          );
+          '${transactionDescription(context, r)} $nurse ${r.id}'
+              .toLowerCase()
+              .contains(query.trim().toLowerCase());
     }).toList();
     final totals = TransactionTotals(rows);
     return NcPageColumn(
@@ -85,8 +87,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           title: context.t('transactionBreakdown'),
           subtitle: context.t('currency'),
           values: [
-            for (final k in TransactionKind.values)
-              ChartValue(context.t(k.name), totals.amountFor(k) / 100),
+            for (final k in TransactionEntry.categoryKeys)
+              ChartValue(context.t(k), totals.amountForCategory(k) / 100),
           ],
         ),
         TransactionTable(rows: rows, staff: data.staff),

@@ -1,3 +1,6 @@
+import 'case_details_screen.dart';
+import '../../../../core/widgets/nc_detail_page.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -43,7 +46,7 @@ class _CaseHistoryScreenState extends State<CaseHistoryScreen> {
     final range = PeriodFilter.range(context);
     final source = widget.manager
         ? ReportSummary.forRange(data, range.start, range.end).cases
-        : data.cases.where((c) => c.shiftId == data.activeShift?.id);
+        : ReportSummary.forRange(data, range.start, range.end).cases;
     final query = search.text.toLowerCase();
     final records = source.where((c) {
       final member = data.staff.where((n) => n.id == c.staffId).firstOrNull;
@@ -109,7 +112,12 @@ class _CaseHistoryScreenState extends State<CaseHistoryScreen> {
             if (!cards)
               NcAdaptiveTable(
                 alwaysTable: true,
-                cellBuilder: (row, column, value) => column == 2
+                cellBuilder: (row, column, value) => column == 0
+                    ? NcHeroTitle(
+                        tag: 'history-case-${records[row].id}',
+                        title: value,
+                      )
+                    : column == 2
                     ? NcStatusBadge(records[row].location.name)
                     : column == 4
                     ? NcStatusBadge(records[row].payment.name)
@@ -118,7 +126,7 @@ class _CaseHistoryScreenState extends State<CaseHistoryScreen> {
                   context.t('caseTitle'),
                   context.t('caseOwner'),
                   context.t('caseType'),
-                  context.t('amount'),
+                  context.t('paidTotal'),
                   context.t('paymentMethod'),
                   context.t('time'),
                 ],
@@ -130,7 +138,7 @@ class _CaseHistoryScreenState extends State<CaseHistoryScreen> {
                     c.title,
                     '${n?.name ?? ''}${n?.isManager ?? false ? ' · ${context.t('manager')}' : ''}',
                     context.t(c.location.name),
-                    context.money(c.amountMinor),
+                    context.money(data.paidFor(c)),
                     context.t(c.payment.name),
                     context.time(c.createdAt),
                   ];
@@ -142,8 +150,15 @@ class _CaseHistoryScreenState extends State<CaseHistoryScreen> {
                         kind: ManagedRecordKind.caseRecord,
                         id: records[i].id,
                       ),
-                onRowTap: (i) =>
-                    context.read<AppCubit>().selectCase(records[i].id),
+                onRowTap: (i) => NcDetailPage.open(
+                  context,
+                  tag: 'history-case-${records[i].id}',
+                  title: records[i].title,
+                  child: CaseDetailsScreen(
+                    caseId: records[i].id,
+                    onBack: () => Navigator.pop(context),
+                  ),
+                ),
               )
             else
               CaseCardGrid(

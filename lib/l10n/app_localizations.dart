@@ -197,13 +197,13 @@ abstract class AppLocalizations {
   /// No description provided for @catalogue.
   ///
   /// In en, this message translates to:
-  /// **'Procedures & supplies'**
+  /// **'Procedures'**
   String get catalogue;
 
   /// No description provided for @permissions.
   ///
   /// In en, this message translates to:
-  /// **'Settings & permissions'**
+  /// **'Settings'**
   String get permissions;
 
   /// No description provided for @reports.
@@ -569,7 +569,7 @@ abstract class AppLocalizations {
   /// No description provided for @returnShift.
   ///
   /// In en, this message translates to:
-  /// **'Return to current shift'**
+  /// **'Return to case registration'**
   String get returnShift;
 
   /// No description provided for @addInside.
@@ -689,7 +689,7 @@ abstract class AppLocalizations {
   /// No description provided for @expense.
   ///
   /// In en, this message translates to:
-  /// **'Expense'**
+  /// **'Outgoing'**
   String get expense;
 
   /// No description provided for @advance.
@@ -743,7 +743,7 @@ abstract class AppLocalizations {
   /// No description provided for @expenses.
   ///
   /// In en, this message translates to:
-  /// **'Expenses'**
+  /// **'Outgoings'**
   String get expenses;
 
   /// No description provided for @dailyRevenue.
@@ -1265,7 +1265,7 @@ abstract class AppLocalizations {
   /// No description provided for @cashFormula.
   ///
   /// In en, this message translates to:
-  /// **'Opening + cash payments + income − expenses − advances'**
+  /// **'Opening cash + cash receipts + income − outgoings − advances − awards + cash count differences'**
   String get cashFormula;
 
   /// No description provided for @showSetup.
@@ -1679,13 +1679,13 @@ abstract class AppLocalizations {
   /// No description provided for @nursingAccess.
   ///
   /// In en, this message translates to:
-  /// **'Add cases, expenses and advances; start, end and hand over shifts.'**
+  /// **'Record cases, receive case payments and add outgoings and advances.'**
   String get nursingAccess;
 
   /// No description provided for @managerAccess.
   ///
   /// In en, this message translates to:
-  /// **'Manage nursing, salaries, catalogue and records; view totals and reports. Managers may also work on a shift.'**
+  /// **'Manage nursing staff, salaries, procedures, records and the drawer, and view totals and reports. Managers may record their own cases.'**
   String get managerAccess;
 
   /// No description provided for @shiftOpen.
@@ -1753,6 +1753,786 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Monthly salary updated'**
   String get salaryUpdated;
+
+  /// No description provided for @ended.
+  ///
+  /// In en, this message translates to:
+  /// **'Ended'**
+  String get ended;
+
+  /// No description provided for @shiftTiming.
+  ///
+  /// In en, this message translates to:
+  /// **'Shift times'**
+  String get shiftTiming;
+
+  /// No description provided for @checkDrawerFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Check the drawer before closing'**
+  String get checkDrawerFirst;
+
+  /// No description provided for @checkDrawerExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Select who counted the drawer, enter the actual cash, then confirm the review before closing the shift.'**
+  String get checkDrawerExplanation;
+
+  /// No description provided for @drawerReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Drawer review'**
+  String get drawerReview;
+
+  /// No description provided for @drawerCheckedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Checked and closed by'**
+  String get drawerCheckedBy;
+
+  /// No description provided for @confirmDrawerReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm drawer count'**
+  String get confirmDrawerReview;
+
+  /// No description provided for @drawerReviewDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Drawer review confirmed. You can close this shift.'**
+  String get drawerReviewDone;
+
+  /// No description provided for @drawerChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Drawer data changed. Count and confirm it again.'**
+  String get drawerChanged;
+
+  /// No description provided for @lastShiftClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous shift closure'**
+  String get lastShiftClosed;
+
+  /// No description provided for @drawerUnchecked.
+  ///
+  /// In en, this message translates to:
+  /// **'Not checked'**
+  String get drawerUnchecked;
+
+  /// No description provided for @drawerMatched.
+  ///
+  /// In en, this message translates to:
+  /// **'Matched'**
+  String get drawerMatched;
+
+  /// No description provided for @drawerShortage.
+  ///
+  /// In en, this message translates to:
+  /// **'Shortage'**
+  String get drawerShortage;
+
+  /// No description provided for @drawerExcess.
+  ///
+  /// In en, this message translates to:
+  /// **'Excess'**
+  String get drawerExcess;
+
+  /// No description provided for @proceduresUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Procedures performed'**
+  String get proceduresUsed;
+
+  /// No description provided for @selectedSupplies.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical supplies'**
+  String get selectedSupplies;
+
+  /// No description provided for @caseTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Calculated total'**
+  String get caseTotal;
+
+  /// No description provided for @procedureTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Procedures subtotal'**
+  String get procedureTotal;
+
+  /// No description provided for @supplyTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Supplies subtotal'**
+  String get supplyTotal;
+
+  /// No description provided for @priceBreakdown.
+  ///
+  /// In en, this message translates to:
+  /// **'Total and payment'**
+  String get priceBreakdown;
+
+  /// No description provided for @selectItems.
+  ///
+  /// In en, this message translates to:
+  /// **'Select items'**
+  String get selectItems;
+
+  /// No description provided for @noPricedSupplies.
+  ///
+  /// In en, this message translates to:
+  /// **'No supplies in the catalogue'**
+  String get noPricedSupplies;
+
+  /// No description provided for @chooseDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a day'**
+  String get chooseDay;
+
+  /// No description provided for @caseFormSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select procedures and enter the case total and amount paid; the remaining balance is calculated automatically.'**
+  String get caseFormSubtitle;
+
+  /// No description provided for @procedureRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Select at least one procedure'**
+  String get procedureRequired;
+
+  /// No description provided for @itemName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get itemName;
+
+  /// No description provided for @price.
+  ///
+  /// In en, this message translates to:
+  /// **'Price'**
+  String get price;
+
+  /// No description provided for @supplyNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Cannula'**
+  String get supplyNameHint;
+
+  /// No description provided for @procedureNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. IV infusion'**
+  String get procedureNameHint;
+
+  /// No description provided for @priceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the price in Egyptian pounds'**
+  String get priceHint;
+
+  /// No description provided for @shiftDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Shift details'**
+  String get shiftDetails;
+
+  /// No description provided for @allPayments.
+  ///
+  /// In en, this message translates to:
+  /// **'All payment methods'**
+  String get allPayments;
+
+  /// No description provided for @translationUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Unavailable'**
+  String get translationUnavailable;
+
+  /// No description provided for @caseUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Case updated'**
+  String get caseUpdated;
+
+  /// No description provided for @brandName.
+  ///
+  /// In en, this message translates to:
+  /// **'NewCare'**
+  String get brandName;
+
+  /// No description provided for @nursingCareServices.
+  ///
+  /// In en, this message translates to:
+  /// **'Nursing care services'**
+  String get nursingCareServices;
+
+  /// No description provided for @caseRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'Record cases'**
+  String get caseRegister;
+
+  /// No description provided for @caseBook.
+  ///
+  /// In en, this message translates to:
+  /// **'Case book'**
+  String get caseBook;
+
+  /// No description provided for @catalogueTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Procedure price subtotal'**
+  String get catalogueTotal;
+
+  /// No description provided for @agreedPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Case total'**
+  String get agreedPrice;
+
+  /// No description provided for @paidNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid at registration'**
+  String get paidNow;
+
+  /// No description provided for @remainingAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining'**
+  String get remainingAmount;
+
+  /// No description provided for @paidTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total paid'**
+  String get paidTotal;
+
+  /// No description provided for @laterPayments.
+  ///
+  /// In en, this message translates to:
+  /// **'Recorded subsequent payments'**
+  String get laterPayments;
+
+  /// No description provided for @paymentHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Case payment history'**
+  String get paymentHistory;
+
+  /// No description provided for @initialPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Initial payment'**
+  String get initialPayment;
+
+  /// No description provided for @receivePayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive payment'**
+  String get receivePayment;
+
+  /// No description provided for @paymentAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment amount'**
+  String get paymentAmount;
+
+  /// No description provided for @savePayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Save payment'**
+  String get savePayment;
+
+  /// No description provided for @casePaymentAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Case payment received'**
+  String get casePaymentAdded;
+
+  /// No description provided for @invalidPaymentAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid amount within the outstanding balance; the agreed price cannot be less than receipts'**
+  String get invalidPaymentAmount;
+
+  /// No description provided for @searchCatalogue.
+  ///
+  /// In en, this message translates to:
+  /// **'Search and select a procedure…'**
+  String get searchCatalogue;
+
+  /// No description provided for @caseReference.
+  ///
+  /// In en, this message translates to:
+  /// **'Case reference'**
+  String get caseReference;
+
+  /// No description provided for @searchCaseBook.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by procedure, address, nursing staff or case reference'**
+  String get searchCaseBook;
+
+  /// No description provided for @outstandingCases.
+  ///
+  /// In en, this message translates to:
+  /// **'Outstanding cases'**
+  String get outstandingCases;
+
+  /// No description provided for @outstandingAllDates.
+  ///
+  /// In en, this message translates to:
+  /// **'Outstanding cases from all dates'**
+  String get outstandingAllDates;
+
+  /// No description provided for @drawerBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Current drawer balance'**
+  String get drawerBalance;
+
+  /// No description provided for @payInFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay in full'**
+  String get payInFull;
+
+  /// No description provided for @externalAdvance.
+  ///
+  /// In en, this message translates to:
+  /// **'Advance'**
+  String get externalAdvance;
+
+  /// No description provided for @centerExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Center outgoings'**
+  String get centerExpense;
+
+  /// No description provided for @externalRecipient.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipient name'**
+  String get externalRecipient;
+
+  /// No description provided for @recipientRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the recipient name'**
+  String get recipientRequired;
+
+  /// No description provided for @drawerHandover.
+  ///
+  /// In en, this message translates to:
+  /// **'Hand over drawer'**
+  String get drawerHandover;
+
+  /// No description provided for @drawerHandoverNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Count the cash and select the sender and receiver. Count differences are recorded separately and are not revenue or outgoings.'**
+  String get drawerHandoverNote;
+
+  /// No description provided for @drawerFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Handed over by'**
+  String get drawerFrom;
+
+  /// No description provided for @drawerTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Received by'**
+  String get drawerTo;
+
+  /// No description provided for @drawerHolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Current drawer holder'**
+  String get drawerHolder;
+
+  /// No description provided for @drawerHandoverHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Drawer custody history'**
+  String get drawerHandoverHistory;
+
+  /// No description provided for @confirmDrawerHandover.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm drawer handover'**
+  String get confirmDrawerHandover;
+
+  /// No description provided for @handoverDifferenceReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes and reason for a shortage or excess'**
+  String get handoverDifferenceReason;
+
+  /// No description provided for @invalidHandoverStaff.
+  ///
+  /// In en, this message translates to:
+  /// **'The current drawer holder must hand over to a different person'**
+  String get invalidHandoverStaff;
+
+  /// No description provided for @drawerHandedOver.
+  ///
+  /// In en, this message translates to:
+  /// **'Drawer custody handed over'**
+  String get drawerHandedOver;
+
+  /// No description provided for @refreshDrawer.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh count baseline'**
+  String get refreshDrawer;
+
+  /// No description provided for @editCasePrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit case total'**
+  String get editCasePrice;
+
+  /// No description provided for @priceBelowPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'The price cannot be less than the amount already received'**
+  String get priceBelowPaid;
+
+  /// No description provided for @priceEditNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Changing the case total does not change recorded receipts.'**
+  String get priceEditNote;
+
+  /// No description provided for @casePriceUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Case price updated'**
+  String get casePriceUpdated;
+
+  /// No description provided for @notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get notes;
+
+  /// No description provided for @personOutgoings.
+  ///
+  /// In en, this message translates to:
+  /// **'Person outgoings'**
+  String get personOutgoings;
+
+  /// No description provided for @recordOutgoing.
+  ///
+  /// In en, this message translates to:
+  /// **'Record outgoing'**
+  String get recordOutgoing;
+
+  /// No description provided for @outgoings.
+  ///
+  /// In en, this message translates to:
+  /// **'Outgoings'**
+  String get outgoings;
+
+  /// No description provided for @saveOutgoing.
+  ///
+  /// In en, this message translates to:
+  /// **'Save outgoing'**
+  String get saveOutgoing;
+
+  /// No description provided for @personPaymentPurpose.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment purpose'**
+  String get personPaymentPurpose;
+
+  /// No description provided for @otherPersonOutgoing.
+  ///
+  /// In en, this message translates to:
+  /// **'Other payment'**
+  String get otherPersonOutgoing;
+
+  /// No description provided for @otherPerson.
+  ///
+  /// In en, this message translates to:
+  /// **'Other person'**
+  String get otherPerson;
+
+  /// No description provided for @personName.
+  ///
+  /// In en, this message translates to:
+  /// **'Person name'**
+  String get personName;
+
+  /// No description provided for @personNursingRecipient.
+  ///
+  /// In en, this message translates to:
+  /// **'Nursing recipient'**
+  String get personNursingRecipient;
+
+  /// No description provided for @outgoingDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get outgoingDescription;
+
+  /// No description provided for @centerOutgoingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Rent, electricity or purchases'**
+  String get centerOutgoingHint;
+
+  /// No description provided for @personOutgoingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Fees or a refund'**
+  String get personOutgoingHint;
+
+  /// No description provided for @incomeDescriptionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. A cash deposit into the drawer'**
+  String get incomeDescriptionHint;
+
+  /// No description provided for @personOutgoingHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the payment purpose and recipient, then enter the amount. Advances are part of person outgoings.'**
+  String get personOutgoingHelp;
+
+  /// No description provided for @centerOutgoingHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'For rent, electricity, purchases and other center outgoings.'**
+  String get centerOutgoingHelp;
+
+  /// No description provided for @noOtherDrawerReceiver.
+  ///
+  /// In en, this message translates to:
+  /// **'Another person is needed to receive the drawer. The sender cannot receive it from themselves.'**
+  String get noOtherDrawerReceiver;
+
+  /// No description provided for @openNavigation.
+  ///
+  /// In en, this message translates to:
+  /// **'Open navigation'**
+  String get openNavigation;
+
+  /// No description provided for @closeNavigation.
+  ///
+  /// In en, this message translates to:
+  /// **'Close navigation'**
+  String get closeNavigation;
+
+  /// No description provided for @hideSidebar.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide sidebar'**
+  String get hideSidebar;
+
+  /// No description provided for @showSidebar.
+  ///
+  /// In en, this message translates to:
+  /// **'Show sidebar'**
+  String get showSidebar;
+
+  /// No description provided for @devicePreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Device preview'**
+  String get devicePreview;
+
+  /// No description provided for @previewDebugOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview controls are available in debug mode only'**
+  String get previewDebugOnly;
+
+  /// No description provided for @previewDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Device and screen size'**
+  String get previewDevice;
+
+  /// No description provided for @previewPlatform.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform'**
+  String get previewPlatform;
+
+  /// No description provided for @previewTextScale.
+  ///
+  /// In en, this message translates to:
+  /// **'Text scale'**
+  String get previewTextScale;
+
+  /// No description provided for @previewRotate.
+  ///
+  /// In en, this message translates to:
+  /// **'Rotate screen'**
+  String get previewRotate;
+
+  /// No description provided for @previewKeyboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle keyboard'**
+  String get previewKeyboard;
+
+  /// No description provided for @previewReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Actual device'**
+  String get previewReset;
+
+  /// No description provided for @previewFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not change preview'**
+  String get previewFailed;
+
+  /// No description provided for @squareMonitor.
+  ///
+  /// In en, this message translates to:
+  /// **'Square monitor 1024 × 1024'**
+  String get squareMonitor;
+
+  /// No description provided for @platformandroid.
+  ///
+  /// In en, this message translates to:
+  /// **'Android'**
+  String get platformandroid;
+
+  /// No description provided for @platformiOS.
+  ///
+  /// In en, this message translates to:
+  /// **'iOS'**
+  String get platformiOS;
+
+  /// No description provided for @platformwindows.
+  ///
+  /// In en, this message translates to:
+  /// **'Windows'**
+  String get platformwindows;
+
+  /// No description provided for @platformmacOS.
+  ///
+  /// In en, this message translates to:
+  /// **'macOS'**
+  String get platformmacOS;
+
+  /// No description provided for @platformlinux.
+  ///
+  /// In en, this message translates to:
+  /// **'Linux'**
+  String get platformlinux;
+
+  /// No description provided for @platformfuchsia.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuchsia'**
+  String get platformfuchsia;
+
+  /// No description provided for @changePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Change password'**
+  String get changePassword;
+
+  /// No description provided for @currentPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Current password'**
+  String get currentPassword;
+
+  /// No description provided for @newPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'New password'**
+  String get newPassword;
+
+  /// No description provided for @passwordTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Use at least 8 characters'**
+  String get passwordTooShort;
+
+  /// No description provided for @passwordUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Password updated'**
+  String get passwordUpdated;
+
+  /// No description provided for @settingsSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save changes. Try again.'**
+  String get settingsSaveFailed;
+
+  /// No description provided for @navigationLabels.
+  ///
+  /// In en, this message translates to:
+  /// **'Navigation section names'**
+  String get navigationLabels;
+
+  /// No description provided for @navigationLabelsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit section names for the current language. Leave a field empty to use its original name.'**
+  String get navigationLabelsHelp;
+
+  /// No description provided for @restoreNavigationLabels.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore original names'**
+  String get restoreNavigationLabels;
+
+  /// No description provided for @navigationLabelTooLong.
+  ///
+  /// In en, this message translates to:
+  /// **'Use no more than 40 characters'**
+  String get navigationLabelTooLong;
+
+  /// No description provided for @drawerStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Drawer status'**
+  String get drawerStatus;
+
+  /// No description provided for @cashDrawerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The balance updates automatically with cash receipts and outgoings. Wallet payments stay outside the drawer.'**
+  String get cashDrawerHint;
+
+  /// No description provided for @unassignedDrawerHolder.
+  ///
+  /// In en, this message translates to:
+  /// **'No custodian assigned yet'**
+  String get unassignedDrawerHolder;
+
+  /// No description provided for @lastDrawerCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Last cash count result'**
+  String get lastDrawerCheck;
+
+  /// No description provided for @allPaymentMethods.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get allPaymentMethods;
+
+  /// No description provided for @caseAddedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Date and time added'**
+  String get caseAddedAt;
 }
 
 class _AppLocalizationsDelegate

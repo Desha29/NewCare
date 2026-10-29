@@ -1,3 +1,5 @@
+import '../../../../core/widgets/nc_detail_page.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -45,10 +47,35 @@ class NursingCards extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                n.name,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w700,
+                              InkWell(
+                                onTap: () => NcDetailPage.open(
+                                  context,
+                                  tag: 'nursing-${n.id}',
+                                  title: n.name,
+                                  child: NcCard(
+                                    children: [
+                                      Text(
+                                        context.t(
+                                          n.isManager ? 'manager' : 'nursing',
+                                        ),
+                                      ),
+                                      Text(
+                                        '${context.t('monthlySalary')}: ${context.money(n.salaryMinor)}',
+                                      ),
+                                      if (n.phone.isNotEmpty) Text(n.phone),
+                                      Text(
+                                        '${context.t('cases')}: ${data.cases.where((c) => c.staffId == n.id).length}',
+                                      ),
+                                      RecordActions(
+                                        kind: ManagedRecordKind.nursing,
+                                        id: n.id,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                child: NcHeroTitle(
+                                  tag: 'nursing-${n.id}',
+                                  title: n.name,
                                 ),
                               ),
                               Text(

@@ -20,7 +20,7 @@ void main() {
       await repo.initialize();
       await tester.pumpWidget(NewCareApp(repository: repo, store: store));
       await tester.pumpAndSettle();
-      expect(find.text('الشيفت الحالي'), findsWidgets);
+      expect(find.text('تسجيل الحالات'), findsWidgets);
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox.shrink());
       await repo.dispose();

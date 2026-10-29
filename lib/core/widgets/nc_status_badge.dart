@@ -7,6 +7,9 @@ class NcStatusBadge extends StatelessWidget {
   const NcStatusBadge(this.value, {super.key});
   final String value;
   static (Color, Color) colors(String value) => switch (value) {
+    'drawerMatched' => (const Color(0xFFE2F3E8), const Color(0xFF216B42)),
+    'drawerShortage' => (AppColors.dangerBg, AppColors.danger),
+    'drawerExcess' => (AppColors.warningBg, AppColors.warning),
     'inside' => (AppColors.tealLight, AppColors.navy),
     'outside' => (const Color(0xFFFFEAD5), const Color(0xFF904309)),
     'cash' => (const Color(0xFFE2F3E8), const Color(0xFF216B42)),

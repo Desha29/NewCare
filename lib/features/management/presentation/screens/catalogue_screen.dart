@@ -1,8 +1,9 @@
+import '../../../../core/widgets/nc_detail_page.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/localization/localization_extensions.dart';
-import '../../../../core/utils/formatters.dart';
 import '../../../../core/widgets/nc_card.dart';
 import '../../../../core/widgets/nc_empty.dart';
 import '../../../../core/widgets/nc_page_column.dart';
@@ -36,18 +37,6 @@ class CatalogueScreen extends StatelessWidget {
                 ),
               ),
             ),
-            NcButton(
-              label: context.t('addSupply'),
-              icon: Icons.add,
-              secondary: true,
-              onPressed: () => ManagementFormDialog.open(
-                context,
-                (dialogContext) => CatalogueEditor(
-                  supply: true,
-                  onSaved: () => Navigator.pop(dialogContext),
-                ),
-              ),
-            ),
           ],
         ),
         NcCard(
@@ -56,32 +45,33 @@ class CatalogueScreen extends StatelessWidget {
             if (data.procedures.isEmpty)
               NcEmpty(message: context.t('emptyCatalogue')),
             NcAdaptiveTable(
-              headers: [context.t('procedure'), context.t('defaultPrice')],
-              rows: procedures
-                  .map((p) => [p.nameAr, context.money(p.priceMinor)])
-                  .toList(),
+              headers: [context.t('procedure')],
+              cellBuilder: (i, column, value) => column == 0
+                  ? NcHeroTitle(
+                      tag: 'procedure-${procedures[i].id}',
+                      title: value,
+                    )
+                  : Text(value),
+              onRowTap: (i) => NcDetailPage.open(
+                context,
+                tag: 'procedure-${procedures[i].id}',
+                title: procedures[i].nameAr,
+                child: NcCard(
+                  children: [
+                    RecordActions(
+                      kind: ManagedRecordKind.procedure,
+                      id: procedures[i].id,
+                    ),
+                  ],
+                ),
+              ),
+              rows: procedures.map((p) => [p.nameAr]).toList(),
               actions: (i) => RecordActions(
                 kind: ManagedRecordKind.procedure,
                 id: procedures[i].id,
               ),
               emptyLabel: context.t('emptyCatalogue'),
             ),
-          ],
-        ),
-        NcCard(
-          title: context.t('supplies'),
-          children: [
-            if (data.supplies.isEmpty) NcEmpty(message: context.t('noResults')),
-            for (final s in data.supplies)
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.inventory_2_outlined),
-                title: Text(s.nameAr),
-                trailing: RecordActions(
-                  kind: ManagedRecordKind.supply,
-                  id: s.id,
-                ),
-              ),
           ],
         ),
       ],

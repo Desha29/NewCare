@@ -1,13 +1,11 @@
+import '../../features/cases/presentation/screens/case_register_screen.dart';
+import '../../features/cases/data/models/case_record.dart';
+import '../../features/drawer/presentation/screens/manager_drawer_screen.dart';
+
 import 'package:flutter/material.dart';
 
-import '../../features/shifts/presentation/screens/start_shift_screen.dart';
-import '../../features/shifts/presentation/screens/active_shift_screen.dart';
-import '../../features/shifts/presentation/screens/end_shift_screen.dart';
-import '../../features/shifts/presentation/screens/join_shift_screen.dart';
-import '../../features/shifts/presentation/screens/handover_screen.dart';
-import '../../features/shifts/presentation/screens/manager_shifts_screen.dart';
 import '../../features/cases/presentation/screens/case_form_screen.dart';
-import '../../features/cases/presentation/screens/case_history_screen.dart';
+import '../../features/cases/presentation/screens/case_book_screen.dart';
 import '../../features/cases/presentation/screens/case_details_screen.dart';
 import '../../features/cases/presentation/screens/saved_screen.dart';
 import '../../features/drawer/presentation/screens/drawer_screen.dart';
@@ -28,23 +26,30 @@ import '../../features/setup/presentation/screens/ready_screen.dart';
 import 'app_page.dart';
 import '../../features/transactions/presentation/screens/transactions_screen.dart';
 
-Widget buildPage(AppPage page) => switch (page) {
-  AppPage.startShift => const StartShiftScreen(),
-  AppPage.activeShift => const ActiveShiftScreen(),
+Widget buildPage(AppPage page, {double availableHeight = 0}) => switch (page) {
+  AppPage.startShift => const CaseRegisterScreen(),
+  AppPage.activeShift => CaseRegisterScreen(availableHeight: availableHeight),
   AppPage.insideCase => const CaseFormScreen(outside: false),
   AppPage.outsideCase ||
   AppPage.validation => const CaseFormScreen(outside: true),
   AppPage.caseDetails => const CaseDetailsScreen(),
   AppPage.cashMovement => const DrawerScreen(),
-  AppPage.endShift => const EndShiftScreen(),
-  AppPage.handover => const HandoverScreen(),
-  AppPage.matched => const HandoverScreen(matched: true),
-  AppPage.offline => const ActiveShiftScreen(localQueue: true),
+  AppPage.endShift => const CaseRegisterScreen(),
+  AppPage.handover => const CaseRegisterScreen(),
+  AppPage.matched => const CaseRegisterScreen(),
+  AppPage.offline => const CaseRegisterScreen(),
   AppPage.saved => const SavedScreen(),
-  AppPage.shiftCases => const CaseHistoryScreen(),
-  AppPage.joinShift => const JoinShiftScreen(),
+  AppPage.shiftCases => const CaseBookScreen(),
+  AppPage.insideCaseBook => const CaseBookScreen(
+    key: ValueKey(CaseLocation.inside),
+  ),
+  AppPage.outsideCaseBook => const CaseBookScreen(
+    key: ValueKey(CaseLocation.outside),
+    location: CaseLocation.outside,
+  ),
+  AppPage.joinShift => const CaseRegisterScreen(),
   AppPage.overview => const OverviewScreen(),
-  AppPage.shifts => const ManagerShiftsScreen(),
+  AppPage.shifts => const ManagerDrawerScreen(),
   AppPage.caseLog => const ManagerCaseLogScreen(),
   AppPage.payroll => const PayrollScreen(),
   AppPage.nursing => const NursingScreen(),

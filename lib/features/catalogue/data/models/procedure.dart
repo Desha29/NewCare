@@ -3,7 +3,7 @@ class Procedure {
     required this.id,
     required this.nameAr,
     required this.nameEn,
-    required this.priceMinor,
+    this.priceMinor = 0,
     this.active = true,
   });
   final String id, nameAr, nameEn;
@@ -21,7 +21,7 @@ class Procedure {
     id: j['id'] as String,
     nameAr: j['ar'] as String,
     nameEn: j['en'] as String,
-    priceMinor: j['price'] as int,
+    priceMinor: j['price'] as int? ?? 0,
     active: j['active'] as bool? ?? true,
   );
 }

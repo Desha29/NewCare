@@ -8,5 +8,19 @@ class ShiftCubit extends ActionCubit {
       execute(() => repository.startShift(member, amount, reason: reason));
   Future<bool> join(String member) =>
       execute(() => repository.joinShift(member));
-  Future<bool> end(String note) => execute(() => repository.endShift(note));
+  Future<bool> end(
+    String note, {
+    required int countedMinor,
+    required String checkedBy,
+    required int verifiedExpectedMinor,
+    String differenceReason = '',
+  }) => execute(
+    () => repository.endShift(
+      note,
+      countedMinor: countedMinor,
+      checkedBy: checkedBy,
+      verifiedExpectedMinor: verifiedExpectedMinor,
+      differenceReason: differenceReason,
+    ),
+  );
 }

@@ -87,7 +87,9 @@ class _ManagerLoginScreenState extends State<ManagerLoginScreen> {
         ),
         NcNotice(
           title: context.t('previewGate'),
-          detail: context.t('previewPassword'),
+          detail: context.watch<AppCubit>().state.customPassword
+              ? null
+              : context.t('previewPassword'),
           tone: NoticeTone.warning,
         ),
         NcButton(

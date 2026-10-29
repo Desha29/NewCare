@@ -15,6 +15,9 @@ class NcAdaptiveTable extends StatelessWidget {
     this.actions,
     this.alwaysTable = false,
     this.cellBuilder,
+    this.dense = false,
+    this.columnWidths,
+    this.headerBuilder,
   });
   final List<String> headers;
   final List<List<String>> rows;
@@ -22,6 +25,9 @@ class NcAdaptiveTable extends StatelessWidget {
   final ValueChanged<int>? onRowTap;
   final Widget Function(int)? actions;
   final bool alwaysTable;
+  final bool dense;
+  final List<double>? columnWidths;
+  final Widget Function(int column, String label)? headerBuilder;
   final Widget Function(int row, int column, String value)? cellBuilder;
 
   @override
@@ -43,10 +49,10 @@ class NcAdaptiveTable extends StatelessWidget {
         );
         final table = DataTable(
           showCheckboxColumn: false,
-          horizontalMargin: 16,
-          columnSpacing: 24,
-          headingRowHeight: 52,
-          dataRowMinHeight: 52,
+          horizontalMargin: dense ? 10 : 16,
+          columnSpacing: dense ? 14 : 24,
+          headingRowHeight: dense ? 38 : 52,
+          dataRowMinHeight: dense ? 40 : 52,
           dataRowMaxHeight: double.infinity,
           headingTextStyle: const TextStyle(
             fontFamily: 'Cairo',
@@ -56,16 +62,23 @@ class NcAdaptiveTable extends StatelessWidget {
           ),
           dataTextStyle: const TextStyle(
             fontFamily: 'Cairo',
-            fontSize: 12,
+            fontSize: 13,
             fontWeight: FontWeight.w700,
             color: AppColors.text,
           ),
           columns: [
-            for (final header in headers)
+            for (var column = 0; column < headers.length; column++)
               DataColumn(
                 label: ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: cellWidth),
-                  child: Text(header, softWrap: true),
+                  constraints: BoxConstraints(
+                    maxWidth: columnWidths?[column] ?? cellWidth,
+                  ),
+                  child: SizedBox(
+                    width: columnWidths?[column],
+                    child:
+                        headerBuilder?.call(column, headers[column]) ??
+                        Text(headers[column], softWrap: true),
+                  ),
                 ),
               ),
             if (actions != null) const DataColumn(label: SizedBox.shrink()),
@@ -78,12 +91,19 @@ class NcAdaptiveTable extends StatelessWidget {
                   for (var j = 0; j < rows[i].length; j++)
                     DataCell(
                       ConstrainedBox(
-                        constraints: BoxConstraints(maxWidth: cellWidth),
+                        constraints: BoxConstraints(
+                          maxWidth: columnWidths?[j] ?? cellWidth,
+                        ),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          child:
-                              cellBuilder?.call(i, j, rows[i][j]) ??
-                              Text(rows[i][j], softWrap: true),
+                          padding: EdgeInsets.symmetric(
+                            vertical: dense ? 5 : 12,
+                          ),
+                          child: SizedBox(
+                            width: columnWidths?[j],
+                            child:
+                                cellBuilder?.call(i, j, rows[i][j]) ??
+                                Text(rows[i][j], softWrap: true),
+                          ),
                         ),
                       ),
                     ),

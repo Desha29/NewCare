@@ -1,3 +1,6 @@
+import '../navigation/navigation_label.dart';
+import 'case_book_navigation_entry.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -11,7 +14,6 @@ const nurseNavigation = [
   AppPage.activeShift,
   AppPage.shiftCases,
   AppPage.cashMovement,
-  AppPage.handover,
 ];
 const managerNavigation = [
   AppPage.overview,
@@ -26,8 +28,11 @@ const managerNavigation = [
   AppPage.permissions,
 ];
 IconData pageIcon(AppPage p) => switch (p) {
-  AppPage.activeShift => Icons.schedule,
-  AppPage.shiftCases || AppPage.caseLog => Icons.folder_open_outlined,
+  AppPage.activeShift => Icons.medical_services_outlined,
+  AppPage.shiftCases ||
+  AppPage.caseLog ||
+  AppPage.insideCaseBook ||
+  AppPage.outsideCaseBook => Icons.folder_open_outlined,
   AppPage.cashMovement || AppPage.shifts => Icons.point_of_sale_outlined,
   AppPage.handover => Icons.swap_horiz,
   AppPage.overview => Icons.bar_chart,
@@ -56,6 +61,15 @@ class WorkspaceSidebar extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              if (onSelected != null)
+                Align(
+                  alignment: AlignmentDirectional.centerEnd,
+                  child: IconButton(
+                    tooltip: context.t('closeNavigation'),
+                    onPressed: onSelected,
+                    icon: const Icon(Icons.close, color: Colors.white),
+                  ),
+                ),
               const NcLogo(dark: true, size: 64),
               const SizedBox(height: 16),
               Text(
@@ -67,52 +81,55 @@ class WorkspaceSidebar extends StatelessWidget {
                 child: ListView(
                   children: [
                     for (final page in items)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 6),
-                        child: Material(
-                          color: state.page == page
-                              ? Colors.white.withValues(alpha: .13)
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(8),
-                          child: InkWell(
-                            onTap: () {
-                              context.read<AppCubit>().navigate(page);
-                              onSelected?.call();
-                            },
+                      if (page == AppPage.shiftCases)
+                        CaseBookNavigationEntry(onSelected: onSelected)
+                      else
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 6),
+                          child: Material(
+                            color: state.page == page
+                                ? Colors.white.withValues(alpha: .13)
+                                : Colors.transparent,
                             borderRadius: BorderRadius.circular(8),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 13,
-                                horizontal: 10,
-                              ),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    pageIcon(page),
-                                    size: 18,
-                                    color: state.page == page
-                                        ? const Color(0xFF80D0DB)
-                                        : Colors.white70,
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Expanded(
-                                    child: Text(
-                                      context.t(page.labelKey),
-                                      style: TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: state.page == page
-                                            ? FontWeight.w700
-                                            : FontWeight.w700,
-                                        color: Colors.white,
+                            child: InkWell(
+                              onTap: () {
+                                context.read<AppCubit>().navigate(page);
+                                onSelected?.call();
+                              },
+                              borderRadius: BorderRadius.circular(8),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 13,
+                                  horizontal: 10,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      pageIcon(page),
+                                      size: 18,
+                                      color: state.page == page
+                                          ? const Color(0xFF80D0DB)
+                                          : Colors.white70,
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: Text(
+                                        context.pageLabel(page),
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: state.page == page
+                                              ? FontWeight.w700
+                                              : FontWeight.w700,
+                                          color: Colors.white,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
                   ],
                 ),
               ),

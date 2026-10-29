@@ -1,3 +1,5 @@
+import '../../../drawer/presentation/widgets/movement_labels.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -5,6 +7,7 @@ import '../../../../core/localization/localization_extensions.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../../../core/widgets/nc_adaptive_table.dart';
 import '../../../../core/widgets/nc_card.dart';
+import '../../../../core/widgets/nc_signed_money.dart';
 import '../../../drawer/data/models/cash_movement.dart';
 import '../../../workspace/presentation/cubit/workspace_cubit.dart';
 import '../../../analytics/data/models/report_summary.dart';
@@ -30,6 +33,8 @@ class CashMovementsPanel extends StatelessWidget {
       title: context.t(onlyAdvances ? 'outstandingAdvances' : 'cashMovement'),
       children: [
         NcAdaptiveTable(
+          cellBuilder: (row, column, value) =>
+              column == 2 ? NcSignedMoney(rows[row].signedMinor) : Text(value),
           headers: [
             context.t('reason'),
             context.t('recordedBy'),
@@ -39,14 +44,14 @@ class CashMovementsPanel extends StatelessWidget {
           rows: rows
               .map(
                 (m) => [
-                  m.reason,
+                  movementDescription(context, m),
                   data.staff
                           .where((n) => n.id == m.staffId)
                           .firstOrNull
                           ?.name ??
                       m.staffId,
                   context.money(m.amountMinor),
-                  context.t(m.kind.name),
+                  movementCategory(context, m),
                 ],
               )
               .toList(),

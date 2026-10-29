@@ -1,3 +1,7 @@
+import '../widgets/case_price_dialog.dart';
+import '../widgets/case_payment_dialog.dart';
+import '../../../../core/widgets/nc_signed_money.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -14,11 +18,13 @@ import '../../../../core/widgets/nc_status_badge.dart';
 import '../../../workspace/presentation/cubit/workspace_cubit.dart';
 
 class CaseDetailsScreen extends StatelessWidget {
-  const CaseDetailsScreen({super.key});
+  const CaseDetailsScreen({super.key, this.caseId, this.onBack});
+  final String? caseId;
+  final VoidCallback? onBack;
   @override
   Widget build(BuildContext context) {
     final data = context.watch<WorkspaceCubit>().state;
-    final id = context.watch<AppCubit>().state.caseId;
+    final id = caseId ?? context.watch<AppCubit>().state.caseId;
     final record = data.cases.where((c) => c.id == id).firstOrNull;
     if (record == null) return NcEmpty(message: context.t('noResults'));
     final staff = data.staff.where((n) => n.id == record.staffId).firstOrNull;
@@ -32,8 +38,9 @@ class CaseDetailsScreen extends StatelessWidget {
       context.t('procedure'):
           proc?.name(Localizations.localeOf(context).languageCode) ??
           record.procedureId,
-      context.t('supplies'): record.supplies.join('\n'),
-      context.t('amount'): context.money(record.amountMinor),
+      context.t('agreedPrice'): context.money(record.invoiceMinor),
+      context.t('paidTotal'): context.money(data.paidFor(record)),
+      context.t('remainingAmount'): context.money(data.remainingFor(record)),
       context.t('paymentMethod'): context.t(record.payment.name),
       context.t(
         'time',
@@ -66,12 +73,52 @@ class CaseDetailsScreen extends StatelessWidget {
               ),
           ],
         ),
+        NcCard(
+          title: context.t('paymentHistory'),
+          children: [
+            NcButton(
+              label: context.t('editCasePrice'),
+              icon: Icons.edit_outlined,
+              secondary: true,
+              onPressed: () => CasePriceDialog.open(context, record),
+            ),
+            if (record.amountMinor > 0)
+              ListTile(
+                title: Text(context.t('initialPayment')),
+                subtitle: Text(
+                  '${context.date(record.createdAt)} · ${context.time(record.createdAt)} · ${context.t(record.payment.name)}',
+                ),
+                trailing: NcSignedMoney(record.amountMinor),
+              ),
+            for (final p in data.payments.where((p) => p.caseId == record.id))
+              ListTile(
+                title: Text(
+                  data.staff
+                          .where((n) => n.id == p.staffId)
+                          .firstOrNull
+                          ?.name ??
+                      '',
+                ),
+                subtitle: Text(
+                  '${context.date(p.paidAt)} · ${context.time(p.paidAt)} · ${context.t(p.method.name)}',
+                ),
+                trailing: NcSignedMoney(p.amountMinor),
+              ),
+            if (data.remainingFor(record) > 0)
+              NcButton(
+                label: context.t('receivePayment'),
+                icon: Icons.add_card,
+                onPressed: () => CasePaymentDialog.open(context, record.id),
+              ),
+          ],
+        ),
         NcNotice(title: context.t('localSaved')),
         NcButton(
-          label: context.t('returnShift'),
+          label: context.t('back'),
           secondary: true,
-          onPressed: () =>
-              context.read<AppCubit>().navigate(AppPage.activeShift),
+          onPressed:
+              onBack ??
+              () => context.read<AppCubit>().navigate(AppPage.activeShift),
         ),
       ],
     );

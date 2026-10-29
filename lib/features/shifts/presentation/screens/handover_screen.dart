@@ -12,6 +12,7 @@ import '../../../../core/widgets/nc_field.dart';
 import '../../../../core/widgets/nc_notice.dart';
 import '../../../../core/widgets/nc_page_column.dart';
 import '../../../../core/widgets/operation_error.dart';
+import '../../../../core/widgets/nc_status_badge.dart';
 import '../../../workspace/presentation/cubit/workspace_cubit.dart';
 import '../cubit/shift_cubit.dart';
 
@@ -27,6 +28,16 @@ class _HandoverScreenState extends State<HandoverScreen> {
   final form = GlobalKey<FormState>();
   String? member;
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final data = context.read<WorkspaceCubit>().state;
+    final preferred = context.read<AppCubit>().state.staffId;
+    member ??= data.staff.any((n) => n.active && n.id == preferred)
+        ? preferred
+        : null;
+  }
+
+  @override
   void dispose() {
     counted.dispose();
     reason.dispose();
@@ -38,7 +49,8 @@ class _HandoverScreenState extends State<HandoverScreen> {
     final data = context.watch<WorkspaceCubit>().state;
     final expected = data.shifts.isEmpty
         ? data.openingMinor
-        : data.expectedCash(data.shifts.last);
+        : data.shifts.last.closingCountedMinor ??
+              data.expectedCash(data.shifts.last);
     int? amount;
     try {
       amount = Money.parse(counted.text);
@@ -48,6 +60,22 @@ class _HandoverScreenState extends State<HandoverScreen> {
       maxWidth: 860,
       children: [
         const OperationError<ShiftCubit>(),
+        if (data.shifts.isNotEmpty && data.shifts.last.closedAt != null)
+          NcCard(
+            title: context.t('lastShiftClosed'),
+            children: [
+              Text(
+                '${context.t('started')}: ${context.date(data.shifts.last.openedAt)} · ${context.time(data.shifts.last.openedAt)}',
+              ),
+              Text(
+                '${context.t('ended')}: ${context.date(data.shifts.last.closedAt!)} · ${context.time(data.shifts.last.closedAt!)}',
+              ),
+              Text(
+                '${context.t('drawerCheckedBy')}: ${data.staff.where((n) => n.id == data.shifts.last.drawerCheckedBy).firstOrNull?.name ?? '—'}',
+              ),
+              NcStatusBadge(data.shifts.last.drawerStatusKey),
+            ],
+          ),
         if (data.activeShift != null)
           NcNotice(
             title: context.t('shiftAlreadyOpen'),

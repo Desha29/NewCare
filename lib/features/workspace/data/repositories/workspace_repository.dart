@@ -1,3 +1,5 @@
+import '../../../drawer/data/models/drawer_handover.dart';
+import '../../../cases/data/models/case_payment.dart';
 import '../../../cases/data/models/case_record.dart';
 import '../../../staff/data/models/nursing_member.dart';
 import '../../../catalogue/data/models/procedure.dart';
@@ -21,9 +23,17 @@ abstract interface class WorkspaceRepository {
     String reason = '',
   });
   Future<void> joinShift(String staffId);
-  Future<void> endShift(String note);
+  Future<void> endShift(
+    String note, {
+    required int countedMinor,
+    required String checkedBy,
+    required int verifiedExpectedMinor,
+    String differenceReason = '',
+  });
   Future<void> addCase(CaseRecord record);
+  Future<void> addCasePayment(CasePayment payment);
   Future<void> addMovement(CashMovement movement);
+  Future<void> handoverDrawer(DrawerHandover handover);
   Future<void> addStaff(NursingMember member);
   Future<void> addProcedure(Procedure procedure);
   Future<void> addSupply(SupplyItem supply);

@@ -1,3 +1,6 @@
+import 'transaction_labels.dart';
+import '../../../../core/widgets/nc_detail_page.dart';
+
 import 'package:flutter/material.dart';
 
 import '../../../../core/localization/localization_extensions.dart';
@@ -5,6 +8,7 @@ import '../../../../core/utils/formatters.dart';
 import '../../../../core/widgets/nc_adaptive_table.dart';
 import '../../../../core/widgets/nc_card.dart';
 import '../../../../core/widgets/nc_status_badge.dart';
+import '../../../../core/widgets/nc_signed_money.dart';
 import '../../../management/presentation/widgets/record_actions.dart';
 import '../../../staff/data/models/nursing_member.dart';
 import '../../data/models/transaction_entry.dart';
@@ -18,8 +22,34 @@ class TransactionTable extends StatelessWidget {
     title: '${context.t('transactions')} · ${rows.length}',
     children: [
       NcAdaptiveTable(
-        cellBuilder: (row, column, value) =>
-            column == 4 ? NcStatusBadge(rows[row].payment.name) : Text(value),
+        onRowTap: (i) => NcDetailPage.open(
+          context,
+          tag: 'transaction-${rows[i].sourceKind.name}-${rows[i].id}',
+          title: transactionDescription(context, rows[i]),
+          child: NcCard(
+            children: [
+              Text('${context.date(rows[i].at)} · ${context.time(rows[i].at)}'),
+              Text(transactionCategory(context, rows[i])),
+              Text(
+                staff.where((n) => n.id == rows[i].staffId).firstOrNull?.name ??
+                    rows[i].staffId,
+              ),
+              NcStatusBadge(rows[i].payment.name),
+              NcSignedMoney(rows[i].signedMinor),
+              RecordActions(kind: rows[i].sourceKind, id: rows[i].id),
+            ],
+          ),
+        ),
+        cellBuilder: (row, column, value) => column == 1
+            ? NcHeroTitle(
+                tag: 'transaction-${rows[row].sourceKind.name}-${rows[row].id}',
+                title: value,
+              )
+            : column == 4
+            ? NcStatusBadge(rows[row].payment.name)
+            : column == 5
+            ? NcSignedMoney(rows[row].signedMinor)
+            : Text(value),
         headers: [
           context.t('dateAndTime'),
           context.t('reason'),
@@ -32,8 +62,8 @@ class TransactionTable extends StatelessWidget {
           final member = staff.where((n) => n.id == r.staffId).firstOrNull;
           return [
             '${context.date(r.at)} · ${context.time(r.at)}',
-            r.description,
-            context.t(r.kind.name),
+            transactionDescription(context, r),
+            transactionCategory(context, r),
             '${member?.name ?? r.staffId}${member?.isManager == true ? ' · ${context.t('manager')}' : ''}',
             context.t(r.payment.name),
             '${r.incoming ? '+' : '−'} ${context.money(r.amountMinor)}',

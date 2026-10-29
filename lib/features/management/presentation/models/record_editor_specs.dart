@@ -17,6 +17,9 @@ abstract final class RecordEditorSpecs {
     final j = RecordMutations.read(data, kind, id);
     String t(String key) => context.t(key);
     String value(String key) => j[key]?.toString() ?? '';
+    final expenseLabel = value('recipient').isEmpty
+        ? 'centerExpense'
+        : 'otherPersonOutgoing';
     EditorField money(String key, String label) => EditorField(
       key,
       t(label),
@@ -49,14 +52,7 @@ abstract final class RecordEditorSpecs {
             t('caseOwner'),
             value('staff'),
             input: EditorInput.choice,
-            choices: {
-              for (final n in data.staff.where(
-                (n) => data.shifts.any(
-                  (s) => s.id == j['shift'] && s.memberIds.contains(n.id),
-                ),
-              ))
-                n.id: staff[n.id]!,
-            },
+            choices: {for (final n in data.staff) n.id: staff[n.id]!},
           ),
           EditorField(
             'procedure',
@@ -102,6 +98,27 @@ abstract final class RecordEditorSpecs {
           date('created', 'time'),
         ],
       ),
+      ManagedRecordKind.caseReceipt => RecordEditorSpec(
+        title: t('casePayment'),
+        fields: [
+          money('amount', 'amount'),
+          EditorField(
+            'staffId',
+            t('recordedBy'),
+            value('staffId'),
+            input: EditorInput.choice,
+            choices: staff,
+          ),
+          EditorField(
+            'method',
+            t('paymentMethod'),
+            value('method'),
+            input: EditorInput.choice,
+            choices: {'cash': t('cash'), 'wallet': t('wallet')},
+          ),
+          date('paidAt', 'dateAndTime'),
+        ],
+      ),
       ManagedRecordKind.nursing => RecordEditorSpec(
         title: value('name'),
         requiresReason: false,
@@ -130,21 +147,30 @@ abstract final class RecordEditorSpecs {
       ),
       ManagedRecordKind.procedure => RecordEditorSpec(
         title: value(locale == 'ar' ? 'ar' : 'en'),
-        fields: [
-          EditorField('ar', t('procedureNameAr'), value('ar')),
-          money('price', 'defaultPrice'),
-        ],
+        fields: [EditorField('ar', t('itemName'), value('ar'))],
       ),
       ManagedRecordKind.supply => RecordEditorSpec(
         title: value(locale == 'ar' ? 'ar' : 'en'),
-        fields: [EditorField('ar', t('procedureNameAr'), value('ar'))],
+        fields: [EditorField('ar', t('itemName'), value('ar'))],
       ),
       ManagedRecordKind.movement => RecordEditorSpec(
-        title: value('reason'),
-        requiresReason: !['advance', 'award'].contains(value('kind')),
+        title: ['advance', 'externalAdvance'].contains(value('kind'))
+            ? t('advance')
+            : value('reason'),
+        requiresReason: ![
+          'advance',
+          'award',
+          'externalAdvance',
+        ].contains(value('kind')),
         fields: [
           money('amount', 'amount'),
-          if (!['advance', 'award'].contains(value('kind')))
+          EditorField(
+            'recipient',
+            t('externalRecipient'),
+            value('recipient'),
+            required: false,
+          ),
+          if (!['advance', 'award', 'externalAdvance'].contains(value('kind')))
             EditorField('reason', t('reason'), value('reason')),
           EditorField(
             'staff',
@@ -153,11 +179,7 @@ abstract final class RecordEditorSpecs {
             input: EditorInput.choice,
             choices: {
               for (final n in data.staff.where(
-                (n) =>
-                    ['advance', 'award'].contains(j['kind']) ||
-                    data.shifts.any(
-                      (s) => s.id == j['shift'] && s.memberIds.contains(n.id),
-                    ),
+                (n) => ['advance', 'award'].contains(j['kind']) || n.active,
               ))
                 n.id: staff[n.id]!,
             },
@@ -169,9 +191,11 @@ abstract final class RecordEditorSpecs {
             input: EditorInput.choice,
             choices: {
               'income': t('income'),
-              'expense': t('expense'),
-              'advance': t('advance'),
+              'expense': t(expenseLabel),
+              if (value('kind') != 'externalAdvance') 'advance': t('advance'),
               'award': t('award'),
+              if (value('kind') == 'externalAdvance')
+                'externalAdvance': t('advance'),
             },
           ),
           date('created', 'time'),

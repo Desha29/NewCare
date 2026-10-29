@@ -10,7 +10,6 @@ import 'package:newcare/features/workspace/data/repositories/local_workspace_rep
 import 'package:newcare/features/launch/presentation/screens/splash_screen.dart';
 import 'package:newcare/core/theme/app_theme.dart';
 import 'package:newcare/l10n/app_localizations.dart';
-import 'package:newcare/features/cases/presentation/widgets/add_case_dialog.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -25,12 +24,17 @@ void main() {
     await icons.load();
   });
   final examples = [
+    ('desktop-settings', const Size(1440, 960), AppPage.permissions),
+    ('desktop-outgoings', const Size(1440, 960), AppPage.cashMovement),
+    ('mobile-outgoings', const Size(390, 844), AppPage.cashMovement),
+    ('desktop-person-outgoing', const Size(1440, 960), AppPage.cashMovement),
+    ('mobile-person-outgoing', const Size(390, 844), AppPage.cashMovement),
     ('mobile-nursing', const Size(390, 844), AppPage.activeShift),
     ('tablet-nursing', const Size(1024, 900), AppPage.activeShift),
     ('desktop-manager', const Size(1440, 960), AppPage.overview),
     ('mobile-manager', const Size(390, 844), AppPage.overview),
-    ('square-shifts', const Size(1024, 1024), AppPage.shifts),
-    ('small-square-shifts', const Size(768, 768), AppPage.shifts),
+    ('square-drawer', const Size(1024, 1024), AppPage.shifts),
+    ('small-square-drawer', const Size(768, 768), AppPage.shifts),
     ('desktop-transactions', const Size(1440, 960), AppPage.transactions),
     ('mobile-transactions', const Size(390, 844), AppPage.transactions),
     ('manager-login', const Size(1024, 1024), AppPage.login),
@@ -41,9 +45,12 @@ void main() {
     ('payroll', const Size(1440, 960), AppPage.payroll),
     ('catalogue', const Size(1440, 960), AppPage.catalogue),
     ('cases-cards', const Size(1440, 960), AppPage.caseLog),
-    ('mobile-case-cards', const Size(390, 844), AppPage.shiftCases),
-    ('shift-cases-table', const Size(1024, 1024), AppPage.shiftCases),
-    ('mobile-case-dialog', const Size(390, 844), AppPage.activeShift),
+    ('mobile-case-book', const Size(390, 844), AppPage.shiftCases),
+    ('desktop-case-book', const Size(1440, 960), AppPage.shiftCases),
+    ('desktop-outside-case-book', const Size(1440, 960), AppPage.outsideCaseBook),
+    ('mobile-outside-case-book', const Size(390, 844), AppPage.outsideCaseBook),
+    ('case-book-square', const Size(1024, 1024), AppPage.shiftCases),
+    ('mobile-case-register-outside', const Size(390, 844), AppPage.activeShift),
     ('mobile-splash', const Size(390, 844), null),
   ];
   for (final example in examples) {
@@ -93,13 +100,16 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      if (example.$1 == 'mobile-case-dialog') {
-        await tester.tap(find.widgetWithText(FilledButton, 'إضافة حالة'));
+      if (example.$1 == 'mobile-case-register-outside') {
+        await tester.tap(find.byType(Tab).last);
         await tester.pumpAndSettle();
-        expect(find.byType(AddCaseDialog), findsOneWidget);
       }
-      if (example.$1 == 'shift-cases-table') {
-        await tester.tap(find.text('جدول'));
+      if (example.$1.contains('person-outgoing')) {
+        await tester.tap(find.widgetWithText(ChoiceChip, 'خوارج أشخاص'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.widgetWithText(ChoiceChip, 'سلفة'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.widgetWithText(ChoiceChip, 'شخص آخر'));
         await tester.pumpAndSettle();
       }
       await expectLater(

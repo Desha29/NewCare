@@ -17,6 +17,11 @@ dependencies:
   file_saver: ^0.7.0
   timezone: ^0.11.2
   cupertino_icons: ^2.0.0
+  lucide_icons_flutter: ^4.0.1
+  skeletonizer: ^3.0.0
+  shimmer: ^4.0.0
+  device_preview: ^3.0.0
+  crypt: ^4.3.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

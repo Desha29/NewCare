@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import '../screens/case_details_screen.dart';
+import '../../../../core/widgets/nc_detail_page.dart';
 
-import '../../../../app/cubit/app_cubit.dart';
+import 'package:flutter/material.dart';
+
 import '../../../../core/localization/localization_extensions.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/formatters.dart';
@@ -43,7 +44,15 @@ class CaseCardGrid extends StatelessWidget {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
                   child: InkWell(
-                    onTap: () => context.read<AppCubit>().selectCase(r.id),
+                    onTap: () => NcDetailPage.open(
+                      context,
+                      tag: 'case-card-${r.id}',
+                      title: r.title,
+                      child: CaseDetailsScreen(
+                        caseId: r.id,
+                        onBack: () => Navigator.pop(context),
+                      ),
+                    ),
                     borderRadius: BorderRadius.circular(10),
                     child: Container(
                       padding: const EdgeInsets.all(10),
@@ -54,15 +63,7 @@ class CaseCardGrid extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Text(
-                            r.title,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
+                          NcHeroTitle(tag: 'case-card-${r.id}', title: r.title),
                           const SizedBox(height: 6),
                           Text(
                             _owner(context, r),
@@ -88,13 +89,20 @@ class CaseCardGrid extends StatelessWidget {
                           NcStatusBadge(r.location.name),
                           const SizedBox(height: 6),
                           Text(
-                            context.money(r.amountMinor),
+                            '${context.t('paidTotal')}: ${context.money(workspace.paidFor(r))}',
                             style: const TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
                           const SizedBox(height: 6),
+                          Text(
+                            '${context.t('remainingAmount')}: ${context.money(workspace.remainingFor(r))}',
+                            style: const TextStyle(
+                              fontSize: 11,
+                              color: AppColors.warning,
+                            ),
+                          ),
                           NcStatusBadge(r.payment.name),
                           const SizedBox(height: 6),
                           Text(

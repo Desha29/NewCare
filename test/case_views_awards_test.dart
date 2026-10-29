@@ -12,48 +12,46 @@ import 'package:newcare/features/drawer/data/models/cash_movement.dart';
 import 'package:newcare/features/workspace/data/repositories/local_workspace_repository.dart';
 
 void main() {
-  testWidgets(
-    'shift cases support eight cards per desktop row and table toggle',
-    (tester) async {
-      tester.view.physicalSize = const Size(1440, 960);
-      tester.view.devicePixelRatio = 1;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
-      final store = MemoryStringStore(),
-          repo = LocalWorkspaceRepository(MemoryStringStore());
-      await repo.initialize();
-      await tester.pumpWidget(NewCareApp(repository: repo, store: store));
-      await tester.pumpAndSettle();
-      final context = tester.element(find.byType(Scaffold).first);
-      context.read<AppCubit>().navigate(AppPage.shiftCases);
-      await tester.pumpAndSettle();
-      final grid = tester.widget<CaseCardGrid>(find.byType(CaseCardGrid));
-      final y = tester
-          .getTopLeft(
-            find.byKey(ValueKey('case-card-${grid.records.first.id}')),
-          )
-          .dy;
-      for (final r in grid.records.take(8)) {
-        expect(
-          tester.getTopLeft(find.byKey(ValueKey('case-card-${r.id}'))).dy,
-          y,
-        );
-      }
+  testWidgets('manager case history retains card and table views', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(1440, 960);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final store = MemoryStringStore(),
+        repo = LocalWorkspaceRepository(MemoryStringStore());
+    await repo.initialize();
+    await tester.pumpWidget(NewCareApp(repository: repo, store: store));
+    await tester.pumpAndSettle();
+    final context = tester.element(find.byType(Scaffold).first);
+    context.read<AppCubit>().unlock('newcare-demo');
+    context.read<AppCubit>().navigate(AppPage.caseLog);
+    await tester.pumpAndSettle();
+    final grid = tester.widget<CaseCardGrid>(find.byType(CaseCardGrid));
+    final y = tester
+        .getTopLeft(find.byKey(ValueKey('case-card-${grid.records.first.id}')))
+        .dy;
+    for (final r in grid.records.take(8)) {
       expect(
-        tester
-            .getTopLeft(find.byKey(ValueKey('case-card-${grid.records[8].id}')))
-            .dy,
-        greaterThan(y),
+        tester.getTopLeft(find.byKey(ValueKey('case-card-${r.id}'))).dy,
+        y,
       );
-      await tester.tap(find.text(context.t('tableView')));
-      await tester.pumpAndSettle();
-      expect(find.byType(CaseCardGrid), findsNothing);
-      expect(find.byType(DataTable), findsOneWidget);
-      expect(tester.takeException(), isNull);
-      await tester.pumpWidget(const SizedBox.shrink());
-      await repo.dispose();
-    },
-  );
+    }
+    expect(
+      tester
+          .getTopLeft(find.byKey(ValueKey('case-card-${grid.records[8].id}')))
+          .dy,
+      greaterThan(y),
+    );
+    await tester.tap(find.text(context.t('tableView')));
+    await tester.pumpAndSettle();
+    expect(find.byType(CaseCardGrid), findsNothing);
+    expect(find.byType(DataTable), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox.shrink());
+    await repo.dispose();
+  });
   testWidgets(
     'manager pays nursing award without reason and drawer cash decreases once',
     (tester) async {
@@ -64,7 +62,7 @@ void main() {
       final store = MemoryStringStore();
       final repo = LocalWorkspaceRepository(store);
       await repo.initialize();
-      final before = repo.current.expectedCash(repo.current.activeShift!);
+      final before = repo.current.drawerBalance;
       await tester.pumpWidget(NewCareApp(repository: repo, store: store));
       await tester.pumpAndSettle();
       final context = tester.element(find.byType(Scaffold).first),
@@ -89,10 +87,7 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(repo.current.movements.single.kind, CashKind.award);
-      expect(
-        repo.current.expectedCash(repo.current.activeShift!),
-        before - 20000,
-      );
+      expect(repo.current.drawerBalance, before - 20000);
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox.shrink());
       await repo.dispose();

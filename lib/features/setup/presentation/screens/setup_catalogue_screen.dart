@@ -36,7 +36,6 @@ class _SetupCatalogueScreenState extends State<SetupCatalogueScreen> {
       maxWidth: 900,
       children: [
         const CatalogueEditor(),
-        const CatalogueEditor(supply: true),
         const OperationError<ManagementCubit>(),
         if (data.shifts.isEmpty)
           Form(

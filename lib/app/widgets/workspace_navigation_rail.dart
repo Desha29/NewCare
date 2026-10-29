@@ -1,3 +1,5 @@
+import '../navigation/navigation_label.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -30,9 +32,12 @@ class WorkspaceNavigationRail extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8),
                       child: Tooltip(
-                        message: context.t(page.labelKey),
+                        message: context.pageLabel(page),
                         child: Material(
-                          color: state.page == page
+                          color:
+                              (state.page == page ||
+                                  page == AppPage.shiftCases &&
+                                      state.page.isCaseBook)
                               ? Colors.white.withValues(alpha: .15)
                               : Colors.transparent,
                           borderRadius: BorderRadius.circular(10),

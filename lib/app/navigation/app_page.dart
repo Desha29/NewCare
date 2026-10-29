@@ -13,6 +13,8 @@ enum AppPage {
   joinShift,
   matched,
   validation,
+  insideCaseBook,
+  outsideCaseBook,
   overview,
   shifts,
   caseLog,
@@ -31,6 +33,10 @@ enum AppPage {
   transactions;
 
   bool get isManager => index >= AppPage.overview.index;
+  bool get isCaseBook =>
+      this == AppPage.shiftCases ||
+      this == AppPage.insideCaseBook ||
+      this == AppPage.outsideCaseBook;
   bool get needsManager =>
       isManager &&
       this != AppPage.login &&
@@ -39,6 +45,17 @@ enum AppPage {
       this != AppPage.setupCatalogue &&
       this != AppPage.ready;
   String get labelKey => switch (this) {
+    AppPage.activeShift ||
+    AppPage.startShift ||
+    AppPage.endShift ||
+    AppPage.joinShift ||
+    AppPage.handover ||
+    AppPage.matched ||
+    AppPage.offline => 'caseRegister',
+    AppPage.shiftCases => 'caseBook',
+    AppPage.insideCaseBook => 'inside',
+    AppPage.outsideCaseBook => 'outside',
+    AppPage.shifts => 'drawer',
     AppPage.nursing => 'nursing',
     _ => name,
   };

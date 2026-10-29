@@ -58,10 +58,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get payroll => 'Payroll & advances';
 
   @override
-  String get catalogue => 'Procedures & supplies';
+  String get catalogue => 'Procedures';
 
   @override
-  String get permissions => 'Settings & permissions';
+  String get permissions => 'Settings';
 
   @override
   String get reports => 'Reports';
@@ -244,7 +244,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newCase => 'Record another case';
 
   @override
-  String get returnShift => 'Return to current shift';
+  String get returnShift => 'Return to case registration';
 
   @override
   String get addInside => 'Add inside-center case';
@@ -306,7 +306,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get income => 'Cash received';
 
   @override
-  String get expense => 'Expense';
+  String get expense => 'Outgoing';
 
   @override
   String get advance => 'Advance';
@@ -333,7 +333,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get caseCount => 'Case count';
 
   @override
-  String get expenses => 'Expenses';
+  String get expenses => 'Outgoings';
 
   @override
   String get dailyRevenue => 'Daily revenue';
@@ -601,7 +601,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cashFormula =>
-      'Opening + cash payments + income − expenses − advances';
+      'Opening cash + cash receipts + income − outgoings − advances − awards + cash count differences';
 
   @override
   String get showSetup => 'First-run setup';
@@ -813,11 +813,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get nursingAccess =>
-      'Add cases, expenses and advances; start, end and hand over shifts.';
+      'Record cases, receive case payments and add outgoings and advances.';
 
   @override
   String get managerAccess =>
-      'Manage nursing, salaries, catalogue and records; view totals and reports. Managers may also work on a shift.';
+      'Manage nursing staff, salaries, procedures, records and the drawer, and view totals and reports. Managers may record their own cases.';
 
   @override
   String get shiftOpen => 'Shift is open';
@@ -851,4 +851,411 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get salaryUpdated => 'Monthly salary updated';
+
+  @override
+  String get ended => 'Ended';
+
+  @override
+  String get shiftTiming => 'Shift times';
+
+  @override
+  String get checkDrawerFirst => 'Check the drawer before closing';
+
+  @override
+  String get checkDrawerExplanation =>
+      'Select who counted the drawer, enter the actual cash, then confirm the review before closing the shift.';
+
+  @override
+  String get drawerReview => 'Drawer review';
+
+  @override
+  String get drawerCheckedBy => 'Checked and closed by';
+
+  @override
+  String get confirmDrawerReview => 'Confirm drawer count';
+
+  @override
+  String get drawerReviewDone =>
+      'Drawer review confirmed. You can close this shift.';
+
+  @override
+  String get drawerChanged =>
+      'Drawer data changed. Count and confirm it again.';
+
+  @override
+  String get lastShiftClosed => 'Previous shift closure';
+
+  @override
+  String get drawerUnchecked => 'Not checked';
+
+  @override
+  String get drawerMatched => 'Matched';
+
+  @override
+  String get drawerShortage => 'Shortage';
+
+  @override
+  String get drawerExcess => 'Excess';
+
+  @override
+  String get proceduresUsed => 'Procedures performed';
+
+  @override
+  String get selectedSupplies => 'Medical supplies';
+
+  @override
+  String get caseTotal => 'Calculated total';
+
+  @override
+  String get procedureTotal => 'Procedures subtotal';
+
+  @override
+  String get supplyTotal => 'Supplies subtotal';
+
+  @override
+  String get priceBreakdown => 'Total and payment';
+
+  @override
+  String get selectItems => 'Select items';
+
+  @override
+  String get noPricedSupplies => 'No supplies in the catalogue';
+
+  @override
+  String get chooseDay => 'Choose a day';
+
+  @override
+  String get caseFormSubtitle =>
+      'Select procedures and enter the case total and amount paid; the remaining balance is calculated automatically.';
+
+  @override
+  String get procedureRequired => 'Select at least one procedure';
+
+  @override
+  String get itemName => 'Name';
+
+  @override
+  String get price => 'Price';
+
+  @override
+  String get supplyNameHint => 'e.g. Cannula';
+
+  @override
+  String get procedureNameHint => 'e.g. IV infusion';
+
+  @override
+  String get priceHint => 'Enter the price in Egyptian pounds';
+
+  @override
+  String get shiftDetails => 'Shift details';
+
+  @override
+  String get allPayments => 'All payment methods';
+
+  @override
+  String get translationUnavailable => 'Unavailable';
+
+  @override
+  String get caseUpdated => 'Case updated';
+
+  @override
+  String get brandName => 'NewCare';
+
+  @override
+  String get nursingCareServices => 'Nursing care services';
+
+  @override
+  String get caseRegister => 'Record cases';
+
+  @override
+  String get caseBook => 'Case book';
+
+  @override
+  String get catalogueTotal => 'Procedure price subtotal';
+
+  @override
+  String get agreedPrice => 'Case total';
+
+  @override
+  String get paidNow => 'Paid at registration';
+
+  @override
+  String get remainingAmount => 'Remaining';
+
+  @override
+  String get paidTotal => 'Total paid';
+
+  @override
+  String get laterPayments => 'Recorded subsequent payments';
+
+  @override
+  String get paymentHistory => 'Case payment history';
+
+  @override
+  String get initialPayment => 'Initial payment';
+
+  @override
+  String get receivePayment => 'Receive payment';
+
+  @override
+  String get paymentAmount => 'Payment amount';
+
+  @override
+  String get savePayment => 'Save payment';
+
+  @override
+  String get casePaymentAdded => 'Case payment received';
+
+  @override
+  String get invalidPaymentAmount =>
+      'Enter a valid amount within the outstanding balance; the agreed price cannot be less than receipts';
+
+  @override
+  String get searchCatalogue => 'Search and select a procedure…';
+
+  @override
+  String get caseReference => 'Case reference';
+
+  @override
+  String get searchCaseBook =>
+      'Search by procedure, address, nursing staff or case reference';
+
+  @override
+  String get outstandingCases => 'Outstanding cases';
+
+  @override
+  String get outstandingAllDates => 'Outstanding cases from all dates';
+
+  @override
+  String get drawerBalance => 'Current drawer balance';
+
+  @override
+  String get payInFull => 'Pay in full';
+
+  @override
+  String get externalAdvance => 'Advance';
+
+  @override
+  String get centerExpense => 'Center outgoings';
+
+  @override
+  String get externalRecipient => 'Recipient name';
+
+  @override
+  String get recipientRequired => 'Enter the recipient name';
+
+  @override
+  String get drawerHandover => 'Hand over drawer';
+
+  @override
+  String get drawerHandoverNote =>
+      'Count the cash and select the sender and receiver. Count differences are recorded separately and are not revenue or outgoings.';
+
+  @override
+  String get drawerFrom => 'Handed over by';
+
+  @override
+  String get drawerTo => 'Received by';
+
+  @override
+  String get drawerHolder => 'Current drawer holder';
+
+  @override
+  String get drawerHandoverHistory => 'Drawer custody history';
+
+  @override
+  String get confirmDrawerHandover => 'Confirm drawer handover';
+
+  @override
+  String get handoverDifferenceReason =>
+      'Notes and reason for a shortage or excess';
+
+  @override
+  String get invalidHandoverStaff =>
+      'The current drawer holder must hand over to a different person';
+
+  @override
+  String get drawerHandedOver => 'Drawer custody handed over';
+
+  @override
+  String get refreshDrawer => 'Refresh count baseline';
+
+  @override
+  String get editCasePrice => 'Edit case total';
+
+  @override
+  String get priceBelowPaid =>
+      'The price cannot be less than the amount already received';
+
+  @override
+  String get priceEditNote =>
+      'Changing the case total does not change recorded receipts.';
+
+  @override
+  String get casePriceUpdated => 'Case price updated';
+
+  @override
+  String get notes => 'Notes';
+
+  @override
+  String get personOutgoings => 'Person outgoings';
+
+  @override
+  String get recordOutgoing => 'Record outgoing';
+
+  @override
+  String get outgoings => 'Outgoings';
+
+  @override
+  String get saveOutgoing => 'Save outgoing';
+
+  @override
+  String get personPaymentPurpose => 'Payment purpose';
+
+  @override
+  String get otherPersonOutgoing => 'Other payment';
+
+  @override
+  String get otherPerson => 'Other person';
+
+  @override
+  String get personName => 'Person name';
+
+  @override
+  String get personNursingRecipient => 'Nursing recipient';
+
+  @override
+  String get outgoingDescription => 'Description';
+
+  @override
+  String get centerOutgoingHint => 'e.g. Rent, electricity or purchases';
+
+  @override
+  String get personOutgoingHint => 'e.g. Fees or a refund';
+
+  @override
+  String get incomeDescriptionHint => 'e.g. A cash deposit into the drawer';
+
+  @override
+  String get personOutgoingHelp =>
+      'Choose the payment purpose and recipient, then enter the amount. Advances are part of person outgoings.';
+
+  @override
+  String get centerOutgoingHelp =>
+      'For rent, electricity, purchases and other center outgoings.';
+
+  @override
+  String get noOtherDrawerReceiver =>
+      'Another person is needed to receive the drawer. The sender cannot receive it from themselves.';
+
+  @override
+  String get openNavigation => 'Open navigation';
+
+  @override
+  String get closeNavigation => 'Close navigation';
+
+  @override
+  String get hideSidebar => 'Hide sidebar';
+
+  @override
+  String get showSidebar => 'Show sidebar';
+
+  @override
+  String get devicePreview => 'Device preview';
+
+  @override
+  String get previewDebugOnly =>
+      'Preview controls are available in debug mode only';
+
+  @override
+  String get previewDevice => 'Device and screen size';
+
+  @override
+  String get previewPlatform => 'Platform';
+
+  @override
+  String get previewTextScale => 'Text scale';
+
+  @override
+  String get previewRotate => 'Rotate screen';
+
+  @override
+  String get previewKeyboard => 'Toggle keyboard';
+
+  @override
+  String get previewReset => 'Actual device';
+
+  @override
+  String get previewFailed => 'Could not change preview';
+
+  @override
+  String get squareMonitor => 'Square monitor 1024 × 1024';
+
+  @override
+  String get platformandroid => 'Android';
+
+  @override
+  String get platformiOS => 'iOS';
+
+  @override
+  String get platformwindows => 'Windows';
+
+  @override
+  String get platformmacOS => 'macOS';
+
+  @override
+  String get platformlinux => 'Linux';
+
+  @override
+  String get platformfuchsia => 'Fuchsia';
+
+  @override
+  String get changePassword => 'Change password';
+
+  @override
+  String get currentPassword => 'Current password';
+
+  @override
+  String get newPassword => 'New password';
+
+  @override
+  String get passwordTooShort => 'Use at least 8 characters';
+
+  @override
+  String get passwordUpdated => 'Password updated';
+
+  @override
+  String get settingsSaveFailed => 'Could not save changes. Try again.';
+
+  @override
+  String get navigationLabels => 'Navigation section names';
+
+  @override
+  String get navigationLabelsHelp =>
+      'Edit section names for the current language. Leave a field empty to use its original name.';
+
+  @override
+  String get restoreNavigationLabels => 'Restore original names';
+
+  @override
+  String get navigationLabelTooLong => 'Use no more than 40 characters';
+
+  @override
+  String get drawerStatus => 'Drawer status';
+
+  @override
+  String get cashDrawerHint =>
+      'The balance updates automatically with cash receipts and outgoings. Wallet payments stay outside the drawer.';
+
+  @override
+  String get unassignedDrawerHolder => 'No custodian assigned yet';
+
+  @override
+  String get lastDrawerCheck => 'Last cash count result';
+
+  @override
+  String get allPaymentMethods => 'All';
+
+  @override
+  String get caseAddedAt => 'Date and time added';
 }

@@ -38,7 +38,7 @@ class NewCareApp extends StatelessWidget {
       ],
       child: BlocBuilder<AppCubit, AppState>(
         builder: (context, state) => MaterialApp(
-          title: 'NewCare',
+          onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
           debugShowCheckedModeBanner: false,
           theme: AppTheme.light(),
           locale: state.locale,

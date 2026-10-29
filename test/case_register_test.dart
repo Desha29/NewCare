@@ -6,13 +6,12 @@ import 'package:newcare/core/widgets/nc_field.dart';
 import 'package:newcare/features/cases/data/models/case_record.dart';
 import 'package:newcare/features/cases/presentation/widgets/add_case_dialog.dart';
 import 'package:newcare/features/cases/presentation/widgets/case_form_fields.dart';
-import 'package:newcare/features/shifts/presentation/widgets/shift_nursing_grid.dart';
-import 'package:newcare/features/shifts/presentation/widgets/recent_cases_table.dart';
+import 'package:newcare/features/cases/presentation/widgets/catalogue_multi_picker.dart';
 import 'package:newcare/features/workspace/data/repositories/local_workspace_repository.dart';
 
 void main() {
   testWidgets(
-    'single add-case dialog switches tabs and saves outside address on mobile',
+    'inline outside case requires address and saves negotiated partial payment',
     (tester) async {
       tester.view.physicalSize = const Size(390, 844);
       tester.view.devicePixelRatio = 1;
@@ -22,40 +21,48 @@ void main() {
       await store.write('newcare.locale', 'en');
       final repo = LocalWorkspaceRepository(store);
       await repo.initialize();
+      final before = repo.current.drawerBalance;
       await tester.pumpWidget(NewCareApp(repository: repo, store: store));
       await tester.pumpAndSettle();
-      expect(find.byType(ShiftNursingGrid), findsOneWidget);
-      expect(find.byType(RecentCasesTable), findsOneWidget);
-      expect(find.text('Add case'), findsOneWidget);
-      await tester.tap(find.widgetWithText(FilledButton, 'Add case'));
-      await tester.pumpAndSettle();
-      expect(find.byType(AddCaseDialog), findsOneWidget);
-      expect(find.byType(Tab), findsNWidgets(2));
+      expect(find.byType(AddCaseDialog), findsNothing);
+      expect(find.text('Add case'), findsNothing);
+      expect(find.text('Start shift'), findsNothing);
       await tester.tap(find.byType(Tab).last);
       await tester.pumpAndSettle();
       final fields = tester.widget<CaseFormFields>(find.byType(CaseFormFields));
       expect(fields.outside, isTrue);
-      fields.title.text = 'Home dressing';
-      fields.onProcedure('p2');
+      tester
+          .widget<CatalogueMultiPicker>(find.byType(CatalogueMultiPicker).first)
+          .onChanged({'p1', 'p2'});
       await tester.pumpAndSettle();
+      final inputs = tester.widgetList<NcField>(find.byType(NcField)).toList();
+      expect(find.text('Supplies'), findsNothing);
+      expect(inputs.where((f) => f.label.endsWith('· Price')), isEmpty);
+      inputs.firstWhere((f) => f.label == 'Case total').controller.text = '175';
+      inputs
+              .firstWhere((f) => f.label.contains('Paid at registration'))
+              .controller
+              .text =
+          '50';
       final save = find.widgetWithText(FilledButton, 'Save case');
       await tester.ensureVisible(save);
       await tester.tap(save);
       await tester.pumpAndSettle();
-      expect(repo.current.cases.length, 12);
-      expect(find.byType(AddCaseDialog), findsOneWidget);
+      expect(repo.current.cases, hasLength(12));
       fields.address.text = '12 Test Street';
-      final amountField = tester
-          .widgetList<NcField>(find.byType(NcField))
-          .firstWhere((f) => f.label.contains('Amount'));
-      amountField.controller.text = '180';
       await tester.ensureVisible(save);
       await tester.tap(save);
       await tester.pumpAndSettle();
-      expect(find.byType(AddCaseDialog), findsNothing);
-      expect(repo.current.cases.length, 13);
-      expect(repo.current.cases.last.location, CaseLocation.outside);
-      expect(repo.current.cases.last.address, '12 Test Street');
+      final record = repo.current.cases.last;
+      expect(record.location, CaseLocation.outside);
+      expect(record.address, '12 Test Street');
+      expect(record.phone, isEmpty);
+      expect(record.effectiveProcedureIds, ['p1', 'p2']);
+      expect(record.invoiceMinor, 17500);
+      expect(record.lineItems.every((i) => i.priceMinor == 0), isTrue);
+      expect(repo.current.remainingFor(record), 12500);
+      expect(repo.current.drawerBalance, before + 5000);
+      expect(record.shiftId, isEmpty);
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox.shrink());
       await repo.dispose();
