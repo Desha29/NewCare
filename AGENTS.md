@@ -5,6 +5,7 @@
 - Split screens into focused widgets; reuse core UI components.
 - All interface text belongs in English and Arabic ARB files. Support RTL and LTR.
 - The operational workflow has no shifts. Preserve historical serialized shift data without restoring shift controls.
+- Historical shift compatibility belongs in workspace/data/models/legacy; do not recreate a shifts presentation feature or register an unused ShiftCubit.
 - Procedures are names only; do not add catalogue prices or supplies back to the current UI.
 - Enter each case total manually. Compute outstanding balance from its initial and later receipts; changing the total must not rewrite receipts or go below the amount already collected.
 - Use "الخوارج" for expenses in Arabic. Drawer custody handovers are independent of shifts and record counted cash and discrepancies.

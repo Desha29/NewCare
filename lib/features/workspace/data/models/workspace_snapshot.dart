@@ -5,7 +5,7 @@ import '../../../cases/data/models/case_record.dart';
 import '../../../staff/data/models/nursing_member.dart';
 import '../../../catalogue/data/models/procedure.dart';
 import '../../../drawer/data/models/cash_movement.dart';
-import '../../../shifts/data/models/shift_record.dart';
+import 'legacy/shift_record.dart';
 import 'audit_entry.dart';
 
 class WorkspaceSnapshot {

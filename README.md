@@ -91,6 +91,8 @@ Deleting nursing or procedures archives them to preserve historical attribution.
 
 ## Design and repository
 
+The unused shift presentation feature and five unreferenced packages were removed without changing the current UI. Historical data compatibility stays under `workspace/data/models/legacy`. See [UI cleanup notes](docs/ui-cleanup.md) for the inventory and verification.
+
 Figma: https://www.figma.com/design/OEygfKSLA6bHRDFb1cmVBE/NewCare
 GitHub: https://github.com/Desha29/NewCare
 

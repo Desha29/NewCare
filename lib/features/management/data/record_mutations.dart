@@ -6,7 +6,7 @@ import '../../staff/data/models/nursing_member.dart';
 import '../../catalogue/data/models/procedure.dart';
 import '../../catalogue/data/models/supply_item.dart';
 import '../../drawer/data/models/cash_movement.dart';
-import '../../shifts/data/models/shift_record.dart';
+import '../../workspace/data/models/legacy/shift_record.dart';
 import 'managed_record_kind.dart';
 
 /// Data-layer transformations keep record editing separate from storage.

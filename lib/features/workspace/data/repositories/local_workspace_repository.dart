@@ -11,7 +11,7 @@ import '../../../cases/data/models/case_record.dart';
 import '../../../staff/data/models/nursing_member.dart';
 import '../../../catalogue/data/models/procedure.dart';
 import '../../../drawer/data/models/cash_movement.dart';
-import '../../../shifts/data/models/shift_record.dart';
+import '../models/legacy/shift_record.dart';
 import '../models/workspace_snapshot.dart';
 import '../models/audit_entry.dart';
 import '../sources/demo_workspace.dart';

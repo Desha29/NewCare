@@ -1,3 +1,4 @@
+/// Historical storage compatibility only; the operational UI has no shifts.
 class ShiftRecord {
   const ShiftRecord({
     required this.id,

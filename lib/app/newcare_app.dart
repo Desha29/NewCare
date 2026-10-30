@@ -7,7 +7,6 @@ import '../core/theme/app_theme.dart';
 import '../features/workspace/data/repositories/workspace_repository.dart';
 import '../features/workspace/presentation/cubit/workspace_cubit.dart';
 import '../features/cases/presentation/cubit/case_cubit.dart';
-import '../features/shifts/presentation/cubit/shift_cubit.dart';
 import '../features/drawer/presentation/cubit/drawer_cubit.dart';
 import '../features/management/presentation/cubit/management_cubit.dart';
 import 'cubit/app_cubit.dart';
@@ -32,7 +31,6 @@ class NewCareApp extends StatelessWidget {
         ),
         BlocProvider(create: (_) => WorkspaceCubit(repository)),
         BlocProvider(create: (_) => CaseCubit(repository)),
-        BlocProvider(create: (_) => ShiftCubit(repository)),
         BlocProvider(create: (_) => DrawerCubit(repository)),
         BlocProvider(create: (_) => ManagementCubit(repository)),
       ],

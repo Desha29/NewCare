@@ -1,7 +1,7 @@
 import '../../../staff/data/models/nursing_member.dart';
 import '../../../catalogue/data/models/procedure.dart';
 import '../../../cases/data/models/case_record.dart';
-import '../../../shifts/data/models/shift_record.dart';
+import '../models/legacy/shift_record.dart';
 import '../models/workspace_snapshot.dart';
 
 WorkspaceSnapshot demoWorkspace() {
