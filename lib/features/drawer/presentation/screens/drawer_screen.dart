@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import '../widgets/movement_labels.dart';
 import '../widgets/drawer_handover_panel.dart';
 import '../widgets/drawer_handover_button.dart';
@@ -7,6 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/localization/localization_extensions.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/utils/formatters.dart';
+import '../../../../core/widgets/nc_adaptive_table.dart';
 import '../../../../core/widgets/nc_signed_money.dart';
 import '../../../../core/widgets/nc_card.dart';
 import '../../../../core/widgets/nc_page_column.dart';
@@ -54,13 +59,79 @@ class _DrawerScreenState extends State<DrawerScreen> {
           NcCard(
             title: context.t('latestActivity'),
             children: [
-              for (final m in movements.reversed.take(8))
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(movementDescription(context, m)),
-                  subtitle: Text(movementCategory(context, m)),
-                  trailing: NcSignedMoney(m.signedMinor),
-                ),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final list = movements.reversed.take(8).toList();
+                  return NcAdaptiveTable(
+                    headers: [
+                      context.t('outgoingDescription'),
+                      context.t('movementKind'),
+                      context.t('nursing'),
+                      context.t('time'),
+                      context.t('amount'),
+                    ],
+                    columnWidths: [
+                      math.max(160.0, constraints.maxWidth - 520),
+                      160,
+                      120,
+                      100,
+                      110,
+                    ],
+                    rows: [
+                      for (final m in list)
+                        [
+                          movementDescription(context, m),
+                          movementCategory(context, m),
+                          data.staff
+                                  .where((n) => n.id == m.staffId)
+                                  .firstOrNull
+                                  ?.name ??
+                              m.staffId,
+                          context.time(m.createdAt),
+                          context.money(m.amountMinor),
+                        ],
+                    ],
+                    emptyLabel: context.t('noResults'),
+                    cellBuilder: (row, column, value) {
+                      final m = list[row];
+                      if (column == 0) {
+                        return Text(
+                          value,
+                          style: const TextStyle(fontWeight: FontWeight.w700),
+                        );
+                      }
+                      if (column == 1) {
+                        return Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 3,
+                          ),
+                          decoration: BoxDecoration(
+                            color: m.isPersonOutgoing
+                                ? AppColors.tealLight
+                                : AppColors.background,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            value,
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              color: m.isPersonOutgoing
+                                  ? AppColors.navy
+                                  : AppColors.muted,
+                            ),
+                          ),
+                        );
+                      }
+                      if (column == 4) {
+                        return NcSignedMoney(m.signedMinor);
+                      }
+                      return Text(value);
+                    },
+                  );
+                },
+              ),
             ],
           ),
       ],

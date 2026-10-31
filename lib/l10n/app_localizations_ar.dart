@@ -1005,6 +1005,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get searchCatalogue => 'ابحث واختر إجراء…';
 
   @override
+  String get searchSupplies => 'ابحث واختر مستلزم…';
+
+  @override
   String get caseReference => 'رقم الحالة';
 
   @override

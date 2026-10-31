@@ -333,6 +333,7 @@ extension LocalizedContext on BuildContext {
     'casePaymentAdded' => l10n.casePaymentAdded,
     'invalidPaymentAmount' => l10n.invalidPaymentAmount,
     'searchCatalogue' => l10n.searchCatalogue,
+    'searchSupplies' => l10n.searchSupplies,
     'caseReference' => l10n.caseReference,
     'searchCaseBook' => l10n.searchCaseBook,
     'outstandingCases' => l10n.outstandingCases,

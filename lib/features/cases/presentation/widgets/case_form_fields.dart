@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/localization/localization_extensions.dart';
 import '../../../../core/widgets/nc_field.dart';
 import '../../../../core/utils/money.dart';
-import '../../../../core/widgets/nc_status_badge.dart';
+import '../../../../core/widgets/nc_tabs.dart';
 import '../../data/models/case_record.dart';
 import '../../../workspace/data/models/workspace_snapshot.dart';
 
@@ -182,39 +182,26 @@ class PaymentFields extends StatelessWidget {
                     ],
                   ),
           ),
-        SizedBox(height: compact ? 8 : 16),
+        SizedBox(height: compact ? 8 : 12),
         Text(
           context.t('paymentMethod'),
           style: Theme.of(context).textTheme.bodySmall,
         ),
         SizedBox(height: compact ? 4 : 8),
-        Wrap(
-          spacing: 8,
-          runSpacing: 4,
-          children: [
+        NcTabs<PaymentMethod>(
+          selected: method,
+          maxWidth: compact ? 260 : 360,
+          items: [
             for (final p in PaymentMethod.values)
-              ChoiceChip(
-                label: Text(
-                  context.t(p.name),
-                  style: TextStyle(
-                    color: NcStatusBadge.colors(p.name).$2,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                selectedColor: NcStatusBadge.colors(p.name).$1,
-                backgroundColor: NcStatusBadge.colors(p.name).$1
-                    .withValues(alpha: .5),
-                visualDensity: compact
-                    ? VisualDensity.compact
-                    : VisualDensity.standard,
-                materialTapTargetSize:
-                    compact && MediaQuery.sizeOf(context).width >= 720
-                    ? MaterialTapTargetSize.shrinkWrap
-                    : MaterialTapTargetSize.padded,
-                selected: method == p,
-                onSelected: (_) => onMethod(p),
+              NcTabItem(
+                value: p,
+                label: context.t(p.name),
+                icon: p == PaymentMethod.cash
+                    ? Icons.payments_outlined
+                    : Icons.account_balance_wallet_outlined,
               ),
           ],
+          onChanged: onMethod,
         ),
       ],
     );

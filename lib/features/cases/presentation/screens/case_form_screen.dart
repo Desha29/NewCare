@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../app/cubit/app_cubit.dart';
@@ -10,7 +10,7 @@ import '../../../../core/widgets/nc_button.dart';
 import '../../../../core/widgets/nc_card.dart';
 import '../../../../core/widgets/nc_empty.dart';
 import '../../../../core/widgets/nc_page_column.dart';
-import '../../../../core/widgets/nc_status_badge.dart';
+import '../../../../core/widgets/nc_tabs.dart';
 import '../../../../core/widgets/operation_error.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../inventory/presentation/widgets/case_stock_picker.dart';
@@ -129,13 +129,16 @@ class _CaseFormScreenState extends State<CaseFormScreen> {
         onChanged: (v) => select(data, v),
       ),
     );
-    final stockPicker = !widget.compact || draft.stockUsages.isNotEmpty
-        ? CaseStockPicker(
-            availableStock: data.stockItems,
-            usages: draft.stockUsages,
-            onChanged: (v) => setState(() => draft.stockUsages = v),
-          )
-        : null;
+    final hasStock = data.stockItems.any((s) => s.active && s.quantity > 0);
+    final stockPicker =
+        (!widget.compact || hasStock || draft.stockUsages.isNotEmpty)
+            ? CaseStockPicker(
+                compact: widget.compact,
+                availableStock: data.stockItems,
+                usages: draft.stockUsages,
+                onChanged: (v) => setState(() => draft.stockUsages = v),
+              )
+            : null;
     final bill = CaseBillPanel(
       compact: widget.compact,
       amount: draft.amount,
@@ -147,7 +150,7 @@ class _CaseFormScreenState extends State<CaseFormScreen> {
       onPayment: (v) => setState(() => draft.payment = v),
     );
     final content = LayoutBuilder(
-      builder: (context, c) => c.maxWidth >= (widget.compact ? 600 : 760)
+      builder: (context, c) => (!widget.compact && c.maxWidth >= 760)
           ? Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -155,9 +158,7 @@ class _CaseFormScreenState extends State<CaseFormScreen> {
                   flex: 3,
                   child: Column(
                     children: [
-                      widget.compact
-                          ? fields
-                          : NcCard(padding: 16, children: [fields]),
+                      NcCard(padding: 16, children: [fields]),
                       if (stockPicker != null) ...[
                         const SizedBox(height: 16),
                         stockPicker,
@@ -165,7 +166,7 @@ class _CaseFormScreenState extends State<CaseFormScreen> {
                     ],
                   ),
                 ),
-                SizedBox(width: widget.compact ? 12 : 20),
+                const SizedBox(width: 20),
                 Expanded(flex: 2, child: bill),
               ],
             )
@@ -174,13 +175,10 @@ class _CaseFormScreenState extends State<CaseFormScreen> {
               children: [
                 fields,
                 if (stockPicker != null) ...[
-                  const SizedBox(height: 16),
+                  SizedBox(height: widget.compact ? 10 : 16),
                   stockPicker,
                 ],
-                if (widget.compact)
-                  const Divider(height: 16)
-                else
-                  const SizedBox(height: 20),
+                SizedBox(height: widget.compact ? 10 : 20),
                 bill,
               ],
             ),
@@ -219,16 +217,22 @@ class _CaseFormScreenState extends State<CaseFormScreen> {
       ],
     );
     final tabs = widget.inDialog
-        ? DefaultTabController(
-            length: 2,
-            initialIndex: draft.outside ? 1 : 0,
-            child: TabBar(
-              onTap: (index) => setState(() => draft.outside = index == 1),
-              tabs: const [
-                Tab(child: NcStatusBadge('inside')),
-                Tab(child: NcStatusBadge('outside')),
-              ],
-            ),
+        ? NcTabs<bool>(
+            selected: draft.outside,
+            maxWidth: 320,
+            items: [
+              NcTabItem(
+                value: false,
+                label: context.t('inside'),
+                icon: Icons.local_hospital_outlined,
+              ),
+              NcTabItem(
+                value: true,
+                label: context.t('outside'),
+                icon: Icons.home_outlined,
+              ),
+            ],
+            onChanged: (v) => setState(() => draft.outside = v),
           )
         : const SizedBox.shrink();
     final formWidget = Form(

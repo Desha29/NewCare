@@ -2063,8 +2063,14 @@ abstract class AppLocalizations {
   /// No description provided for @searchCatalogue.
   ///
   /// In en, this message translates to:
-  /// **'Search and select a procedureâ€¦'**
+  /// **'Search and select a procedure…'**
   String get searchCatalogue;
+
+  /// No description provided for @searchSupplies.
+  ///
+  /// In en, this message translates to:
+  /// **'Search and select a supply…'**
+  String get searchSupplies;
 
   /// No description provided for @caseReference.
   ///

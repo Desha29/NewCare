@@ -15,24 +15,35 @@ class CaseLocationHeading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = NcStatusBadge.colors(location.name);
+    final icon = location == CaseLocation.inside
+        ? Icons.local_hospital_outlined
+        : Icons.home_outlined;
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(
         horizontal: 16,
-        vertical: compact ? 12 : 16,
+        vertical: compact ? 8 : 14,
       ),
       decoration: BoxDecoration(
         color: colors.$1,
         borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: colors.$2.withValues(alpha: 0.2)),
       ),
-      child: Text(
-        context.t(location.name),
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontSize: compact ? 18 : 22,
-          fontWeight: FontWeight.w700,
-          color: colors.$2,
-        ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, color: colors.$2, size: compact ? 18 : 22),
+          const SizedBox(width: 8),
+          Text(
+            context.t(location.name),
+            style: TextStyle(
+              fontSize: compact ? 16 : 20,
+              fontWeight: FontWeight.w700,
+              color: colors.$2,
+              fontFamily: 'Cairo',
+            ),
+          ),
+        ],
       ),
     );
   }

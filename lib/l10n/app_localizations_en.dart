@@ -1011,7 +1011,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Enter a valid amount within the outstanding balance; the agreed price cannot be less than receipts';
 
   @override
-  String get searchCatalogue => 'Search and select a procedureâ€¦';
+  String get searchCatalogue => 'Search and select a procedure…';
+
+  @override
+  String get searchSupplies => 'Search and select a supply…';
 
   @override
   String get caseReference => 'Case reference';

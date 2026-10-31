@@ -328,6 +328,7 @@
   "casePaymentAdded": "تم تحصيل دفعة للحالة",
   "invalidPaymentAmount": "أدخل مبلغًا صحيحًا لا يتجاوز المتبقي، ولا يقل إجمالي السعر عن المدفوع",
   "searchCatalogue": "ابحث واختر إجراء…",
+  "searchSupplies": "ابحث واختر مستلزم…",
   "caseReference": "رقم الحالة",
   "searchCaseBook": "ابحث بالإجراء أو العنوان أو التمريض أو رقم الحالة",
   "outstandingCases": "حالات عليها متبقي",

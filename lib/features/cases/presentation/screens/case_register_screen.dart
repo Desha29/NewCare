@@ -44,7 +44,7 @@ class _CaseRegisterScreenState extends State<CaseRegisterScreen> {
             key: outside ? outsideForm : insideForm,
             outside: outside,
             compact: true,
-            header: CaseLocationHeading(location: location),
+            header: CaseLocationHeading(location: location, compact: true),
             minHeight: fillHeight
                 ? (widget.availableHeight - 24).clamp(0, double.infinity)
                 : 0,

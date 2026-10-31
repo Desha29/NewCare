@@ -14,7 +14,7 @@ import '../../../../core/widgets/nc_detail_page.dart';
 import '../../../../core/widgets/nc_status_badge.dart';
 import '../../../workspace/data/models/workspace_snapshot.dart';
 import '../../data/models/case_record.dart';
-import '../screens/case_details_screen.dart';
+import 'case_details_dialog.dart';
 import 'case_payment_dialog.dart';
 
 class CaseLedgerSection extends StatelessWidget {
@@ -158,18 +158,7 @@ class CaseLedgerSection extends StatelessWidget {
                   ),
                 ),
           emptyLabel: context.t('noCases'),
-          onRowTap: (i) {
-            final c = records[i];
-            NcDetailPage.open(
-              context,
-              tag: 'ledger-${location.name}-${c.id}',
-              title: label(c),
-              child: CaseDetailsScreen(
-                caseId: c.id,
-                onBack: () => Navigator.pop(context),
-              ),
-            );
-          },
+          onRowTap: (i) => CaseDetailsDialog.open(context, records[i].id),
           actions: (i) => Row(
             mainAxisSize: MainAxisSize.min,
             children: [
