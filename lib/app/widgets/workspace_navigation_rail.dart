@@ -14,9 +14,15 @@ class WorkspaceNavigationRail extends StatelessWidget {
   const WorkspaceNavigationRail({super.key});
   @override
   Widget build(BuildContext context) {
-    final state = context.watch<AppCubit>().state;
+    final app = context.watch<AppCubit>();
+    final state = app.state;
     final manager = state.page.isManager && state.managerUnlocked;
-    final pages = manager ? managerNavigation : nurseNavigation;
+    final pages = (manager ? managerNavigation : nurseNavigation).where(
+      (page) =>
+          page != AppPage.developerDiagnostics ||
+          !app.cloudAuthentication ||
+          app.managerIdentity?.viewDiagnostics == true,
+    );
     return ColoredBox(
       color: AppColors.navyDark,
       child: Padding(

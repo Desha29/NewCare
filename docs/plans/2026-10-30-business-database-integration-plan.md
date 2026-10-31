@@ -861,3 +861,23 @@ flowchart LR
 - [Supabase Free pricing](https://supabase.com/pricing)، [Free-plan backups guidance](https://supabase.com/docs/guides/platform/backups). حدود الحصص مراجعة في تاريخ المستند وليست أسعارًا أو سعة مضمونة للأبد.
 
 المصادر توثق إمكانات الأدوات. الجداول والأذونات وطرق حل التعارضات هنا **قرارات تصميم مقترحة للمشروع** وليست إعدادات تحققنا من وجودها في قاعدة بيانات منشأة.
+
+
+## Approved implementation delta: username and offline manager access
+
+The user approved beginning implementation, manager accounts only (nurses still
+select their names), and a new NewCare project in the Mostafa organization with
+no paid add-ons. The user then explicitly required local manager login without
+network access and no email confirmation. These decisions supersede any earlier
+online-only manager-login or email-verification assumption in this plan.
+
+Manager Auth uses a stable internal username identifier. The editable contact
+email is profile information and never changes sign-in or sends confirmation.
+The first online login provisions a protected, seven-day offline verifier on
+that Windows device. Server denial never falls back to the cached password.
+Offline role revocation cannot be immediate; account administration stays online.
+
+The first implementation increment and its outstanding integration work are
+recorded in [implementation progress](2026-10-30-implementation-progress.md).
+The durable journal is implemented; financial cloud RPCs and the sync worker are
+not yet implemented. No Edge Functions or service-role keys are introduced.

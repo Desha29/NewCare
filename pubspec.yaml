@@ -18,6 +18,12 @@ dependencies:
   cupertino_icons: ^2.0.0
   device_preview: ^3.0.0
   crypt: ^4.3.1
+  sqlite3: ^3.8.0
+  cryptography: ^2.9.0
+  flutter_secure_storage: ^11.2.0
+  supabase_flutter: ^2.18.3
+  path: ^1.9.1
+  http: ^1.6.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

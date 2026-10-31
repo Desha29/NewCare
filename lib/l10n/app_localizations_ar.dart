@@ -1246,4 +1246,342 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get caseAddedAt => 'تاريخ ووقت الإضافة';
+
+  @override
+  String get developerDiagnostics => 'تشخيص البيانات';
+
+  @override
+  String get diagnosticsManagerOnly => 'قسم مقفول داخل مساحة المدير';
+
+  @override
+  String get diagnosticsRefresh => 'فحص البيانات المحلية';
+
+  @override
+  String get syncNotConfigured =>
+      'مزامنة البيانات لم تُفعّل بعد — لا يمكن تأكيد التطابق';
+
+  @override
+  String get diagnosticsVerificationHelp =>
+      'تظهر «متطابقين» فقط بعد فحص محتوى البيانات في نفس النطاق والإصدار، مع عدم وجود عمليات معلقة أو تعارضات.';
+
+  @override
+  String get diagnosticsPending => 'عمليات محلية تنتظر الربط والمزامنة';
+
+  @override
+  String get diagnosticsDataset => 'البيانات';
+
+  @override
+  String get diagnosticsLocal => 'على الجهاز';
+
+  @override
+  String get diagnosticsCloud => 'في Supabase';
+
+  @override
+  String get diagnosticsLocalCheckedAt => 'آخر فحص محلي';
+
+  @override
+  String get diagnosticsMatched => 'متطابقين';
+
+  @override
+  String get diagnosticsDifferent => 'غير متطابقين';
+
+  @override
+  String get diagnosticsUnavailable => 'تعذر التحقق';
+
+  @override
+  String get diagnosticsPendingStatus => 'بانتظار المزامنة أو معالجة التعارض';
+
+  @override
+  String get diagnosticsPayments => 'الدفعات الإضافية';
+
+  @override
+  String get managerRequired => 'هذا القسم متاح للمدير فقط';
+
+  @override
+  String get username => 'اسم المستخدم';
+
+  @override
+  String get previewUsername => 'اسم المستخدم التجريبي: manager';
+
+  @override
+  String get offlineLoginHelp =>
+      'بعد دخول ناجح أونلاين، يمكنك الدخول على نفس الجهاز بدون إنترنت لمدة ٧ أيام. إدارة الحسابات تحتاج اتصالًا.';
+
+  @override
+  String get offlineLoginUnavailable =>
+      'يلزم أول دخول أونلاين لهذا المدير على هذا الجهاز';
+
+  @override
+  String get offlineLoginExpired =>
+      'انتهت صلاحية الدخول المحلي أو تغير وقت الجهاز. اتصل بالإنترنت للتحقق.';
+
+  @override
+  String get offlineLoginLocked =>
+      'الدخول المحلي مقفول مؤقتًا بعد محاولات خاطئة. حاول بعد ١٥ دقيقة.';
+
+  @override
+  String get onlineAccountChangeRequired =>
+      'تعديل الحساب يتطلب اتصالًا وتحققًا من المدير';
+
+  @override
+  String get cloudFirstSetup => 'إعداد المركز وأول مدير';
+
+  @override
+  String get cloudFirstSetupHelp =>
+      'أنشئ أول مدير باسم مستخدم وكلمة مرور واربط جهاز المركز. البريد للتواصل فقط، بدون رسالة تأكيد. التمريض يختار اسمه بدون حساب.';
+
+  @override
+  String get usernameHint => '٣–٣٢ حرفًا إنجليزيًا صغيرًا أو رقمًا أو _';
+
+  @override
+  String get invalidEmail => 'أدخل بريدًا إلكترونيًا صالحًا';
+
+  @override
+  String get securePasswordHint => 'كلمة المرور ١٢ حرفًا على الأقل';
+
+  @override
+  String get managerEmailVerificationRequired =>
+      'افتح رسالة Supabase لتأكيد البريد، ثم اضغط تفعيل بعد التأكيد.';
+
+  @override
+  String get deviceEnrollmentRequired =>
+      'الجهاز غير معتمد. يلزم إتمام إعداد جهاز المركز بواسطة مدير أونلاين.';
+
+  @override
+  String get cloudSetupFailed =>
+      'تعذر إتمام الإعداد. تحقق من الاتصال وإعدادات الدخول، ثم أعد المحاولة. لو الحساب اتعمل بالفعل، استخدم ربط مدير موجود.';
+
+  @override
+  String get createFirstManager => 'إنشاء المدير وإعداد المركز';
+
+  @override
+  String get activateVerifiedManager => 'ربط مدير موجود';
+
+  @override
+  String get managerAccounts => 'حسابات المديرين';
+
+  @override
+  String get managerAccountsHelp =>
+      'أضف مديرًا باسم مستخدم وكلمة مرور. البريد ضمن بيانات التواصل بدون رسالة تأكيد. التمريض يضاف من صفحة التمريض بدون حساب دخول.';
+
+  @override
+  String get addManager => 'إضافة مدير';
+
+  @override
+  String get managerInvitationSent =>
+      'تم إنشاء حساب المدير. يمكنه الدخول باسم المستخدم وكلمة المرور بدون تأكيد بريد.';
+
+  @override
+  String get managerCreationFailed =>
+      'تعذر إنشاء حساب المدير. تحقق من اسم المستخدم والاتصال، ثم أعد المحاولة.';
+
+  @override
+  String get emailChangeVerificationHelp =>
+      'البريد ضمن بيانات التواصل ويمكن تغييره بدون تأكيد. الدخول يظل باسم المستخدم.';
+
+  @override
+  String get emailConfirmationStillEnabled =>
+      'يلزم إيقاف Confirm email في إعدادات Supabase لإكمال حسابات اسم المستخدم بدون رسائل تأكيد.';
+
+  @override
+  String get anonymousSignInNotEnabled =>
+      'فعّل Anonymous Sign-ins في Supabase لاعتماد جهاز المركز بدون حسابات للتمريض.';
+
+  @override
+  String get localDataSyncPending =>
+      'البيانات على الجهاز — المزامنة لم تُفعّل بعد';
+
+  @override
+  String get offlineManagerSession =>
+      'دخول مدير محلي بدون إنترنت — تغييرات الحسابات تحتاج اتصالًا';
+
+  @override
+  String get centerBindingMismatch =>
+      'هذا الجهاز مربوط بمركز آخر؛ لا يمكن دمج بيانات مركزين.';
+
+  @override
+  String get managerIdentityRefreshed => 'تحديث هوية المدير في قائمة التمريض';
+
+  @override
+  String get inventory => 'المخزن';
+
+  @override
+  String get addStockItem => 'إضافة صنف مخزن';
+
+  @override
+  String get editStockItem => 'تعديل صنف المخزن';
+
+  @override
+  String get stockQuantity => 'الكمية المتاحة';
+
+  @override
+  String get quantity => 'الكمية';
+
+  @override
+  String get archiveStockItem => 'أرشفة صنف المخزن';
+
+  @override
+  String get confirmArchive => 'هل أنت متأكد من الأرشفة';
+
+  @override
+  String get archive => 'أرشفة';
+
+  @override
+  String get laboratory => 'المعمل';
+
+  @override
+  String get addLabTest => 'إضافة تحليل';
+
+  @override
+  String get editLabTest => 'تعديل تحليل';
+
+  @override
+  String get archiveLabTest => 'أرشفة التحليل';
+
+  @override
+  String get labCatalogue => 'كتالوج التحاليل';
+
+  @override
+  String get labOrders => 'طلبات المعمل';
+
+  @override
+  String get labTotal => 'إجمالي المعمل';
+
+  @override
+  String get labRemaining => 'المتبقي';
+
+  @override
+  String get labPaidNow => 'المدفوع الآن';
+
+  @override
+  String get collectLabPayment => 'تحصيل دفعة';
+
+  @override
+  String get newLabOrder => 'طلب تحليل';
+
+  @override
+  String get selectLabTests => 'اختر التحاليل';
+
+  @override
+  String get itemsRequired => 'اختر تحليلًا واحدًا على الأقل';
+
+  @override
+  String get patientName => 'اسم المريض';
+
+  @override
+  String get patientAge => 'عمر المريض';
+
+  @override
+  String get ageUnit => 'وحدة العمر';
+
+  @override
+  String get yearUnit => 'سنوات';
+
+  @override
+  String get monthUnit => 'شهور';
+
+  @override
+  String get dayUnit => 'أيام';
+
+  @override
+  String get resultStatus => 'حالة النتيجة';
+
+  @override
+  String get resultReceived => 'تم تسليم النتيجة';
+
+  @override
+  String get resultPending => 'بانتظار النتيجة';
+
+  @override
+  String get markResultReceived => 'تأكيد تسليم النتيجة';
+
+  @override
+  String get labReceipt => 'إيصال معمل';
+
+  @override
+  String get labPayment => 'تحصيل معمل';
+
+  @override
+  String get operationalDay => 'اليوم التشغيلي';
+
+  @override
+  String get operationalDayHistory => 'سجل الأيام التشغيلية';
+
+  @override
+  String get dailyNetCash => 'صافي كاش اليوم';
+
+  @override
+  String get dailyWallet => 'محفظة اليوم';
+
+  @override
+  String get noSuppliesUsed => 'لم تُستهلك مستلزمات';
+
+  @override
+  String get usedSupplies => 'المستلزمات المستهلكة';
+
+  @override
+  String get paid => 'مدفوع';
+
+  @override
+  String get actions => 'الإجراءات';
+
+  @override
+  String get invalidStockQuantity => 'كمية المخزن غير صالحة';
+
+  @override
+  String get stockNotFound => 'صنف المخزن غير موجود';
+
+  @override
+  String get insufficientStock => 'الكمية في المخزن غير كافية';
+
+  @override
+  String get stockChanged => 'تم تعديل المخزن بواسطة عملية أخرى';
+
+  @override
+  String get labTestChanged => 'تم تعديل التحليل بواسطة عملية أخرى';
+
+  @override
+  String get duplicateName => 'الاسم موجود بالفعل';
+
+  @override
+  String get testNotFound => 'التحليل غير موجود';
+
+  @override
+  String get invalidAge => 'عمر المريض غير صالح';
+
+  @override
+  String get stalePrice => 'سعر التحليل تغيّر في الكتالوج';
+
+  @override
+  String get orderNotFound => 'طلب المعمل غير موجود';
+
+  @override
+  String get stockSaved => 'تم حفظ صنف المخزن';
+
+  @override
+  String get stockArchived => 'تم أرشفة صنف المخزن';
+
+  @override
+  String get labTestSaved => 'تم حفظ التحليل';
+
+  @override
+  String get labTestArchived => 'تم أرشفة التحليل';
+
+  @override
+  String get labOrderAdded => 'تم تسجيل طلب المعمل';
+
+  @override
+  String get labPaymentAdded => 'تم تحصيل دفعة المعمل';
+
+  @override
+  String get labReceivedUpdated => 'تم تحديث حالة تسليم النتيجة';
+
+  @override
+  String get noLabOrders => 'لا توجد طلبات معمل حتى الآن';
+
+  @override
+  String get noLabTests => 'لا توجد تحاليل مسجلة في الكتالوج حتى الآن';
+
+  @override
+  String get noStockItems => 'لا توجد أصناف في المخزن حتى الآن';
 }

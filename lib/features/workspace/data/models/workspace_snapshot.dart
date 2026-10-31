@@ -7,6 +7,11 @@ import '../../../catalogue/data/models/procedure.dart';
 import '../../../drawer/data/models/cash_movement.dart';
 import 'legacy/shift_record.dart';
 import 'audit_entry.dart';
+import '../../../inventory/data/models/stock_item.dart';
+import '../../../inventory/data/models/stock_movement.dart';
+import '../../../laboratory/data/models/lab_test.dart';
+import '../../../laboratory/data/models/lab_order.dart';
+import '../../../laboratory/data/models/lab_payment.dart';
 
 class WorkspaceSnapshot {
   WorkspaceSnapshot({
@@ -19,6 +24,11 @@ class WorkspaceSnapshot {
     List<AuditEntry> audit = const [],
     List<CasePayment> payments = const [],
     List<DrawerHandover> handovers = const [],
+    List<StockItem> stockItems = const [],
+    List<StockMovement> stockMovements = const [],
+    List<LabTest> labTests = const [],
+    List<LabOrder> labOrders = const [],
+    List<LabPayment> labPayments = const [],
     this.openingMinor = 0,
     this.setupDone = false,
     this.managerName = '',
@@ -33,9 +43,15 @@ class WorkspaceSnapshot {
        audit = List.unmodifiable(audit),
        payments = List.unmodifiable(payments),
        handovers = List.unmodifiable(handovers),
+       stockItems = List.unmodifiable(stockItems),
+       stockMovements = List.unmodifiable(stockMovements),
+       labTests = List.unmodifiable(labTests),
+       labOrders = List.unmodifiable(labOrders),
+       labPayments = List.unmodifiable(labPayments),
        permissions = Map.unmodifiable(
          permissions.map((k, v) => MapEntry(k, List<String>.unmodifiable(v))),
        );
+
   final List<NursingMember> staff;
   final List<Procedure> procedures;
   final List<SupplyItem> supplies;
@@ -45,13 +61,28 @@ class WorkspaceSnapshot {
   final List<AuditEntry> audit;
   final List<CasePayment> payments;
   final List<DrawerHandover> handovers;
+  final List<StockItem> stockItems;
+  final List<StockMovement> stockMovements;
+  final List<LabTest> labTests;
+  final List<LabOrder> labOrders;
+  final List<LabPayment> labPayments;
+
   String? get drawerHolder => handovers.lastOrNull?.toStaffId;
+
   int paidFor(CaseRecord record) =>
       record.amountMinor +
       payments
           .where((p) => p.caseId == record.id)
           .fold<int>(0, (s, p) => s + p.amountMinor);
+
   int remainingFor(CaseRecord record) => record.invoiceMinor - paidFor(record);
+
+  int paidForLab(LabOrder order) => labPayments
+      .where((p) => p.orderId == order.id)
+      .fold<int>(0, (s, p) => s + p.amountMinor);
+
+  int remainingForLab(LabOrder order) => order.totalMinor - paidForLab(order);
+
   int get drawerBalance =>
       openingMinor +
       cases
@@ -60,13 +91,18 @@ class WorkspaceSnapshot {
       payments
           .where((p) => p.method == PaymentMethod.cash)
           .fold<int>(0, (s, p) => s + p.amountMinor) +
+      labPayments
+          .where((p) => p.method == PaymentMethod.cash)
+          .fold<int>(0, (s, p) => s + p.amountMinor) +
       movements.fold<int>(0, (s, m) => s + m.signedMinor) +
       handovers.fold<int>(0, (s, h) => s + h.differenceMinor) +
       shifts.fold<int>(0, (s, h) => s + (h.closingDifferenceMinor ?? 0));
+
   final int openingMinor;
   final bool setupDone;
   final String managerName, managerEmail;
   final Map<String, List<String>> permissions;
+
   ShiftRecord? get activeShift {
     for (final shift in shifts.reversed) {
       if (shift.isOpen) return shift;
@@ -84,6 +120,7 @@ class WorkspaceSnapshot {
       movements
           .where((m) => m.shiftId == shift.id)
           .fold<int>(0, (s, m) => s + m.signedMinor);
+
   WorkspaceSnapshot copyWith({
     List<NursingMember>? staff,
     List<Procedure>? procedures,
@@ -94,6 +131,11 @@ class WorkspaceSnapshot {
     List<AuditEntry>? audit,
     List<CasePayment>? payments,
     List<DrawerHandover>? handovers,
+    List<StockItem>? stockItems,
+    List<StockMovement>? stockMovements,
+    List<LabTest>? labTests,
+    List<LabOrder>? labOrders,
+    List<LabPayment>? labPayments,
     int? openingMinor,
     bool? setupDone,
     String? managerName,
@@ -109,14 +151,25 @@ class WorkspaceSnapshot {
     audit: audit ?? this.audit,
     payments: payments ?? this.payments,
     handovers: handovers ?? this.handovers,
+    stockItems: stockItems ?? this.stockItems,
+    stockMovements: stockMovements ?? this.stockMovements,
+    labTests: labTests ?? this.labTests,
+    labOrders: labOrders ?? this.labOrders,
+    labPayments: labPayments ?? this.labPayments,
     openingMinor: openingMinor ?? this.openingMinor,
     setupDone: setupDone ?? this.setupDone,
     managerName: managerName ?? this.managerName,
     managerEmail: managerEmail ?? this.managerEmail,
     permissions: permissions ?? this.permissions,
   );
+
   Map<String, dynamic> toJson() => {
-    'version': 2,
+    'version': 3,
+    'stockItems': stockItems.map((x) => x.toJson()).toList(),
+    'stockMovements': stockMovements.map((x) => x.toJson()).toList(),
+    'labTests': labTests.map((x) => x.toJson()).toList(),
+    'labOrders': labOrders.map((x) => x.toJson()).toList(),
+    'labPayments': labPayments.map((x) => x.toJson()).toList(),
     'handovers': handovers.map((h) => h.toJson()).toList(),
     'payments': payments.map((p) => p.toJson()).toList(),
     'supplies': supplies.map((x) => x.toJson()).toList(),
@@ -132,9 +185,25 @@ class WorkspaceSnapshot {
     'managerEmail': managerEmail,
     'permissions': permissions,
   };
+
   factory WorkspaceSnapshot.fromJson(
     Map<String, dynamic> j,
   ) => WorkspaceSnapshot(
+    stockItems: (j['stockItems'] as List? ?? [])
+        .map((x) => StockItem.fromJson(Map<String, dynamic>.from(x as Map)))
+        .toList(),
+    stockMovements: (j['stockMovements'] as List? ?? [])
+        .map((x) => StockMovement.fromJson(Map<String, dynamic>.from(x as Map)))
+        .toList(),
+    labTests: (j['labTests'] as List? ?? [])
+        .map((x) => LabTest.fromJson(Map<String, dynamic>.from(x as Map)))
+        .toList(),
+    labOrders: (j['labOrders'] as List? ?? [])
+        .map((x) => LabOrder.fromJson(Map<String, dynamic>.from(x as Map)))
+        .toList(),
+    labPayments: (j['labPayments'] as List? ?? [])
+        .map((x) => LabPayment.fromJson(Map<String, dynamic>.from(x as Map)))
+        .toList(),
     handovers: (j['handovers'] as List? ?? [])
         .map(
           (h) => DrawerHandover.fromJson(Map<String, dynamic>.from(h as Map)),

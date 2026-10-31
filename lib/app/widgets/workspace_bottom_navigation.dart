@@ -24,6 +24,7 @@ class WorkspaceBottomNavigation extends StatelessWidget {
         : [
             AppPage.activeShift,
             AppPage.shiftCases,
+            AppPage.laboratory,
             AppPage.cashMovement,
             AppPage.login,
           ];

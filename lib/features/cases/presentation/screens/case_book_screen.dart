@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../app/cubit/app_cubit.dart';
@@ -149,7 +149,7 @@ class _CaseBookScreenState extends State<CaseBookScreen> {
                         ),
                     ],
                     onChanged: (value) => setState(
-                      () => payment = value == null || value == 'all'
+                      () => payment = value == 'all'
                           ? null
                           : PaymentMethod.values.byName(value),
                     ),

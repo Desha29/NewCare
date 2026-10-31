@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import '../../../../core/localization/localization_extensions.dart';
 import '../../../../core/widgets/nc_card.dart';
@@ -52,7 +52,7 @@ class TransactionFilters extends StatelessWidget {
                     for (final k in TransactionEntry.categoryKeys)
                       DropdownMenuItem(value: k, child: Text(context.t(k))),
                   ],
-                  onChanged: (v) => onKind(v!),
+                  onChanged: (v) => onKind(v),
                 ),
               ),
               SizedBox(
@@ -71,7 +71,7 @@ class TransactionFilters extends StatelessWidget {
                         child: Text(context.t(p.name)),
                       ),
                   ],
-                  onChanged: (v) => onPayment(v!),
+                  onChanged: (v) => onPayment(v),
                 ),
               ),
               SizedBox(
@@ -88,11 +88,11 @@ class TransactionFilters extends StatelessWidget {
                       DropdownMenuItem(
                         value: n.id,
                         child: Text(
-                          '${n.name}${n.isManager ? ' · ${context.t('manager')}' : ''}',
+                          '${n.name}${n.isManager ? ' Â· ${context.t('manager')}' : ''}',
                         ),
                       ),
                   ],
-                  onChanged: (v) => onMember(v!),
+                  onChanged: (v) => onMember(v),
                 ),
               ),
             ],

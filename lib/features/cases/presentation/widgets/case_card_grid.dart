@@ -87,6 +87,50 @@ class CaseCardGrid extends StatelessWidget {
                               ),
                             ),
                           NcStatusBadge(r.location.name),
+                          if (r.stockUsages.isNotEmpty ||
+                              r.supplies.isNotEmpty) ...[
+                            const SizedBox(height: 6),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 3,
+                              ),
+                              decoration: BoxDecoration(
+                                color:
+                                    AppColors.tealLight.withValues(alpha: 0.6),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.inventory_2_outlined,
+                                    size: 12,
+                                    color: AppColors.teal,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Expanded(
+                                    child: Text(
+                                      r.stockUsages.isNotEmpty
+                                          ? r.stockUsages
+                                              .map(
+                                                (u) =>
+                                                    '${u.name} × ${u.quantity}',
+                                              )
+                                              .join('، ')
+                                          : r.supplies.join('، '),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.text,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                           const SizedBox(height: 6),
                           Text(
                             '${context.t('paidTotal')}: ${context.money(workspace.paidFor(r))}',

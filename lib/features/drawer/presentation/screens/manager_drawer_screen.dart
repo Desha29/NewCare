@@ -1,5 +1,6 @@
 import '../widgets/drawer_handover_button.dart';
 import '../widgets/drawer_handover_panel.dart';
+import '../widgets/operational_day_history.dart';
 import '../../../../core/widgets/nc_button.dart';
 import '../../../transactions/presentation/widgets/new_transaction_dialog.dart';
 
@@ -56,6 +57,7 @@ class ManagerDrawerScreen extends StatelessWidget {
         ),
         DailyRevenueChart(summary: summary),
         const CashMovementsPanel(),
+        const OperationalDayHistory(),
         const DrawerHandoverButton(),
         const DrawerHandoverHistory(),
       ],

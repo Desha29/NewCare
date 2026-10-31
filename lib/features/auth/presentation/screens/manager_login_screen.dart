@@ -20,21 +20,15 @@ class ManagerLoginScreen extends StatefulWidget {
 }
 
 class _ManagerLoginScreenState extends State<ManagerLoginScreen> {
-  final password = TextEditingController(), email = TextEditingController();
-  bool error = false, loaded = false;
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!loaded) {
-      loaded = true;
-      email.text = context.read<WorkspaceCubit>().state.managerEmail;
-    }
-  }
+  final password = TextEditingController();
+  final username = TextEditingController();
+  String? error;
+  bool loading = false;
 
   @override
   void dispose() {
     password.dispose();
-    email.dispose();
+    username.dispose();
     super.dispose();
   }
 
@@ -60,38 +54,56 @@ class _ManagerLoginScreenState extends State<ManagerLoginScreen> {
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodySmall,
             ),
-            if (error)
-              NcNotice(
-                title: context.t('wrongPassword'),
-                tone: NoticeTone.danger,
-              ),
+            if (error != null)
+              NcNotice(title: context.t(error!), tone: NoticeTone.danger),
             NcField(
-              label: context.t('email'),
-              controller: email,
-              keyboardType: TextInputType.emailAddress,
+              label: context.t('username'),
+              controller: username,
+              enabled: !loading,
             ),
             NcField(
               label: context.t('password'),
               controller: password,
               obscure: true,
+              enabled: !loading,
             ),
             NcButton(
               label: context.t('signIn'),
-              onPressed: () {
-                if (!context.read<AppCubit>().unlock(password.text)) {
-                  setState(() => error = true);
-                }
-              },
+              busy: loading,
+              onPressed: loading
+                  ? null
+                  : () async {
+                      setState(() {
+                        loading = true;
+                        error = null;
+                      });
+                      final app = context.read<AppCubit>();
+                      final accepted = await app.signIn(
+                        username.text,
+                        password.text,
+                      );
+                      if (!mounted) return;
+                      setState(() {
+                        loading = false;
+                        error = accepted ? null : app.loginError;
+                      });
+                    },
             ),
           ],
         ),
-        NcNotice(
-          title: context.t('previewGate'),
-          detail: context.watch<AppCubit>().state.customPassword
-              ? null
-              : context.t('previewPassword'),
-          tone: NoticeTone.warning,
-        ),
+        if (!context.watch<AppCubit>().cloudAuthentication)
+          NcNotice(
+            title: context.t('previewGate'),
+            detail: context.watch<AppCubit>().state.customPassword
+                ? null
+                : '${context.t('previewPassword')} · ${context.t('previewUsername')}',
+            tone: NoticeTone.warning,
+          ),
+        if (context.watch<AppCubit>().cloudAuthentication)
+          NcNotice(
+            title: context.t('offlineLoginHelp'),
+            tone: NoticeTone.warning,
+          ),
         NcButton(
           label: context.t('returnNursing'),
           secondary: true,

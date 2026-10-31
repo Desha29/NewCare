@@ -1,3 +1,4 @@
+import '../widgets/case_details_dialog.dart';
 import '../widgets/case_price_dialog.dart';
 import '../widgets/case_payment_dialog.dart';
 import '../../../../core/widgets/nc_signed_money.dart';
@@ -21,6 +22,9 @@ class CaseDetailsScreen extends StatelessWidget {
   const CaseDetailsScreen({super.key, this.caseId, this.onBack});
   final String? caseId;
   final VoidCallback? onBack;
+
+  static Future<void> open(BuildContext context, String caseId) =>
+      CaseDetailsDialog.open(context, caseId);
   @override
   Widget build(BuildContext context) {
     final data = context.watch<WorkspaceCubit>().state;
@@ -38,6 +42,13 @@ class CaseDetailsScreen extends StatelessWidget {
       context.t('procedure'):
           proc?.name(Localizations.localeOf(context).languageCode) ??
           record.procedureId,
+      context.t('usedSupplies'): record.stockUsages.isNotEmpty
+          ? record.stockUsages
+              .map((u) => '${u.name} × ${u.quantity}')
+              .join('، ')
+          : (record.supplies.isNotEmpty
+              ? record.supplies.join('، ')
+              : context.t('noSuppliesUsed')),
       context.t('agreedPrice'): context.money(record.invoiceMinor),
       context.t('paidTotal'): context.money(data.paidFor(record)),
       context.t('remainingAmount'): context.money(data.remainingFor(record)),

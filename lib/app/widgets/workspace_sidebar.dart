@@ -13,6 +13,7 @@ import '../navigation/app_page.dart';
 const nurseNavigation = [
   AppPage.activeShift,
   AppPage.shiftCases,
+  AppPage.laboratory,
   AppPage.cashMovement,
 ];
 const managerNavigation = [
@@ -20,12 +21,15 @@ const managerNavigation = [
   AppPage.shifts,
   AppPage.caseLog,
   AppPage.transactions,
+  AppPage.inventory,
+  AppPage.managerLaboratory,
   AppPage.payroll,
   AppPage.nursing,
   AppPage.catalogue,
   AppPage.reports,
   AppPage.audit,
   AppPage.permissions,
+  AppPage.developerDiagnostics,
 ];
 IconData pageIcon(AppPage p) => switch (p) {
   AppPage.activeShift => Icons.medical_services_outlined,
@@ -34,6 +38,9 @@ IconData pageIcon(AppPage p) => switch (p) {
   AppPage.insideCaseBook ||
   AppPage.outsideCaseBook => Icons.folder_open_outlined,
   AppPage.cashMovement || AppPage.shifts => Icons.point_of_sale_outlined,
+  AppPage.laboratory ||
+  AppPage.managerLaboratory => Icons.biotech_outlined,
+  AppPage.inventory => Icons.inventory_2_outlined,
   AppPage.handover => Icons.swap_horiz,
   AppPage.overview => Icons.bar_chart,
   AppPage.payroll => Icons.account_balance_wallet_outlined,
@@ -42,6 +49,7 @@ IconData pageIcon(AppPage p) => switch (p) {
   AppPage.catalogue => Icons.medical_services_outlined,
   AppPage.reports => Icons.assessment_outlined,
   AppPage.audit => Icons.history,
+  AppPage.developerDiagnostics => Icons.fact_check_outlined,
   _ => Icons.settings_outlined,
 };
 
@@ -50,9 +58,15 @@ class WorkspaceSidebar extends StatelessWidget {
   final VoidCallback? onSelected;
   @override
   Widget build(BuildContext context) {
-    final state = context.watch<AppCubit>().state;
+    final app = context.watch<AppCubit>();
+    final state = app.state;
     final manager = state.page.isManager && state.managerUnlocked;
-    final items = manager ? managerNavigation : nurseNavigation;
+    final items = (manager ? managerNavigation : nurseNavigation).where(
+      (page) =>
+          page != AppPage.developerDiagnostics ||
+          !app.cloudAuthentication ||
+          app.managerIdentity?.viewDiagnostics == true,
+    );
     return ColoredBox(
       color: AppColors.navyDark,
       child: SafeArea(

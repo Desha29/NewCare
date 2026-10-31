@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'dart:convert';
+import 'dart:async';
 
 import 'package:crypt/crypt.dart';
 
 import '../../core/storage/string_store.dart';
 import '../navigation/app_page.dart';
+import '../../features/auth/data/models/manager_identity.dart';
+import '../../features/auth/data/repositories/manager_auth_repository.dart';
 
 class AppState {
   AppState({
@@ -56,11 +59,78 @@ class AppState {
 }
 
 class AppCubit extends Cubit<AppState> {
-  AppCubit(this.store, {bool configured = true})
-    : _configured = configured,
-      super(AppState(page: configured ? AppPage.activeShift : AppPage.setup));
+  AppCubit(
+    this.store, {
+    bool configured = true,
+    this.authentication,
+    this.onManagerVerified,
+  }) : _configured = configured,
+       super(AppState(page: configured ? AppPage.activeShift : AppPage.setup));
   bool _configured;
   final StringStore store;
+  final ManagerAuthRepository? authentication;
+  final Future<void> Function(ManagerIdentity)? onManagerVerified;
+  ManagerSession? _managerSession;
+  Timer? _offlineExpiry;
+  int _loginGeneration = 0;
+  ManagerIdentity? get managerIdentity => _managerSession?.identity;
+  bool get cloudAuthentication => authentication != null;
+  bool get offlineManager =>
+      _managerSession?.mode == ManagerSessionMode.offline;
+  String? get loginError => _loginError;
+  String? _loginError;
+
+  Future<bool> signIn(String username, String password) async {
+    final generation = ++_loginGeneration;
+    _loginError = null;
+    if (authentication == null) {
+      if (username.trim().toLowerCase() != 'manager') {
+        _loginError = 'wrongPassword';
+        return false;
+      }
+      final accepted = unlock(password);
+      if (!accepted) _loginError = 'wrongPassword';
+      return accepted;
+    }
+    try {
+      _managerSession = null;
+      _offlineExpiry?.cancel();
+      if (!isClosed) emit(state.copyWith(managerUnlocked: false));
+      final session = await authentication!.signIn(username, password);
+      if (isClosed || generation != _loginGeneration) return false;
+      if (onManagerVerified == null) {
+        throw StateError('Manager projection is required');
+      }
+      await onManagerVerified!(session.identity);
+      if (isClosed || generation != _loginGeneration) return false;
+      _managerSession = session;
+      final expires = session.expiresAt;
+      if (expires != null) {
+        final remaining = expires.difference(DateTime.now().toUtc());
+        if (remaining <= Duration.zero) {
+          _managerSession = null;
+          _loginError = 'offlineLoginExpired';
+          return false;
+        }
+        _offlineExpiry = Timer(remaining, lock);
+      }
+      emit(
+        state.copyWith(
+          managerUnlocked: true,
+          staffId: session.identity.id,
+          page: state.returnPage ?? AppPage.overview,
+        ),
+      );
+      return true;
+    } on ManagerAuthException catch (error) {
+      _loginError = error.code;
+      return false;
+    } catch (_) {
+      _loginError = 'saveFailed';
+      return false;
+    }
+  }
+
   String? _passwordHash;
   bool _settingsReady = false;
   Future<void> loadLocale() async {
@@ -115,6 +185,7 @@ class AppCubit extends Cubit<AppState> {
   }
 
   bool checkPassword(String password) {
+    if (authentication != null) return false;
     if (!_settingsReady) return false;
     if (_passwordHash == null) return password == 'newcare-demo';
     try {
@@ -125,6 +196,17 @@ class AppCubit extends Cubit<AppState> {
   }
 
   Future<String?> changePassword(String current, String next) async {
+    if (authentication != null) {
+      if (!state.managerUnlocked) return 'managerRequired';
+      try {
+        await authentication!.changePassword(current, next);
+        return null;
+      } on ManagerAuthException catch (error) {
+        return error.code;
+      } catch (_) {
+        return 'settingsSaveFailed';
+      }
+    }
     if (!state.managerUnlocked || !checkPassword(current)) {
       return 'wrongPassword';
     }
@@ -144,6 +226,12 @@ class AppCubit extends Cubit<AppState> {
   }
 
   void navigate(AppPage page) {
+    _loginGeneration++;
+    if (page == AppPage.developerDiagnostics &&
+        authentication != null &&
+        managerIdentity?.viewDiagnostics != true) {
+      page = AppPage.overview;
+    }
     if ([
       AppPage.startShift,
       AppPage.endShift,
@@ -169,10 +257,58 @@ class AppCubit extends Cubit<AppState> {
   }
 
   void selectStaff(String id) => emit(state.copyWith(staffId: id));
+  Future<String?> saveManagerProfile(String name, String email) async {
+    if (!state.managerUnlocked || authentication == null) {
+      return 'managerRequired';
+    }
+    try {
+      await authentication!.updateProfile(name, email);
+      _managerSession = authentication!.currentSession;
+      if (_managerSession != null) {
+        await onManagerVerified?.call(_managerSession!.identity);
+      }
+      if (!isClosed) emit(state.copyWith());
+      return null;
+    } on ManagerAuthException catch (error) {
+      return error.code;
+    } catch (_) {
+      return 'settingsSaveFailed';
+    }
+  }
+
+  Future<String?> createManager({
+    required String username,
+    required String name,
+    required String email,
+    required String password,
+  }) async {
+    if (!state.managerUnlocked || authentication == null) {
+      return 'managerRequired';
+    }
+    try {
+      final created = await authentication!.createManager(
+        username: username,
+        name: name,
+        email: email,
+        password: password,
+      );
+      if (onManagerVerified == null) {
+        throw StateError('Manager projection is required');
+      }
+      await onManagerVerified!(created);
+      return null;
+    } on ManagerAuthException catch (error) {
+      return error.code;
+    } catch (_) {
+      return 'managerCreationFailed';
+    }
+  }
+
   void selectCase(String id) =>
       emit(state.copyWith(caseId: id, page: AppPage.caseDetails));
   void setRange(DateTimeRange range) => emit(state.copyWith(range: range));
   bool unlock(String password) {
+    if (authentication != null) return false;
     if (!checkPassword(password)) return false;
     emit(
       state.copyWith(
@@ -183,16 +319,32 @@ class AppCubit extends Cubit<AppState> {
     return true;
   }
 
-  void lock() => emit(
-    state.copyWith(
-      managerUnlocked: false,
-      page: AppPage.activeShift,
-      returnPage: AppPage.overview,
-    ),
-  );
+  void lock() {
+    _loginGeneration++;
+    _offlineExpiry?.cancel();
+    _managerSession = null;
+    // Lock the local UI immediately, even when the network is unavailable.
+    authentication?.signOut().catchError((Object _) {});
+    emit(
+      state.copyWith(
+        managerUnlocked: false,
+        page: AppPage.activeShift,
+        returnPage: AppPage.overview,
+      ),
+    );
+  }
+
   void showSaved() => emit(state.copyWith(page: AppPage.saved));
   void completeSetup() {
+    if (authentication != null) return;
     _configured = true;
     emit(state.copyWith(managerUnlocked: true, page: AppPage.ready));
+  }
+
+  @override
+  Future<void> close() {
+    _loginGeneration++;
+    _offlineExpiry?.cancel();
+    return super.close();
   }
 }

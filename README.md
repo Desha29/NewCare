@@ -14,7 +14,7 @@ flutter run -d chrome
 ```
 
 The app opens with illustrative local data. Initial manager preview password: `newcare-demo` (until changed in Settings).
-The email field and password gate are UI previews; they are not production authentication.
+The default preview username is `manager`. This local gate is separate from the explicit cloud-auth mode described below.
 
 ## Implemented UI and local behavior
 
@@ -32,7 +32,7 @@ The email field and password gate are UI previews; they are not production authe
 - Hero transitions for suitable record details, preserving source filters; reduced-motion settings are respected.
 - Arabic RTL / English LTR, local Cairo Bold, reusable cards, tables, fields, dialogs and adaptive navigation.
 
-The shared nursing device uses staff selection. Manager preview access is separate; production authentication and cloud synchronization are not implemented by this local preview.
+The shared nursing device uses staff selection. Manager preview access is separate from cloud-auth mode. Operational cloud synchronization is not activated in this increment.
 
 ## Structure
 
@@ -41,12 +41,12 @@ flowchart TD
   UI[Adaptive screens and shared widgets] --> Cubit[Feature action Cubits]
   Cubit --> Contract[WorkspaceRepository]
   Contract --> Local[LocalWorkspaceRepository]
-  Local --> Store[StringStore / SharedPreferences]
+  Local --> Store[StringStore: protected Windows SQLite / web preview preferences]
   Local --> Stream[WorkspaceCubit snapshot stream]
   Stream --> UI
 ```
 
-The current repository persists locally. Supabase production authentication and cloud synchronization remain separate work; the diagram describes the working local implementation.
+The workspace repository persists locally. Optional Supabase manager authentication is implemented as a separate adapter; the operational sync worker remains future work. The diagram describes local case storage.
 
 Details open on a real Navigator page route through `NcDetailPage`, with a unique `NcHeroTitle` per source record. Selection controls and editing dialogs keep their existing interactions. Tests cover forward/back navigation, retained filters, reduced motion and opening details from the actual feature screens.
 
@@ -129,3 +129,33 @@ The drawer screen places outgoings on the right and live cash balance on the lef
 Settings contains the manager profile, a password-change form and editable navigation names. Changing the preview password requires the current password, a matching confirmation and at least eight characters. A salted SHA-512 crypt hash is saved locally; the password itself is not stored. Once changed, the old preview password no longer unlocks the manager area and its hint is hidden. This is still a local preview gate, not production authentication.
 
 Navigation names are saved per interface language and shared by sidebar, navigation rail, phone navigation and page header. Empty names use the translated default. Restore resets names for the current language; names are limited to 40 characters.
+
+
+## Cloud authentication and local durability increment
+
+See [implementation status, architecture and verification](docs/plans/2026-10-30-implementation-progress.md).
+Windows uses encrypted SQLite payloads with a durable pending-operation journal.
+The migration creates and verifies a protected backup before removing old
+plaintext preference values. It never replaces unreadable data with an empty
+workspace. Physical power-loss, installer preservation and portable key recovery
+are separate acceptance gates, not claims made by the current tests.
+
+The NewCare Supabase identity schema is deployed. Explicit cloud-auth mode adds
+first manager setup, username/password login, manager creation and own-profile
+editing. Contact email does not require confirmation and is separate from the
+internal Auth identifier. Nursing staff continue to select a name without a login.
+Manager offline login requires prior online verification on the same device and
+expires after seven days; it does not issue a Supabase token.
+
+```powershell
+flutter run -d windows --dart-define-from-file=config/local.json
+```
+
+The local config is ignored by Git; `config/example.json` is the template. Only
+publishable keys are accepted. Supabase must enable anonymous device sign-ins
+and disable Confirm email for this username-only provisioning flow. Provisioning
+refuses to send a confirmation message if that setting is still enabled.
+
+Data diagnostics is locked inside the manager area. Actual operational cloud
+sync and cloud manifests are not implemented yet; the screen explicitly states
+this and never claims that local and cloud data match based on equal counts.

@@ -2,6 +2,7 @@ import '../../../cases/data/models/case_payment.dart';
 import '../../../workspace/data/models/workspace_snapshot.dart';
 import '../../../cases/data/models/case_record.dart';
 import '../../../drawer/data/models/cash_movement.dart';
+import '../../../laboratory/data/models/lab_payment.dart';
 import '../../../../core/utils/center_clock.dart';
 
 class ReportSummary {
@@ -11,11 +12,14 @@ class ReportSummary {
     this.start,
     this.end,
     this.payments,
+    this.labPayments,
   );
   final List<CaseRecord> cases;
   final List<CashMovement> movements;
   final DateTime start, end;
   final List<CasePayment> payments;
+  final List<LabPayment> labPayments;
+
   factory ReportSummary.forRange(
     WorkspaceSnapshot data,
     DateTime start,
@@ -31,16 +35,21 @@ class ReportSummary {
       first,
       after,
       List.unmodifiable(data.payments.where((p) => includes(p.paidAt))),
+      List.unmodifiable(data.labPayments.where((p) => includes(p.createdAt))),
     );
   }
   int get revenueMinor =>
       cases.fold<int>(0, (s, c) => s + c.amountMinor) +
-      payments.fold<int>(0, (s, p) => s + p.amountMinor);
+      payments.fold<int>(0, (s, p) => s + p.amountMinor) +
+      labPayments.fold<int>(0, (s, p) => s + p.amountMinor);
   int get cashMinor =>
       cases
           .where((c) => c.payment == PaymentMethod.cash)
           .fold<int>(0, (s, c) => s + c.amountMinor) +
       payments
+          .where((p) => p.method == PaymentMethod.cash)
+          .fold<int>(0, (s, p) => s + p.amountMinor) +
+      labPayments
           .where((p) => p.method == PaymentMethod.cash)
           .fold<int>(0, (s, p) => s + p.amountMinor);
   int get walletMinor => revenueMinor - cashMinor;

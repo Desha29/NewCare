@@ -11,11 +11,19 @@ import '../features/drawer/presentation/cubit/drawer_cubit.dart';
 import '../features/management/presentation/cubit/management_cubit.dart';
 import 'cubit/app_cubit.dart';
 import 'workspace_shell.dart';
+import '../features/auth/data/repositories/manager_auth_repository.dart';
+import '../features/workspace/data/sources/manager_staff_projection.dart';
 
 class NewCareApp extends StatelessWidget {
-  const NewCareApp({super.key, required this.repository, required this.store});
+  const NewCareApp({
+    super.key,
+    required this.repository,
+    required this.store,
+    this.authentication,
+  });
   final WorkspaceRepository repository;
   final StringStore store;
+  final ManagerAuthRepository? authentication;
   @override
   Widget build(BuildContext context) => MultiRepositoryProvider(
     providers: [
@@ -25,9 +33,13 @@ class NewCareApp extends StatelessWidget {
     child: MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (_) =>
-              AppCubit(store, configured: repository.current.setupDone)
-                ..loadLocale(),
+          create: (_) => AppCubit(
+            store,
+            configured: repository.current.setupDone || authentication != null,
+            authentication: authentication,
+            onManagerVerified: (identity) =>
+                ensureManagerStaff(repository, identity),
+          )..loadLocale(),
         ),
         BlocProvider(create: (_) => WorkspaceCubit(repository)),
         BlocProvider(create: (_) => CaseCubit(repository)),

@@ -15,6 +15,7 @@ enum AppPage {
   validation,
   insideCaseBook,
   outsideCaseBook,
+  laboratory,
   overview,
   shifts,
   caseLog,
@@ -30,7 +31,10 @@ enum AppPage {
   setupNursing,
   setupCatalogue,
   ready,
-  transactions;
+  transactions,
+  developerDiagnostics,
+  inventory,
+  managerLaboratory;
 
   bool get isManager => index >= AppPage.overview.index;
   bool get isCaseBook =>
@@ -57,6 +61,8 @@ enum AppPage {
     AppPage.outsideCaseBook => 'outside',
     AppPage.shifts => 'drawer',
     AppPage.nursing => 'nursing',
+    AppPage.laboratory || AppPage.managerLaboratory => 'laboratory',
+    AppPage.inventory => 'inventory',
     _ => name,
   };
 }

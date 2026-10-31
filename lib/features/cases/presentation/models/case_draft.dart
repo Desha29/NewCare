@@ -3,6 +3,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../../../core/utils/money.dart';
 import '../../../../core/utils/center_clock.dart';
+import '../../../inventory/data/models/case_stock_usage.dart';
 import '../../../workspace/data/models/workspace_snapshot.dart';
 import '../../data/models/case_record.dart';
 import '../../data/models/case_line_item.dart';
@@ -29,7 +30,9 @@ class CaseDraft {
           .map((i) => i.catalogueId),
     );
     if (c.lineItems.isEmpty) notes.text = c.supplies.join('\n');
+    stockUsages = [...c.stockUsages];
   }
+
   final CaseRecord? initial;
   final String id = const Uuid().v4();
   final title = TextEditingController(),
@@ -42,6 +45,8 @@ class CaseDraft {
   String? staff;
   PaymentMethod payment = PaymentMethod.cash;
   final procedures = <String>{}, supplies = <String>{};
+  List<CaseStockUsage> stockUsages = [];
+
   List<CaseLineItem> items(WorkspaceSnapshot data) {
     final original = initial;
     final previous = original?.lineItems ?? <CaseLineItem>[];
@@ -102,6 +107,7 @@ class CaseDraft {
             .map((i) => i.nameAr),
         ...notes.text.split('\n').where((n) => n.trim().isNotEmpty),
       ],
+      stockUsages: stockUsages,
       amountMinor: Money.parse(amount.text),
       agreedTotalMinor: Money.parse(agreedTotal.text),
       payment: payment,

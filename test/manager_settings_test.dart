@@ -95,7 +95,7 @@ void main() {
     final editor = find.byType(NavigationLabelsEditor);
     final input = find
         .descendant(of: editor, matching: find.byType(TextFormField))
-        .at(3);
+        .at(4);
     await tester.ensureVisible(input);
     await tester.enterText(input, 'ملخص المركز');
     final save = find.descendant(of: editor, matching: find.text('حفظ'));

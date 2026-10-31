@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/localization/localization_extensions.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../../../core/widgets/nc_adaptive_table.dart';
 import '../../../../core/widgets/nc_card.dart';
@@ -119,13 +120,29 @@ class _CaseHistoryScreenState extends State<CaseHistoryScreen> {
                       )
                     : column == 2
                     ? NcStatusBadge(records[row].location.name)
-                    : column == 4
+                    : column == 3
+                    ? Text(
+                        value,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: value == '—'
+                              ? AppColors.muted
+                              : AppColors.text,
+                          fontWeight: value == '—'
+                              ? FontWeight.normal
+                              : FontWeight.w600,
+                        ),
+                      )
+                    : column == 5
                     ? NcStatusBadge(records[row].payment.name)
                     : Text(value),
                 headers: [
                   context.t('caseTitle'),
                   context.t('caseOwner'),
                   context.t('caseType'),
+                  context.t('usedSupplies'),
                   context.t('paidTotal'),
                   context.t('paymentMethod'),
                   context.t('time'),
@@ -134,10 +151,16 @@ class _CaseHistoryScreenState extends State<CaseHistoryScreen> {
                   final n = data.staff
                       .where((n) => n.id == c.staffId)
                       .firstOrNull;
+                  final supplies = c.stockUsages.isNotEmpty
+                      ? c.stockUsages
+                            .map((u) => '${u.name} × ${u.quantity}')
+                            .join('، ')
+                      : (c.supplies.isNotEmpty ? c.supplies.join('، ') : '—');
                   return [
                     c.title,
                     '${n?.name ?? ''}${n?.isManager ?? false ? ' · ${context.t('manager')}' : ''}',
                     context.t(c.location.name),
+                    supplies,
                     context.money(data.paidFor(c)),
                     context.t(c.payment.name),
                     context.time(c.createdAt),

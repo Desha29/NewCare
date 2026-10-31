@@ -1,4 +1,5 @@
 import 'case_line_item.dart';
+import '../../../inventory/data/models/case_stock_usage.dart';
 
 enum CaseLocation { inside, outside }
 
@@ -20,9 +21,11 @@ class CaseRecord {
     this.phone = '',
     this.lineItems = const [],
     this.agreedTotalMinor,
+    this.stockUsages=const [],
   });
   final String id, shiftId, staffId, title, procedureId, address, phone;
   final List<String> supplies;
+  final List<CaseStockUsage> stockUsages;
   final int amountMinor;
   final int? agreedTotalMinor;
   int get invoiceMinor => agreedTotalMinor ?? totalMinor;
@@ -63,6 +66,7 @@ class CaseRecord {
     'address': address,
     'phone': phone,
     'items': lineItems.map((i) => i.toJson()).toList(),
+    'stockUsages':stockUsages.map((u)=>u.toJson()).toList(),
   };
   factory CaseRecord.fromJson(Map<String, dynamic> j) => CaseRecord(
     id: j['id'] as String,
@@ -81,5 +85,7 @@ class CaseRecord {
     lineItems: (j['items'] as List? ?? [])
         .map((i) => CaseLineItem.fromJson(Map<String, dynamic>.from(i as Map)))
         .toList(),
+    stockUsages:(j['stockUsages'] as List? ??[])
+      .map((u)=>CaseStockUsage.fromJson(Map<String,dynamic>.from(u as Map))).toList(),
   );
 }

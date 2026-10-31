@@ -4,19 +4,24 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/localization/localization_extensions.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/formatters.dart';
+import '../../../../core/utils/operational_day.dart';
 import '../../../../core/widgets/nc_card.dart';
 import '../../../../core/widgets/nc_status_badge.dart';
 import '../../../workspace/presentation/cubit/workspace_cubit.dart';
+import '../../data/models/operational_day_summary.dart';
 
 class DrawerBalanceCard extends StatelessWidget {
   const DrawerBalanceCard({super.key});
+
   @override
   Widget build(BuildContext context) {
     final data = context.watch<WorkspaceCubit>().state;
+    final summary = OperationalDaySummary.forDay(data, OperationalDay.today());
     final holder = data.staff
         .where((n) => n.id == data.drawerHolder)
         .firstOrNull;
     final lastCount = data.handovers.lastOrNull;
+
     return NcCard(
       title: context.t('drawerStatus'),
       children: [
@@ -69,6 +74,62 @@ class DrawerBalanceCard extends StatelessWidget {
                     ),
                   ),
                 ),
+              ),
+              const Divider(height: 20),
+              Wrap(
+                alignment: WrapAlignment.spaceBetween,
+                spacing: 12,
+                runSpacing: 8,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        context.t('dailyNetCash'),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.navy,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        context.money(summary.netCashMinor),
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: summary.netCashMinor < 0
+                              ? AppColors.danger
+                              : AppColors.navy,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        context.t('dailyWallet'),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.navy,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        context.money(summary.walletMinor),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ],
           ),

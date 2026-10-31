@@ -57,3 +57,4 @@ config/local.json
 android/key.properties
 test-results/
 screenshots/
+supabase/.temp/

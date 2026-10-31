@@ -216,6 +216,33 @@ abstract final class RecordEditorSpecs {
           date('closed', 'endShift', required: false),
         ],
       ),
+      ManagedRecordKind.stockItem => RecordEditorSpec(
+        title: value('name'),
+        fields: [
+          EditorField('name', t('itemName'), value('name')),
+          EditorField('quantity', t('quantity'), value('quantity')),
+        ],
+      ),
+      ManagedRecordKind.labTest => RecordEditorSpec(
+        title: value('name'),
+        fields: [
+          EditorField('name', t('itemName'), value('name')),
+          money('priceMinor', 'price'),
+        ],
+      ),
+      ManagedRecordKind.labOrder => RecordEditorSpec(
+        title: value('patientName'),
+        fields: [
+          EditorField('patientName', t('patientName'), value('patientName')),
+          EditorField('patientAge', t('patientAge'), value('patientAge')),
+        ],
+      ),
+      ManagedRecordKind.labReceipt => RecordEditorSpec(
+        title: t('labReceipt'),
+        fields: [
+          money('amountMinor', 'amount'),
+        ],
+      ),
     };
   }
 }

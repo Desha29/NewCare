@@ -27,7 +27,7 @@ class CaseLedgerSection extends StatelessWidget {
   final CaseLocation location;
   final List<CaseRecord> records;
   final WorkspaceSnapshot data;
-  int get moneyStart => location == CaseLocation.outside ? 2 : 1;
+  int get moneyStart => location == CaseLocation.outside ? 3 : 2;
   Color moneyColor(int column) => switch (column - moneyStart) {
     0 => AppColors.navy,
     1 => const Color(0xFF216B42),
@@ -52,10 +52,11 @@ class CaseLedgerSection extends StatelessWidget {
         builder: (context, constraints) => NcAdaptiveTable(
           columnWidths: [
             if (location == CaseLocation.outside) ...[
-              math.max(140.0, (constraints.maxWidth - 610) * .55),
-              math.max(140.0, (constraints.maxWidth - 610) * .45),
+              math.max(130.0, (constraints.maxWidth - 740) * .55),
+              math.max(130.0, (constraints.maxWidth - 740) * .45),
             ] else
-              math.max(140.0, constraints.maxWidth - 596),
+              math.max(130.0, constraints.maxWidth - 726),
+            130,
             70,
             70,
             70,
@@ -69,6 +70,7 @@ class CaseLedgerSection extends StatelessWidget {
               location == CaseLocation.outside ? 'address' : 'proceduresUsed',
             ),
             if (location == CaseLocation.outside) context.t('proceduresUsed'),
+            context.t('usedSupplies'),
             context.t('agreedPrice'),
             context.t('paidTotal'),
             context.t('remainingAmount'),
@@ -80,6 +82,11 @@ class CaseLedgerSection extends StatelessWidget {
               [
                 label(c),
                 if (location == CaseLocation.outside) c.title,
+                c.stockUsages.isNotEmpty
+                    ? c.stockUsages
+                        .map((u) => '${u.name} × ${u.quantity}')
+                        .join('، ')
+                    : (c.supplies.isNotEmpty ? c.supplies.join('، ') : '—'),
                 context.money(c.invoiceMinor),
                 context.money(data.paidFor(c)),
                 context.money(data.remainingFor(c)),
@@ -114,6 +121,19 @@ class CaseLedgerSection extends StatelessWidget {
               ? NcHeroTitle(
                   tag: 'ledger-${location.name}-${records[i].id}',
                   title: value,
+                )
+              : column == moneyStart - 1
+              ? Text(
+                  value,
+                  softWrap: true,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: value == '—' ? AppColors.muted : AppColors.text,
+                    fontWeight:
+                        value == '—' ? FontWeight.normal : FontWeight.w600,
+                  ),
                 )
               : column == moneyStart + 3
               ? NcStatusBadge(records[i].payment.name)

@@ -28,6 +28,12 @@ class _WorkspaceShellState extends State<WorkspaceShell> {
       return buildPage(AppPage.login);
     }
     final app = context.watch<AppCubit>().state;
+    final controller = context.read<AppCubit>();
+    final storageLabel = controller.offlineManager
+        ? 'offlineManagerSession'
+        : controller.cloudAuthentication
+        ? 'localDataSyncPending'
+        : 'localPreview';
     final size = AppBreakpoints.of(context);
     final compact = size == WindowClass.compact;
     final rail = !compact && MediaQuery.sizeOf(context).width < 960;
@@ -77,11 +83,11 @@ class _WorkspaceShellState extends State<WorkspaceShell> {
                       },
                     ),
                     Tooltip(
-                      message: context.t('localPreview'),
+                      message: context.t(storageLabel),
                       child: Align(
                         alignment: AlignmentDirectional.centerEnd,
                         child: Text(
-                          context.t('localPreview'),
+                          context.t(storageLabel),
                           style: Theme.of(context).textTheme.labelSmall,
                         ),
                       ),

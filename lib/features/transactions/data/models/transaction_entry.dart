@@ -6,6 +6,7 @@ import '../../../workspace/data/models/workspace_snapshot.dart';
 
 enum TransactionKind {
   casePayment,
+  labPayment,
   income,
   expense,
   advance,
@@ -38,6 +39,7 @@ class TransactionEntry {
   final String? descriptionKey;
   static const categoryKeys = [
     'casePayment',
+    'labPayment',
     'income',
     'centerExpense',
     'personOutgoings',
@@ -59,12 +61,18 @@ class TransactionEntry {
       ? 'otherPersonOutgoing'
       : kind.name;
   bool get incoming =>
-      kind == TransactionKind.casePayment || kind == TransactionKind.income;
+      kind == TransactionKind.casePayment ||
+      kind == TransactionKind.labPayment ||
+      kind == TransactionKind.income;
   int get signedMinor => incoming ? amountMinor : -amountMinor;
   ManagedRecordKind get sourceKind => installment
-      ? ManagedRecordKind.caseReceipt
+      ? (kind == TransactionKind.labPayment
+          ? ManagedRecordKind.labReceipt
+          : ManagedRecordKind.caseReceipt)
       : kind == TransactionKind.casePayment
       ? ManagedRecordKind.caseRecord
+      : kind == TransactionKind.labPayment
+      ? ManagedRecordKind.labReceipt
       : ManagedRecordKind.movement;
 
   static List<TransactionEntry> forRange(
@@ -97,6 +105,20 @@ class TransactionEntry {
           payment: p.method,
           amountMinor: p.amountMinor,
           at: p.paidAt,
+          installment: true,
+        ),
+      for (final lp in summary.labPayments)
+        TransactionEntry(
+          id: lp.id,
+          shiftId: '',
+          staffId: lp.staffId,
+          description:
+              data.labOrders.where((o) => o.id == lp.orderId).firstOrNull?.patientName ??
+              '',
+          kind: TransactionKind.labPayment,
+          payment: lp.method,
+          amountMinor: lp.amountMinor,
+          at: lp.createdAt,
           installment: true,
         ),
       for (final m in summary.movements)

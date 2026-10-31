@@ -79,8 +79,12 @@ class _ManagerPasswordEditorState extends State<ManagerPasswordEditor> {
           label: context.t('newPassword'),
           controller: next,
           obscure: true,
-          validator: (v) =>
-              (v?.length ?? 0) < 8 ? context.t('passwordTooShort') : null,
+          validator: (v) {
+            final cloud = context.read<AppCubit>().cloudAuthentication;
+            return (v?.length ?? 0) < (cloud ? 12 : 8)
+                ? context.t(cloud ? 'securePasswordHint' : 'passwordTooShort')
+                : null;
+          },
         ),
         NcField(
           label: context.t('confirmPassword'),

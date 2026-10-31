@@ -7,6 +7,8 @@ import 'dart:convert';
 import 'package:uuid/uuid.dart';
 
 import '../../../../core/storage/string_store.dart';
+import '../../../../core/storage/transactional_store.dart';
+import '../../../../core/storage/workspace_change.dart';
 import '../../../cases/data/models/case_record.dart';
 import '../../../staff/data/models/nursing_member.dart';
 import '../../../catalogue/data/models/procedure.dart';
@@ -19,9 +21,16 @@ import 'workspace_repository.dart';
 import '../../../management/data/managed_record_kind.dart';
 import '../../../management/data/record_mutations.dart';
 import '../../../catalogue/data/models/supply_item.dart';
+import '../../../inventory/data/models/stock_item.dart';
+import '../../../inventory/data/models/stock_movement.dart';
+import '../../../inventory/data/services/stock_changes.dart';
+import '../../../laboratory/data/models/lab_test.dart';
+import '../../../laboratory/data/models/lab_order.dart';
+import '../../../laboratory/data/models/lab_payment.dart';
+import '../../../laboratory/data/services/lab_changes.dart';
 
 /// Serialized repository writes prevent lost updates and confirm durable storage
-/// before publishing a new snapshot. This adapter is local preview storage.
+/// before publishing a new snapshot. Cloud acceptance is a separate operation.
 class LocalWorkspaceRepository implements WorkspaceRepository {
   LocalWorkspaceRepository(this.store, {this.seedDemo = true});
   final StringStore store;
@@ -68,7 +77,20 @@ class LocalWorkspaceRepository implements WorkspaceRepository {
           ),
         ],
       );
-      await store.write(storageKey, jsonEncode(recorded.toJson()));
+      final encoded = jsonEncode(recorded.toJson());
+      if (store case final TransactionalStore durable) {
+        await durable.commit(
+          key: storageKey,
+          value: encoded,
+          operationId: recorded.audit.last.id,
+          action: action,
+          payload: jsonEncode(
+            workspaceChange(_current.toJson(), recorded.toJson()),
+          ),
+        );
+      } else {
+        await store.write(storageKey, encoded);
+      }
       _current = recorded;
       if (!_controller.isClosed) _controller.add(recorded);
     });
@@ -191,7 +213,7 @@ class LocalWorkspaceRepository implements WorkspaceRepository {
     if (!s.procedures.any((x) => x.id == record.procedureId && x.active)) {
       throw const WorkspaceException('invalidProcedure');
     }
-    return s.copyWith(cases: [...s.cases, record]);
+    return StockChanges.applyUsage(s,null,record).copyWith(cases: [...s.cases, record]);
   }, detail: record.id);
   @override
   Future<void> addCasePayment(CasePayment payment) =>
@@ -301,6 +323,61 @@ class LocalWorkspaceRepository implements WorkspaceRepository {
     await _tail;
     await _controller.close();
   }
+
+  @override
+  Future<void> saveStockItem(StockItem item)=>_update('stockSaved',(s) {
+    if(item.name.trim().isEmpty) throw const WorkspaceException('requiredField');
+    if(item.quantity<0) throw const WorkspaceException('invalidStockQuantity');
+    final old=s.stockItems.where((x)=>x.id==item.id).firstOrNull;
+    if(old!=null && old.version!=item.version) throw const WorkspaceException('stockChanged');
+    final normalized=item.name.trim().replaceAll(RegExp(r'\s+'),' ').toLowerCase();
+    if(s.stockItems.any((x)=>x.id!=item.id && x.active && x.name.trim().replaceAll(RegExp(r'\s+'),' ').toLowerCase()==normalized)) {
+      throw const WorkspaceException('duplicateName');
+    }
+    if(old!=null && old.name==item.name.trim() && old.quantity==item.quantity && old.active==item.active) return s;
+    final value=item.copyWith(name:item.name.trim(),version:old==null?1:old.version+1);
+    final delta=value.quantity-(old?.quantity??0);
+    return s.copyWith(stockItems:[...s.stockItems.where((x)=>x.id!=item.id),value],
+      stockMovements:[...s.stockMovements,if(delta!=0) StockMovement(id:_uuid.v4(),
+        stockItemId:value.id,name:value.name,delta:delta,kind:old==null?'stockOpening':'stockAdjustment',at:DateTime.now())]);
+  },detail:item.id);
+
+  @override
+  Future<void> archiveStockItem(String id)=>_update('stockArchived',(s) {
+    final old=s.stockItems.where((x)=>x.id==id).firstOrNull;
+    if(old==null) throw const WorkspaceException('stockNotFound');
+    if(!old.active) return s;
+    return s.copyWith(stockItems:s.stockItems.map((x)=>x.id==id?x.copyWith(active:false,version:x.version+1):x).toList());
+  },detail:id);
+
+  @override
+  Future<void> saveLabTest(LabTest test) =>
+      _update('labTestSaved', (s) => LabChanges.saveTest(s, test), detail: test.id);
+
+  @override
+  Future<void> archiveLabTest(String id) =>
+      _update('labTestArchived', (s) => LabChanges.archiveTest(s, id), detail: id);
+
+  @override
+  Future<void> addLabOrder(LabOrder order, {LabPayment? initialPayment}) =>
+      _update('labOrderAdded', (s) => LabChanges.addOrder(s, order, initialPayment: initialPayment), detail: order.id);
+
+  @override
+  Future<void> addLabPayment(LabPayment payment) =>
+      _update('labPaymentAdded', (s) => LabChanges.addPayment(s, payment), detail: payment.id);
+
+  @override
+  Future<void> setLabReceived(
+    String orderId,
+    String staffId, {
+    required bool received,
+    String? reason,
+  }) =>
+      _update(
+        'labReceivedUpdated',
+        (s) => LabChanges.setReceived(s, orderId, staffId, received: received, reason: reason),
+        detail: orderId,
+      );
 
   @override
   Future<void> updateRecord(

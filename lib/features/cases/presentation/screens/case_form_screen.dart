@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../app/cubit/app_cubit.dart';
@@ -13,6 +13,7 @@ import '../../../../core/widgets/nc_page_column.dart';
 import '../../../../core/widgets/nc_status_badge.dart';
 import '../../../../core/widgets/operation_error.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../inventory/presentation/widgets/case_stock_picker.dart';
 import '../../../workspace/presentation/cubit/workspace_cubit.dart';
 import '../../../workspace/data/models/workspace_snapshot.dart';
 import '../../data/models/case_record.dart';
@@ -128,6 +129,13 @@ class _CaseFormScreenState extends State<CaseFormScreen> {
         onChanged: (v) => select(data, v),
       ),
     );
+    final stockPicker = !widget.compact || draft.stockUsages.isNotEmpty
+        ? CaseStockPicker(
+            availableStock: data.stockItems,
+            usages: draft.stockUsages,
+            onChanged: (v) => setState(() => draft.stockUsages = v),
+          )
+        : null;
     final bill = CaseBillPanel(
       compact: widget.compact,
       amount: draft.amount,
@@ -145,9 +153,17 @@ class _CaseFormScreenState extends State<CaseFormScreen> {
               children: [
                 Expanded(
                   flex: 3,
-                  child: widget.compact
-                      ? fields
-                      : NcCard(padding: 16, children: [fields]),
+                  child: Column(
+                    children: [
+                      widget.compact
+                          ? fields
+                          : NcCard(padding: 16, children: [fields]),
+                      if (stockPicker != null) ...[
+                        const SizedBox(height: 16),
+                        stockPicker,
+                      ],
+                    ],
+                  ),
                 ),
                 SizedBox(width: widget.compact ? 12 : 20),
                 Expanded(flex: 2, child: bill),
@@ -157,6 +173,10 @@ class _CaseFormScreenState extends State<CaseFormScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 fields,
+                if (stockPicker != null) ...[
+                  const SizedBox(height: 16),
+                  stockPicker,
+                ],
                 if (widget.compact)
                   const Divider(height: 16)
                 else

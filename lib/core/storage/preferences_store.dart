@@ -2,7 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'string_store.dart';
 
-class PreferencesStore implements StringStore {
+class PreferencesStore implements RemovableStringStore {
   PreferencesStore(this.preferences);
   final SharedPreferences preferences;
   @override
@@ -12,5 +12,10 @@ class PreferencesStore implements StringStore {
     if (!await preferences.setString(key, value)) {
       throw StateError('storageFailed');
     }
+  }
+
+  @override
+  Future<void> remove(String key) async {
+    if (!await preferences.remove(key)) throw StateError('storageFailed');
   }
 }

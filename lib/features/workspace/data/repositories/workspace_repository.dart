@@ -7,6 +7,10 @@ import '../../../drawer/data/models/cash_movement.dart';
 import '../models/workspace_snapshot.dart';
 import '../../../catalogue/data/models/supply_item.dart';
 import '../../../management/data/managed_record_kind.dart';
+import '../../../inventory/data/models/stock_item.dart';
+import '../../../laboratory/data/models/lab_test.dart';
+import '../../../laboratory/data/models/lab_order.dart';
+import '../../../laboratory/data/models/lab_payment.dart';
 
 class WorkspaceException implements Exception {
   const WorkspaceException(this.code);
@@ -37,6 +41,18 @@ abstract interface class WorkspaceRepository {
   Future<void> addStaff(NursingMember member);
   Future<void> addProcedure(Procedure procedure);
   Future<void> addSupply(SupplyItem supply);
+  Future<void> saveStockItem(StockItem item);
+  Future<void> archiveStockItem(String id);
+  Future<void> saveLabTest(LabTest test);
+  Future<void> archiveLabTest(String id);
+  Future<void> addLabOrder(LabOrder order, {LabPayment? initialPayment});
+  Future<void> addLabPayment(LabPayment payment);
+  Future<void> setLabReceived(
+    String orderId,
+    String staffId, {
+    required bool received,
+    String? reason,
+  });
   Future<void> saveSettings({
     String? managerName,
     String? managerEmail,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class NcField extends StatelessWidget {
   const NcField({
@@ -12,6 +13,7 @@ class NcField extends StatelessWidget {
     this.obscure = false,
     this.onChanged,
     this.enabled = true,
+    this.inputFormatters,
   });
   final String label;
   final TextEditingController controller;
@@ -21,6 +23,8 @@ class NcField extends StatelessWidget {
   final int lines;
   final bool obscure, enabled;
   final ValueChanged<String>? onChanged;
+  final List<TextInputFormatter>? inputFormatters;
+
   @override
   Widget build(BuildContext context) => TextFormField(
     controller: controller,
@@ -29,6 +33,7 @@ class NcField extends StatelessWidget {
     obscureText: obscure,
     maxLines: lines,
     keyboardType: keyboardType,
+    inputFormatters: inputFormatters,
     style: keyboardType?.index == TextInputType.number.index
         ? const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)
         : null,
@@ -50,15 +55,18 @@ class NcSelect<T> extends StatelessWidget {
   final String label;
   final T? value;
   final List<DropdownMenuItem<T>> items;
-  final ValueChanged<T?> onChanged;
+  final ValueChanged<T> onChanged;
   final String? Function(T?)? validator;
+
   @override
   Widget build(BuildContext context) => DropdownButtonFormField<T>(
     key: ValueKey(value),
     initialValue: value,
     isExpanded: true,
     items: items,
-    onChanged: onChanged,
+    onChanged: (v) {
+      if (v != null) onChanged(v);
+    },
     validator: validator,
     decoration: InputDecoration(labelText: label),
   );

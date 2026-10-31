@@ -10,20 +10,23 @@ import '../widgets/manager_profile_editor.dart';
 import '../widgets/management_form_dialog.dart';
 import '../widgets/manager_password_editor.dart';
 import '../widgets/navigation_labels_editor.dart';
+import '../../../../app/cubit/app_cubit.dart';
+import '../widgets/manager_account_editor.dart';
 
 class PermissionsScreen extends StatelessWidget {
   const PermissionsScreen({super.key});
   @override
   Widget build(BuildContext context) {
     final data = context.watch<WorkspaceCubit>().state;
+    final app = context.watch<AppCubit>();
     return NcPageColumn(
       maxWidth: 900,
       children: [
         NcCard(
           title: context.t('managerArea'),
           children: [
-            Text(data.managerName),
-            Text(data.managerEmail),
+            Text(app.managerIdentity?.name ?? data.managerName),
+            Text(app.managerIdentity?.email ?? data.managerEmail),
             NcButton(
               label: context.t('edit'),
               icon: Icons.edit_outlined,
@@ -37,6 +40,24 @@ class PermissionsScreen extends StatelessWidget {
           ],
         ),
         const ManagerPasswordEditor(),
+        if (app.cloudAuthentication &&
+            app.managerIdentity?.manageAccounts == true)
+          NcCard(
+            title: context.t('managerAccounts'),
+            children: [
+              Text(context.t('managerAccountsHelp')),
+              NcButton(
+                label: context.t('addManager'),
+                icon: Icons.person_add_alt,
+                onPressed: () => ManagementFormDialog.open(
+                  context,
+                  (dialogContext) => ManagerAccountEditor(
+                    onSaved: () => Navigator.pop(dialogContext),
+                  ),
+                ),
+              ),
+            ],
+          ),
         const NavigationLabelsEditor(),
       ],
     );

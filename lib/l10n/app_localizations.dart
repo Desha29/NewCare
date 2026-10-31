@@ -107,7 +107,7 @@ abstract class AppLocalizations {
   /// No description provided for @localPreview.
   ///
   /// In en, this message translates to:
-  /// **'Local preview · sample data'**
+  /// **'Local preview Â· sample data'**
   String get localPreview;
 
   /// No description provided for @localSaved.
@@ -455,7 +455,7 @@ abstract class AppLocalizations {
   /// No description provided for @phoneOptional.
   ///
   /// In en, this message translates to:
-  /// **'Phone · optional'**
+  /// **'Phone Â· optional'**
   String get phoneOptional;
 
   /// No description provided for @caseOwner.
@@ -833,7 +833,7 @@ abstract class AppLocalizations {
   /// No description provided for @sampleOnly.
   ///
   /// In en, this message translates to:
-  /// **'Sample data — do not enter real patient information'**
+  /// **'Sample data â€” do not enter real patient information'**
   String get sampleOnly;
 
   /// No description provided for @previewGate.
@@ -911,7 +911,7 @@ abstract class AppLocalizations {
   /// No description provided for @setupSteps.
   ///
   /// In en, this message translates to:
-  /// **'Account → Nursing → Procedures → Ready'**
+  /// **'Account â†’ Nursing â†’ Procedures â†’ Ready'**
   String get setupSteps;
 
   /// No description provided for @defaultPrice.
@@ -923,13 +923,13 @@ abstract class AppLocalizations {
   /// No description provided for @procedureNameAr.
   ///
   /// In en, this message translates to:
-  /// **'Procedure name · Arabic'**
+  /// **'Procedure name Â· Arabic'**
   String get procedureNameAr;
 
   /// No description provided for @procedureNameEn.
   ///
   /// In en, this message translates to:
-  /// **'Procedure name · English'**
+  /// **'Procedure name Â· English'**
   String get procedureNameEn;
 
   /// No description provided for @openingCash.
@@ -1265,7 +1265,7 @@ abstract class AppLocalizations {
   /// No description provided for @cashFormula.
   ///
   /// In en, this message translates to:
-  /// **'Opening cash + cash receipts + income − outgoings − advances − awards + cash count differences'**
+  /// **'Opening cash + cash receipts + income âˆ’ outgoings âˆ’ advances âˆ’ awards + cash count differences'**
   String get cashFormula;
 
   /// No description provided for @showSetup.
@@ -2063,7 +2063,7 @@ abstract class AppLocalizations {
   /// No description provided for @searchCatalogue.
   ///
   /// In en, this message translates to:
-  /// **'Search and select a procedure…'**
+  /// **'Search and select a procedureâ€¦'**
   String get searchCatalogue;
 
   /// No description provided for @caseReference.
@@ -2399,7 +2399,7 @@ abstract class AppLocalizations {
   /// No description provided for @squareMonitor.
   ///
   /// In en, this message translates to:
-  /// **'Square monitor 1024 × 1024'**
+  /// **'Square monitor 1024 Ã— 1024'**
   String get squareMonitor;
 
   /// No description provided for @platformandroid.
@@ -2533,6 +2533,642 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Date and time added'**
   String get caseAddedAt;
+
+  /// No description provided for @developerDiagnostics.
+  ///
+  /// In en, this message translates to:
+  /// **'Data diagnostics'**
+  String get developerDiagnostics;
+
+  /// No description provided for @diagnosticsManagerOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Locked manager section'**
+  String get diagnosticsManagerOnly;
+
+  /// No description provided for @diagnosticsRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Check local data'**
+  String get diagnosticsRefresh;
+
+  /// No description provided for @syncNotConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'Data sync is not activated yet â€” equivalence cannot be verified'**
+  String get syncNotConfigured;
+
+  /// No description provided for @diagnosticsVerificationHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Matched requires verified identical content in the same scope and revision, with no pending operations or conflicts.'**
+  String get diagnosticsVerificationHelp;
+
+  /// No description provided for @diagnosticsPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Local operations awaiting connection and sync'**
+  String get diagnosticsPending;
+
+  /// No description provided for @diagnosticsDataset.
+  ///
+  /// In en, this message translates to:
+  /// **'Dataset'**
+  String get diagnosticsDataset;
+
+  /// No description provided for @diagnosticsLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'On this device'**
+  String get diagnosticsLocal;
+
+  /// No description provided for @diagnosticsCloud.
+  ///
+  /// In en, this message translates to:
+  /// **'In Supabase'**
+  String get diagnosticsCloud;
+
+  /// No description provided for @diagnosticsLocalCheckedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Last local check'**
+  String get diagnosticsLocalCheckedAt;
+
+  /// No description provided for @diagnosticsMatched.
+  ///
+  /// In en, this message translates to:
+  /// **'Matched'**
+  String get diagnosticsMatched;
+
+  /// No description provided for @diagnosticsDifferent.
+  ///
+  /// In en, this message translates to:
+  /// **'Different'**
+  String get diagnosticsDifferent;
+
+  /// No description provided for @diagnosticsUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to verify'**
+  String get diagnosticsUnavailable;
+
+  /// No description provided for @diagnosticsPendingStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Awaiting sync or conflict resolution'**
+  String get diagnosticsPendingStatus;
+
+  /// No description provided for @diagnosticsPayments.
+  ///
+  /// In en, this message translates to:
+  /// **'Additional receipts'**
+  String get diagnosticsPayments;
+
+  /// No description provided for @managerRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'This section requires a manager'**
+  String get managerRequired;
+
+  /// No description provided for @username.
+  ///
+  /// In en, this message translates to:
+  /// **'Username'**
+  String get username;
+
+  /// No description provided for @previewUsername.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview username: manager'**
+  String get previewUsername;
+
+  /// No description provided for @offlineLoginHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'After a successful online login, this device supports offline login for 7 days. Account administration requires a connection.'**
+  String get offlineLoginHelp;
+
+  /// No description provided for @offlineLoginUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'This manager must sign in online on this device first'**
+  String get offlineLoginUnavailable;
+
+  /// No description provided for @offlineLoginExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline access expired or the device clock changed. Connect to verify your account.'**
+  String get offlineLoginExpired;
+
+  /// No description provided for @offlineLoginLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline login is temporarily locked after incorrect attempts. Try again after 15 minutes.'**
+  String get offlineLoginLocked;
+
+  /// No description provided for @onlineAccountChangeRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Changing this account requires an online manager verification'**
+  String get onlineAccountChangeRequired;
+
+  /// No description provided for @cloudFirstSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up the center and its first manager'**
+  String get cloudFirstSetup;
+
+  /// No description provided for @cloudFirstSetupHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Create the first manager with a username and password, then enroll this device. Email is contact information only, with no confirmation message. Nurses select their names without accounts.'**
+  String get cloudFirstSetupHelp;
+
+  /// No description provided for @usernameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'3â€“32 lowercase Latin letters, numbers or _'**
+  String get usernameHint;
+
+  /// No description provided for @invalidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email address'**
+  String get invalidEmail;
+
+  /// No description provided for @securePasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Use at least 12 characters'**
+  String get securePasswordHint;
+
+  /// No description provided for @managerEmailVerificationRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm your email using the Supabase message, then select Activate after verification.'**
+  String get managerEmailVerificationRequired;
+
+  /// No description provided for @deviceEnrollmentRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'This device is not enrolled. Complete center device setup with an online manager.'**
+  String get deviceEnrollmentRequired;
+
+  /// No description provided for @cloudSetupFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Setup failed. Check your connection and authentication settings, then retry. If the account was already created, use Connect existing manager.'**
+  String get cloudSetupFailed;
+
+  /// No description provided for @createFirstManager.
+  ///
+  /// In en, this message translates to:
+  /// **'Create manager and set up center'**
+  String get createFirstManager;
+
+  /// No description provided for @activateVerifiedManager.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect existing manager'**
+  String get activateVerifiedManager;
+
+  /// No description provided for @managerAccounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Manager accounts'**
+  String get managerAccounts;
+
+  /// No description provided for @managerAccountsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a manager with a username and password. Email is contact information with no confirmation message. Nurses are added without login accounts from Nursing.'**
+  String get managerAccountsHelp;
+
+  /// No description provided for @addManager.
+  ///
+  /// In en, this message translates to:
+  /// **'Add manager'**
+  String get addManager;
+
+  /// No description provided for @managerInvitationSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Manager account created. Sign in with the username and password without email confirmation.'**
+  String get managerInvitationSent;
+
+  /// No description provided for @managerCreationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Manager creation failed. Check the username and connection, then retry.'**
+  String get managerCreationFailed;
+
+  /// No description provided for @emailChangeVerificationHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact email can be changed without confirmation. Login continues to use the username.'**
+  String get emailChangeVerificationHelp;
+
+  /// No description provided for @emailConfirmationStillEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable Confirm email in Supabase settings to provision username accounts without confirmation messages.'**
+  String get emailConfirmationStillEnabled;
+
+  /// No description provided for @anonymousSignInNotEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Anonymous Sign-ins in Supabase to enroll the center device without nurse accounts.'**
+  String get anonymousSignInNotEnabled;
+
+  /// No description provided for @localDataSyncPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Data is on this device â€” sync is not activated yet'**
+  String get localDataSyncPending;
+
+  /// No description provided for @offlineManagerSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline manager session â€” account changes require a connection'**
+  String get offlineManagerSession;
+
+  /// No description provided for @centerBindingMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'This device is bound to another center; data from two centers cannot be merged.'**
+  String get centerBindingMismatch;
+
+  /// No description provided for @managerIdentityRefreshed.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh manager identity in the nursing list'**
+  String get managerIdentityRefreshed;
+
+  /// No description provided for @inventory.
+  ///
+  /// In en, this message translates to:
+  /// **'Inventory'**
+  String get inventory;
+
+  /// No description provided for @addStockItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Add stock item'**
+  String get addStockItem;
+
+  /// No description provided for @editStockItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit stock item'**
+  String get editStockItem;
+
+  /// No description provided for @stockQuantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock quantity'**
+  String get stockQuantity;
+
+  /// No description provided for @quantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity'**
+  String get quantity;
+
+  /// No description provided for @archiveStockItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive stock item'**
+  String get archiveStockItem;
+
+  /// No description provided for @confirmArchive.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to archive'**
+  String get confirmArchive;
+
+  /// No description provided for @archive.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get archive;
+
+  /// No description provided for @laboratory.
+  ///
+  /// In en, this message translates to:
+  /// **'Laboratory'**
+  String get laboratory;
+
+  /// No description provided for @addLabTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Add lab test'**
+  String get addLabTest;
+
+  /// No description provided for @editLabTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit lab test'**
+  String get editLabTest;
+
+  /// No description provided for @archiveLabTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive lab test'**
+  String get archiveLabTest;
+
+  /// No description provided for @labCatalogue.
+  ///
+  /// In en, this message translates to:
+  /// **'Test catalogue'**
+  String get labCatalogue;
+
+  /// No description provided for @labOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'Lab orders'**
+  String get labOrders;
+
+  /// No description provided for @labTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Lab total'**
+  String get labTotal;
+
+  /// No description provided for @labRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining'**
+  String get labRemaining;
+
+  /// No description provided for @labPaidNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid now'**
+  String get labPaidNow;
+
+  /// No description provided for @collectLabPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Collect payment'**
+  String get collectLabPayment;
+
+  /// No description provided for @newLabOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'New lab order'**
+  String get newLabOrder;
+
+  /// No description provided for @selectLabTests.
+  ///
+  /// In en, this message translates to:
+  /// **'Select tests'**
+  String get selectLabTests;
+
+  /// No description provided for @itemsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Select at least one test'**
+  String get itemsRequired;
+
+  /// No description provided for @patientName.
+  ///
+  /// In en, this message translates to:
+  /// **'Patient name'**
+  String get patientName;
+
+  /// No description provided for @patientAge.
+  ///
+  /// In en, this message translates to:
+  /// **'Patient age'**
+  String get patientAge;
+
+  /// No description provided for @ageUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'Age unit'**
+  String get ageUnit;
+
+  /// No description provided for @yearUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'Years'**
+  String get yearUnit;
+
+  /// No description provided for @monthUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'Months'**
+  String get monthUnit;
+
+  /// No description provided for @dayUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'Days'**
+  String get dayUnit;
+
+  /// No description provided for @resultStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Result status'**
+  String get resultStatus;
+
+  /// No description provided for @resultReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Result delivered'**
+  String get resultReceived;
+
+  /// No description provided for @resultPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending result'**
+  String get resultPending;
+
+  /// No description provided for @markResultReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark result delivered'**
+  String get markResultReceived;
+
+  /// No description provided for @labReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'Lab receipt'**
+  String get labReceipt;
+
+  /// No description provided for @labPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Lab receipt'**
+  String get labPayment;
+
+  /// No description provided for @operationalDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Operational day'**
+  String get operationalDay;
+
+  /// No description provided for @operationalDayHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Operational day history'**
+  String get operationalDayHistory;
+
+  /// No description provided for @dailyNetCash.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily net cash'**
+  String get dailyNetCash;
+
+  /// No description provided for @dailyWallet.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily wallet'**
+  String get dailyWallet;
+
+  /// No description provided for @noSuppliesUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'No supplies used'**
+  String get noSuppliesUsed;
+
+  /// No description provided for @usedSupplies.
+  ///
+  /// In en, this message translates to:
+  /// **'Used supplies'**
+  String get usedSupplies;
+
+  /// No description provided for @paid.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid'**
+  String get paid;
+
+  /// No description provided for @actions.
+  ///
+  /// In en, this message translates to:
+  /// **'Actions'**
+  String get actions;
+
+  /// No description provided for @invalidStockQuantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid stock quantity'**
+  String get invalidStockQuantity;
+
+  /// No description provided for @stockNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock item not found'**
+  String get stockNotFound;
+
+  /// No description provided for @insufficientStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Insufficient stock quantity'**
+  String get insufficientStock;
+
+  /// No description provided for @stockChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock has been modified by another operation'**
+  String get stockChanged;
+
+  /// No description provided for @labTestChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Lab test has been modified by another operation'**
+  String get labTestChanged;
+
+  /// No description provided for @duplicateName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name already exists'**
+  String get duplicateName;
+
+  /// No description provided for @testNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Lab test not found'**
+  String get testNotFound;
+
+  /// No description provided for @invalidAge.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid patient age'**
+  String get invalidAge;
+
+  /// No description provided for @stalePrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Test price has changed in catalogue'**
+  String get stalePrice;
+
+  /// No description provided for @orderNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Lab order not found'**
+  String get orderNotFound;
+
+  /// No description provided for @stockSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock item saved'**
+  String get stockSaved;
+
+  /// No description provided for @stockArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock item archived'**
+  String get stockArchived;
+
+  /// No description provided for @labTestSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Lab test saved'**
+  String get labTestSaved;
+
+  /// No description provided for @labTestArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'Lab test archived'**
+  String get labTestArchived;
+
+  /// No description provided for @labOrderAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Lab order created'**
+  String get labOrderAdded;
+
+  /// No description provided for @labPaymentAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Lab payment collected'**
+  String get labPaymentAdded;
+
+  /// No description provided for @labReceivedUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Result delivery status updated'**
+  String get labReceivedUpdated;
+
+  /// No description provided for @noLabOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'No laboratory orders yet'**
+  String get noLabOrders;
+
+  /// No description provided for @noLabTests.
+  ///
+  /// In en, this message translates to:
+  /// **'No laboratory tests in catalogue yet'**
+  String get noLabTests;
+
+  /// No description provided for @noStockItems.
+  ///
+  /// In en, this message translates to:
+  /// **'No stock items in inventory yet'**
+  String get noStockItems;
 }
 
 class _AppLocalizationsDelegate

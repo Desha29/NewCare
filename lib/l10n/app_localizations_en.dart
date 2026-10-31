@@ -13,7 +13,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'NewCare';
 
   @override
-  String get localPreview => 'Local preview · sample data';
+  String get localPreview => 'Local preview Â· sample data';
 
   @override
   String get localSaved => 'Saved on this device';
@@ -187,7 +187,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get address => 'Visit address';
 
   @override
-  String get phoneOptional => 'Phone · optional';
+  String get phoneOptional => 'Phone Â· optional';
 
   @override
   String get caseOwner => 'Responsible nursing member';
@@ -380,7 +380,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sampleOnly =>
-      'Sample data — do not enter real patient information';
+      'Sample data â€” do not enter real patient information';
 
   @override
   String get previewGate =>
@@ -420,16 +420,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get passwordMismatch => 'Passwords do not match';
 
   @override
-  String get setupSteps => 'Account → Nursing → Procedures → Ready';
+  String get setupSteps => 'Account â†’ Nursing â†’ Procedures â†’ Ready';
 
   @override
   String get defaultPrice => 'Default price';
 
   @override
-  String get procedureNameAr => 'Procedure name · Arabic';
+  String get procedureNameAr => 'Procedure name Â· Arabic';
 
   @override
-  String get procedureNameEn => 'Procedure name · English';
+  String get procedureNameEn => 'Procedure name Â· English';
 
   @override
   String get openingCash => 'Opening cash balance';
@@ -601,7 +601,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cashFormula =>
-      'Opening cash + cash receipts + income − outgoings − advances − awards + cash count differences';
+      'Opening cash + cash receipts + income âˆ’ outgoings âˆ’ advances âˆ’ awards + cash count differences';
 
   @override
   String get showSetup => 'First-run setup';
@@ -1011,7 +1011,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Enter a valid amount within the outstanding balance; the agreed price cannot be less than receipts';
 
   @override
-  String get searchCatalogue => 'Search and select a procedure…';
+  String get searchCatalogue => 'Search and select a procedureâ€¦';
 
   @override
   String get caseReference => 'Case reference';
@@ -1189,7 +1189,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get previewFailed => 'Could not change preview';
 
   @override
-  String get squareMonitor => 'Square monitor 1024 × 1024';
+  String get squareMonitor => 'Square monitor 1024 Ã— 1024';
 
   @override
   String get platformandroid => 'Android';
@@ -1258,4 +1258,345 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get caseAddedAt => 'Date and time added';
+
+  @override
+  String get developerDiagnostics => 'Data diagnostics';
+
+  @override
+  String get diagnosticsManagerOnly => 'Locked manager section';
+
+  @override
+  String get diagnosticsRefresh => 'Check local data';
+
+  @override
+  String get syncNotConfigured =>
+      'Data sync is not activated yet â€” equivalence cannot be verified';
+
+  @override
+  String get diagnosticsVerificationHelp =>
+      'Matched requires verified identical content in the same scope and revision, with no pending operations or conflicts.';
+
+  @override
+  String get diagnosticsPending =>
+      'Local operations awaiting connection and sync';
+
+  @override
+  String get diagnosticsDataset => 'Dataset';
+
+  @override
+  String get diagnosticsLocal => 'On this device';
+
+  @override
+  String get diagnosticsCloud => 'In Supabase';
+
+  @override
+  String get diagnosticsLocalCheckedAt => 'Last local check';
+
+  @override
+  String get diagnosticsMatched => 'Matched';
+
+  @override
+  String get diagnosticsDifferent => 'Different';
+
+  @override
+  String get diagnosticsUnavailable => 'Unable to verify';
+
+  @override
+  String get diagnosticsPendingStatus => 'Awaiting sync or conflict resolution';
+
+  @override
+  String get diagnosticsPayments => 'Additional receipts';
+
+  @override
+  String get managerRequired => 'This section requires a manager';
+
+  @override
+  String get username => 'Username';
+
+  @override
+  String get previewUsername => 'Preview username: manager';
+
+  @override
+  String get offlineLoginHelp =>
+      'After a successful online login, this device supports offline login for 7 days. Account administration requires a connection.';
+
+  @override
+  String get offlineLoginUnavailable =>
+      'This manager must sign in online on this device first';
+
+  @override
+  String get offlineLoginExpired =>
+      'Offline access expired or the device clock changed. Connect to verify your account.';
+
+  @override
+  String get offlineLoginLocked =>
+      'Offline login is temporarily locked after incorrect attempts. Try again after 15 minutes.';
+
+  @override
+  String get onlineAccountChangeRequired =>
+      'Changing this account requires an online manager verification';
+
+  @override
+  String get cloudFirstSetup => 'Set up the center and its first manager';
+
+  @override
+  String get cloudFirstSetupHelp =>
+      'Create the first manager with a username and password, then enroll this device. Email is contact information only, with no confirmation message. Nurses select their names without accounts.';
+
+  @override
+  String get usernameHint => '3â€“32 lowercase Latin letters, numbers or _';
+
+  @override
+  String get invalidEmail => 'Enter a valid email address';
+
+  @override
+  String get securePasswordHint => 'Use at least 12 characters';
+
+  @override
+  String get managerEmailVerificationRequired =>
+      'Confirm your email using the Supabase message, then select Activate after verification.';
+
+  @override
+  String get deviceEnrollmentRequired =>
+      'This device is not enrolled. Complete center device setup with an online manager.';
+
+  @override
+  String get cloudSetupFailed =>
+      'Setup failed. Check your connection and authentication settings, then retry. If the account was already created, use Connect existing manager.';
+
+  @override
+  String get createFirstManager => 'Create manager and set up center';
+
+  @override
+  String get activateVerifiedManager => 'Connect existing manager';
+
+  @override
+  String get managerAccounts => 'Manager accounts';
+
+  @override
+  String get managerAccountsHelp =>
+      'Add a manager with a username and password. Email is contact information with no confirmation message. Nurses are added without login accounts from Nursing.';
+
+  @override
+  String get addManager => 'Add manager';
+
+  @override
+  String get managerInvitationSent =>
+      'Manager account created. Sign in with the username and password without email confirmation.';
+
+  @override
+  String get managerCreationFailed =>
+      'Manager creation failed. Check the username and connection, then retry.';
+
+  @override
+  String get emailChangeVerificationHelp =>
+      'Contact email can be changed without confirmation. Login continues to use the username.';
+
+  @override
+  String get emailConfirmationStillEnabled =>
+      'Disable Confirm email in Supabase settings to provision username accounts without confirmation messages.';
+
+  @override
+  String get anonymousSignInNotEnabled =>
+      'Enable Anonymous Sign-ins in Supabase to enroll the center device without nurse accounts.';
+
+  @override
+  String get localDataSyncPending =>
+      'Data is on this device â€” sync is not activated yet';
+
+  @override
+  String get offlineManagerSession =>
+      'Offline manager session â€” account changes require a connection';
+
+  @override
+  String get centerBindingMismatch =>
+      'This device is bound to another center; data from two centers cannot be merged.';
+
+  @override
+  String get managerIdentityRefreshed =>
+      'Refresh manager identity in the nursing list';
+
+  @override
+  String get inventory => 'Inventory';
+
+  @override
+  String get addStockItem => 'Add stock item';
+
+  @override
+  String get editStockItem => 'Edit stock item';
+
+  @override
+  String get stockQuantity => 'Stock quantity';
+
+  @override
+  String get quantity => 'Quantity';
+
+  @override
+  String get archiveStockItem => 'Archive stock item';
+
+  @override
+  String get confirmArchive => 'Are you sure you want to archive';
+
+  @override
+  String get archive => 'Archive';
+
+  @override
+  String get laboratory => 'Laboratory';
+
+  @override
+  String get addLabTest => 'Add lab test';
+
+  @override
+  String get editLabTest => 'Edit lab test';
+
+  @override
+  String get archiveLabTest => 'Archive lab test';
+
+  @override
+  String get labCatalogue => 'Test catalogue';
+
+  @override
+  String get labOrders => 'Lab orders';
+
+  @override
+  String get labTotal => 'Lab total';
+
+  @override
+  String get labRemaining => 'Remaining';
+
+  @override
+  String get labPaidNow => 'Paid now';
+
+  @override
+  String get collectLabPayment => 'Collect payment';
+
+  @override
+  String get newLabOrder => 'New lab order';
+
+  @override
+  String get selectLabTests => 'Select tests';
+
+  @override
+  String get itemsRequired => 'Select at least one test';
+
+  @override
+  String get patientName => 'Patient name';
+
+  @override
+  String get patientAge => 'Patient age';
+
+  @override
+  String get ageUnit => 'Age unit';
+
+  @override
+  String get yearUnit => 'Years';
+
+  @override
+  String get monthUnit => 'Months';
+
+  @override
+  String get dayUnit => 'Days';
+
+  @override
+  String get resultStatus => 'Result status';
+
+  @override
+  String get resultReceived => 'Result delivered';
+
+  @override
+  String get resultPending => 'Pending result';
+
+  @override
+  String get markResultReceived => 'Mark result delivered';
+
+  @override
+  String get labReceipt => 'Lab receipt';
+
+  @override
+  String get labPayment => 'Lab receipt';
+
+  @override
+  String get operationalDay => 'Operational day';
+
+  @override
+  String get operationalDayHistory => 'Operational day history';
+
+  @override
+  String get dailyNetCash => 'Daily net cash';
+
+  @override
+  String get dailyWallet => 'Daily wallet';
+
+  @override
+  String get noSuppliesUsed => 'No supplies used';
+
+  @override
+  String get usedSupplies => 'Used supplies';
+
+  @override
+  String get paid => 'Paid';
+
+  @override
+  String get actions => 'Actions';
+
+  @override
+  String get invalidStockQuantity => 'Invalid stock quantity';
+
+  @override
+  String get stockNotFound => 'Stock item not found';
+
+  @override
+  String get insufficientStock => 'Insufficient stock quantity';
+
+  @override
+  String get stockChanged => 'Stock has been modified by another operation';
+
+  @override
+  String get labTestChanged =>
+      'Lab test has been modified by another operation';
+
+  @override
+  String get duplicateName => 'Name already exists';
+
+  @override
+  String get testNotFound => 'Lab test not found';
+
+  @override
+  String get invalidAge => 'Invalid patient age';
+
+  @override
+  String get stalePrice => 'Test price has changed in catalogue';
+
+  @override
+  String get orderNotFound => 'Lab order not found';
+
+  @override
+  String get stockSaved => 'Stock item saved';
+
+  @override
+  String get stockArchived => 'Stock item archived';
+
+  @override
+  String get labTestSaved => 'Lab test saved';
+
+  @override
+  String get labTestArchived => 'Lab test archived';
+
+  @override
+  String get labOrderAdded => 'Lab order created';
+
+  @override
+  String get labPaymentAdded => 'Lab payment collected';
+
+  @override
+  String get labReceivedUpdated => 'Result delivery status updated';
+
+  @override
+  String get noLabOrders => 'No laboratory orders yet';
+
+  @override
+  String get noLabTests => 'No laboratory tests in catalogue yet';
+
+  @override
+  String get noStockItems => 'No stock items in inventory yet';
 }

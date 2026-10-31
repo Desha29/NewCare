@@ -6,4 +6,8 @@ enum ManagedRecordKind {
   supply,
   movement,
   shift,
+  stockItem,
+  labTest,
+  labOrder,
+  labReceipt,
 }

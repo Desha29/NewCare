@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import '../../../../core/utils/center_clock.dart';
 import '../../../../core/utils/formatters.dart';
@@ -40,7 +40,7 @@ class RecordEditorField extends StatelessWidget {
             .map((e) => DropdownMenuItem(value: e.key, child: Text(e.value)))
             .toList(),
         onChanged: (v) {
-          controller.text = v ?? '';
+          controller.text = v;
           onChanged();
         },
         validator: (v) =>
@@ -81,7 +81,7 @@ class RecordEditorField extends StatelessWidget {
                 child: Text(
                   date == null
                       ? context.t('choose')
-                      : '${context.date(date)} · ${context.time(date)}',
+                      : '${context.date(date)} Â· ${context.time(date)}',
                 ),
               ),
               if (!field.required && date != null)
