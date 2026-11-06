@@ -23,17 +23,6 @@ class StorageDurability {
   }
 }
 
-class PendingOperation {
-  const PendingOperation({
-    required this.id,
-    required this.action,
-    required this.payload,
-    required this.sequence,
-  });
-  final String id, action, payload;
-  final int sequence;
-}
-
 /// Owns one native SQLite connection in a worker isolate.
 /// Never falls back to an empty database on a read/decryption error.
 class SqliteStringStore implements TransactionalStore {
@@ -115,6 +104,7 @@ class SqliteStringStore implements TransactionalStore {
     ]);
   });
 
+  @override
   Future<List<PendingOperation>> pending() => _serialized(() async {
     final rows = await _request('pending', []) as List;
     final result = <PendingOperation>[];
@@ -139,6 +129,7 @@ class SqliteStringStore implements TransactionalStore {
       _serialized(() async => await _request('pendingCount', []) as int);
 
   /// Call only after the server confirms this exact operation ID committed.
+  @override
   Future<void> acknowledge(String operationId) => _serialized(() async {
     await _request('acknowledge', [operationId]);
   });

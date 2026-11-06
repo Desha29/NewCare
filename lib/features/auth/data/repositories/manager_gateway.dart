@@ -1,4 +1,9 @@
 import '../models/manager_identity.dart';
+import '../models/manager_choice.dart';
+
+abstract interface class ManagerDirectoryGateway {
+  Future<List<ManagerChoice>> listManagers();
+}
 
 /// Supabase handles online passwords; the offline cache grants no cloud token.
 abstract interface class ManagerGateway {

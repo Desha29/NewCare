@@ -8,11 +8,7 @@ class CaseStockUsage {
   final String stockItemId, name;
   final int quantity;
 
-  CaseStockUsage copyWith({
-    String? stockItemId,
-    String? name,
-    int? quantity,
-  }) =>
+  CaseStockUsage copyWith({String? stockItemId, String? name, int? quantity}) =>
       CaseStockUsage(
         stockItemId: stockItemId ?? this.stockItemId,
         name: name ?? this.name,

@@ -59,6 +59,8 @@ class AppState {
 }
 
 class AppCubit extends Cubit<AppState> {
+  static const defaultLocalUsername = 'admin';
+  static const defaultLocalPassword = '12345678';
   AppCubit(
     this.store, {
     bool configured = true,
@@ -84,7 +86,7 @@ class AppCubit extends Cubit<AppState> {
     final generation = ++_loginGeneration;
     _loginError = null;
     if (authentication == null) {
-      if (username.trim().toLowerCase() != 'manager') {
+      if (username.trim().toLowerCase() != defaultLocalUsername) {
         _loginError = 'wrongPassword';
         return false;
       }
@@ -187,7 +189,11 @@ class AppCubit extends Cubit<AppState> {
   bool checkPassword(String password) {
     if (authentication != null) return false;
     if (!_settingsReady) return false;
-    if (_passwordHash == null) return password == 'newcare-demo';
+    if (_passwordHash == null) {
+      // Keep the former preview password valid only for existing preview
+      // flows; new local setup displays admin / 12345678.
+      return password == defaultLocalPassword || password == 'newcare-demo';
+    }
     try {
       return Crypt(_passwordHash!).match(password);
     } on FormatException {
@@ -210,6 +216,17 @@ class AppCubit extends Cubit<AppState> {
     if (!state.managerUnlocked || !checkPassword(current)) {
       return 'wrongPassword';
     }
+    if (next.length < 8) return 'passwordTooShort';
+    Crypt.cryptographicallySecureSalts = true;
+    final hash = Crypt.sha512(next, rounds: 10000).toString();
+    await store.write('newcare.managerPassword', hash);
+    _passwordHash = hash;
+    if (!isClosed) emit(state.copyWith(customPassword: true));
+    return null;
+  }
+
+  Future<String?> setInitialPassword(String next) async {
+    if (authentication != null) return 'onlineSetupRequired';
     if (next.length < 8) return 'passwordTooShort';
     Crypt.cryptographicallySecureSalts = true;
     final hash = Crypt.sha512(next, rounds: 10000).toString();

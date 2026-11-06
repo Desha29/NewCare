@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../localization/localization_extensions.dart';
 
-class NcField extends StatelessWidget {
+class NcField extends StatefulWidget {
   const NcField({
     super.key,
     required this.label,
@@ -26,20 +27,59 @@ class NcField extends StatelessWidget {
   final List<TextInputFormatter>? inputFormatters;
 
   @override
+  State<NcField> createState() => _NcFieldState();
+}
+
+class _NcFieldState extends State<NcField> {
+  late bool obscured;
+
+  @override
+  void initState() {
+    super.initState();
+    obscured = widget.obscure;
+  }
+
+  @override
+  void didUpdateWidget(covariant NcField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.obscure != widget.obscure) {
+      obscured = widget.obscure;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) => TextFormField(
-    controller: controller,
-    enabled: enabled,
-    onChanged: onChanged,
-    obscureText: obscure,
-    maxLines: lines,
-    keyboardType: keyboardType,
-    inputFormatters: inputFormatters,
-    style: keyboardType?.index == TextInputType.number.index
+    controller: widget.controller,
+    enabled: widget.enabled,
+    onChanged: widget.onChanged,
+    obscureText: obscured,
+    maxLines: widget.lines,
+    keyboardType: widget.keyboardType,
+    inputFormatters: widget.inputFormatters,
+    style: widget.keyboardType?.index == TextInputType.number.index
         ? const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)
         : null,
-    validator: validator,
-    decoration: InputDecoration(labelText: label, hintText: hint),
-    textInputAction: lines > 1 ? TextInputAction.newline : TextInputAction.next,
+    validator: widget.validator,
+    decoration: InputDecoration(
+      labelText: widget.label,
+      hintText: widget.hint,
+      suffixIcon: widget.obscure
+          ? IconButton(
+              tooltip: context.t(obscured ? 'showPassword' : 'hidePassword'),
+              onPressed: widget.enabled
+                  ? () => setState(() => obscured = !obscured)
+                  : null,
+              icon: Icon(
+                obscured
+                    ? Icons.visibility_outlined
+                    : Icons.visibility_off_outlined,
+              ),
+            )
+          : null,
+    ),
+    textInputAction: widget.lines > 1
+        ? TextInputAction.newline
+        : TextInputAction.next,
   );
 }
 

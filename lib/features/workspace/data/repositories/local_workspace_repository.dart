@@ -42,19 +42,94 @@ class LocalWorkspaceRepository implements WorkspaceRepository {
   Future<void> _tail = Future<void>.value();
   @override
   WorkspaceSnapshot get current => _current;
+  bool get hasOperationalData =>
+      _current.staff.isNotEmpty ||
+      _current.procedures.isNotEmpty ||
+      _current.cases.isNotEmpty ||
+      _current.movements.isNotEmpty ||
+      _current.audit.isNotEmpty ||
+      _current.payments.isNotEmpty ||
+      _current.handovers.isNotEmpty ||
+      _current.stockItems.isNotEmpty ||
+      _current.stockMovements.isNotEmpty ||
+      _current.labTests.isNotEmpty ||
+      _current.labOrders.isNotEmpty ||
+      _current.labPayments.isNotEmpty ||
+      _current.setupDone ||
+      _current.openingMinor != 0;
   @override
   Stream<WorkspaceSnapshot> get changes => _controller.stream;
   @override
   Future<void> initialize() async {
     final raw = await store.read(storageKey);
     if (raw != null) {
-      _current = WorkspaceSnapshot.fromJson(
+      final parsed = WorkspaceSnapshot.fromJson(
         jsonDecode(raw) as Map<String, dynamic>,
       );
+      _current = parsed;
     } else {
       _current = seedDemo ? demoWorkspace() : WorkspaceSnapshot();
       await store.write(storageKey, jsonEncode(_current.toJson()));
     }
+  }
+
+  @override
+  Future<void> resetWorkspace() async {
+    _current = WorkspaceSnapshot();
+    await store.write(storageKey, jsonEncode(_current.toJson()));
+    _controller.add(_current);
+  }
+
+  @override
+  Future<void> applyRemoteChange(Map<String, dynamic> change) {
+    final operation = _tail.then((_) async {
+      var next = _applyChange(_current.toJson(), change);
+      // Keep writes made while the download was in flight. They remain queued
+      // until their exact operation IDs are acknowledged by the server.
+      if (store case final TransactionalStore durable) {
+        for (final operation in await durable.pending()) {
+          next = _applyChange(
+            next,
+            jsonDecode(operation.payload) as Map<String, dynamic>,
+          );
+        }
+      }
+      final snapshot = WorkspaceSnapshot.fromJson(next);
+      await store.write(storageKey, jsonEncode(snapshot.toJson()));
+      _current = snapshot;
+      if (!_controller.isClosed) _controller.add(snapshot);
+    });
+    _tail = operation.then((_) {}, onError: (Object _, StackTrace _) {});
+    return operation;
+  }
+
+  Map<String, dynamic> _applyChange(
+    Map<String, dynamic> current,
+    Map<String, dynamic> change,
+  ) {
+    final next = Map<String, dynamic>.from(current);
+    final collections = Map<String, dynamic>.from(
+      change['collections'] as Map? ?? const {},
+    );
+    for (final entry in collections.entries) {
+      final existing = ((next[entry.key] as List?) ?? const [])
+          .map((row) => Map<String, dynamic>.from(row as Map))
+          .toList();
+      final delta = Map<String, dynamic>.from(entry.value as Map);
+      final removed = (delta['remove'] as List? ?? const []).cast<String>();
+      final rows = <String, Map<String, dynamic>>{
+        for (final row in existing) row['id'] as String: row,
+      }..removeWhere((id, _) => removed.contains(id));
+      for (final row in (delta['upsert'] as List? ?? const [])) {
+        final value = Map<String, dynamic>.from(row as Map);
+        rows[value['id'] as String] = value;
+      }
+      next[entry.key] = rows.values.toList();
+    }
+    next.addAll(
+      Map<String, dynamic>.from(change['settings'] as Map? ?? const {}),
+    );
+    return next;
   }
 
   Future<void> _update(
@@ -213,7 +288,11 @@ class LocalWorkspaceRepository implements WorkspaceRepository {
     if (!s.procedures.any((x) => x.id == record.procedureId && x.active)) {
       throw const WorkspaceException('invalidProcedure');
     }
-    return StockChanges.applyUsage(s,null,record).copyWith(cases: [...s.cases, record]);
+    return StockChanges.applyUsage(
+      s,
+      null,
+      record,
+    ).copyWith(cases: [...s.cases, record]);
   }, detail: record.id);
   @override
   Future<void> addCasePayment(CasePayment payment) =>
@@ -325,46 +404,102 @@ class LocalWorkspaceRepository implements WorkspaceRepository {
   }
 
   @override
-  Future<void> saveStockItem(StockItem item)=>_update('stockSaved',(s) {
-    if(item.name.trim().isEmpty) throw const WorkspaceException('requiredField');
-    if(item.quantity<0) throw const WorkspaceException('invalidStockQuantity');
-    final old=s.stockItems.where((x)=>x.id==item.id).firstOrNull;
-    if(old!=null && old.version!=item.version) throw const WorkspaceException('stockChanged');
-    final normalized=item.name.trim().replaceAll(RegExp(r'\s+'),' ').toLowerCase();
-    if(s.stockItems.any((x)=>x.id!=item.id && x.active && x.name.trim().replaceAll(RegExp(r'\s+'),' ').toLowerCase()==normalized)) {
+  Future<void> saveStockItem(StockItem item) => _update('stockSaved', (s) {
+    if (item.name.trim().isEmpty) {
+      throw const WorkspaceException('requiredField');
+    }
+    if (item.quantity < 0) {
+      throw const WorkspaceException('invalidStockQuantity');
+    }
+    final old = s.stockItems.where((x) => x.id == item.id).firstOrNull;
+    if (old != null && old.version != item.version) {
+      throw const WorkspaceException('stockChanged');
+    }
+    final normalized = item.name
+        .trim()
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .toLowerCase();
+    if (s.stockItems.any(
+      (x) =>
+          x.id != item.id &&
+          x.active &&
+          x.name.trim().replaceAll(RegExp(r'\s+'), ' ').toLowerCase() ==
+              normalized,
+    )) {
       throw const WorkspaceException('duplicateName');
     }
-    if(old!=null && old.name==item.name.trim() && old.quantity==item.quantity && old.active==item.active) return s;
-    final value=item.copyWith(name:item.name.trim(),version:old==null?1:old.version+1);
-    final delta=value.quantity-(old?.quantity??0);
-    return s.copyWith(stockItems:[...s.stockItems.where((x)=>x.id!=item.id),value],
-      stockMovements:[...s.stockMovements,if(delta!=0) StockMovement(id:_uuid.v4(),
-        stockItemId:value.id,name:value.name,delta:delta,kind:old==null?'stockOpening':'stockAdjustment',at:DateTime.now())]);
-  },detail:item.id);
+    if (old != null &&
+        old.name == item.name.trim() &&
+        old.quantity == item.quantity &&
+        old.active == item.active) {
+      return s;
+    }
+    final value = item.copyWith(
+      name: item.name.trim(),
+      version: old == null ? 1 : old.version + 1,
+    );
+    final delta = value.quantity - (old?.quantity ?? 0);
+    return s.copyWith(
+      stockItems: [...s.stockItems.where((x) => x.id != item.id), value],
+      stockMovements: [
+        ...s.stockMovements,
+        if (delta != 0)
+          StockMovement(
+            id: _uuid.v4(),
+            stockItemId: value.id,
+            name: value.name,
+            delta: delta,
+            kind: old == null ? 'stockOpening' : 'stockAdjustment',
+            at: DateTime.now(),
+          ),
+      ],
+    );
+  }, detail: item.id);
 
   @override
-  Future<void> archiveStockItem(String id)=>_update('stockArchived',(s) {
-    final old=s.stockItems.where((x)=>x.id==id).firstOrNull;
-    if(old==null) throw const WorkspaceException('stockNotFound');
-    if(!old.active) return s;
-    return s.copyWith(stockItems:s.stockItems.map((x)=>x.id==id?x.copyWith(active:false,version:x.version+1):x).toList());
-  },detail:id);
+  Future<void> archiveStockItem(String id) => _update('stockArchived', (s) {
+    final old = s.stockItems.where((x) => x.id == id).firstOrNull;
+    if (old == null) throw const WorkspaceException('stockNotFound');
+    if (!old.active) return s;
+    return s.copyWith(
+      stockItems: s.stockItems
+          .map(
+            (x) => x.id == id
+                ? x.copyWith(active: false, version: x.version + 1)
+                : x,
+          )
+          .toList(),
+    );
+  }, detail: id);
 
   @override
-  Future<void> saveLabTest(LabTest test) =>
-      _update('labTestSaved', (s) => LabChanges.saveTest(s, test), detail: test.id);
+  Future<void> saveLabTest(LabTest test) => _update(
+    'labTestSaved',
+    (s) => LabChanges.saveTest(s, test),
+    detail: test.id,
+  );
 
   @override
-  Future<void> archiveLabTest(String id) =>
-      _update('labTestArchived', (s) => LabChanges.archiveTest(s, id), detail: id);
+  Future<void> archiveLabTest(String id) => _update(
+    'labTestArchived',
+    (s) => LabChanges.archiveTest(s, id),
+    detail: id,
+  );
 
   @override
   Future<void> addLabOrder(LabOrder order, {LabPayment? initialPayment}) =>
-      _update('labOrderAdded', (s) => LabChanges.addOrder(s, order, initialPayment: initialPayment), detail: order.id);
+      _update(
+        'labOrderAdded',
+        (s) => LabChanges.addOrder(s, order, initialPayment: initialPayment),
+        detail: order.id,
+      );
 
   @override
-  Future<void> addLabPayment(LabPayment payment) =>
-      _update('labPaymentAdded', (s) => LabChanges.addPayment(s, payment), detail: payment.id);
+  Future<void> addLabPayment(LabPayment payment) => _update(
+    'labPaymentAdded',
+    (s) => LabChanges.addPayment(s, payment),
+    detail: payment.id,
+  );
 
   @override
   Future<void> setLabReceived(
@@ -372,12 +507,17 @@ class LocalWorkspaceRepository implements WorkspaceRepository {
     String staffId, {
     required bool received,
     String? reason,
-  }) =>
-      _update(
-        'labReceivedUpdated',
-        (s) => LabChanges.setReceived(s, orderId, staffId, received: received, reason: reason),
-        detail: orderId,
-      );
+  }) => _update(
+    'labReceivedUpdated',
+    (s) => LabChanges.setReceived(
+      s,
+      orderId,
+      staffId,
+      received: received,
+      reason: reason,
+    ),
+    detail: orderId,
+  );
 
   @override
   Future<void> updateRecord(

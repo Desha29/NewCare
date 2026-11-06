@@ -41,7 +41,8 @@ class _CaseStockPickerState extends State<CaseStockPicker> {
 
     // Items that have remaining available stock or are currently used
     final filteredStock = activeStock.where((s) {
-      final matchesQuery = _query.isEmpty ||
+      final matchesQuery =
+          _query.isEmpty ||
           s.name.toLowerCase().contains(_query.trim().toLowerCase());
       final hasStock = s.quantity > 0 || usedIds.contains(s.id);
       return matchesQuery && hasStock;
@@ -124,8 +125,9 @@ class _CaseStockPickerState extends State<CaseStockPicker> {
             )
           else
             ConstrainedBox(
-              constraints:
-                  BoxConstraints(maxHeight: widget.compact ? 110 : 160),
+              constraints: BoxConstraints(
+                maxHeight: widget.compact ? 110 : 160,
+              ),
               child: SingleChildScrollView(
                 child: Wrap(
                   spacing: 6,
@@ -151,8 +153,7 @@ class _CaseStockPickerState extends State<CaseStockPicker> {
             child: Column(
               children: [
                 for (var i = 0; i < usages.length; i++) ...[
-                  if (i > 0)
-                    const Divider(height: 8, color: AppColors.border),
+                  if (i > 0) const Divider(height: 8, color: AppColors.border),
                   _buildUsageRow(i, usages[i]),
                 ],
               ],
@@ -191,8 +192,8 @@ class _CaseStockPickerState extends State<CaseStockPicker> {
           : VisualDensity.standard,
       materialTapTargetSize:
           widget.compact && MediaQuery.sizeOf(context).width >= 720
-              ? MaterialTapTargetSize.shrinkWrap
-              : MaterialTapTargetSize.padded,
+          ? MaterialTapTargetSize.shrinkWrap
+          : MaterialTapTargetSize.padded,
       onSelected: (on) {
         if (on) {
           if (isSelected) {

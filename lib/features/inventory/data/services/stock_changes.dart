@@ -27,10 +27,19 @@ abstract final class StockChanges {
     final movements = <StockMovement>[];
     for (final id in {...previous.keys, ...next.keys}) {
       final item = items.where((s) => s.id == id).firstOrNull;
-      if (item == null) throw const WorkspaceException('stockNotFound');
       final int old = previous[id]?.quantity ?? 0;
       final int newQuantity = next[id]?.quantity ?? 0;
       final int consumed = newQuantity - old;
+      if (item == null) {
+        // Deleted catalogue items retain their immutable historical usage.
+        // Financial edits must not require recreating or consuming stock.
+        if (previous[id] != null &&
+            consumed == 0 &&
+            next[id]?.name == previous[id]!.name) {
+          continue;
+        }
+        throw const WorkspaceException('stockNotFound');
+      }
       if (consumed > 0 && (!item.active || consumed > item.quantity)) {
         throw const WorkspaceException('insufficientStock');
       }

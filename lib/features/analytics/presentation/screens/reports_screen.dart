@@ -12,6 +12,7 @@ import '../../../../core/widgets/nc_button.dart';
 import '../../../../core/widgets/nc_notice.dart';
 import '../../../../core/widgets/nc_metric_grid.dart';
 import '../../../../core/widgets/nc_page_column.dart';
+import '../../../../core/widgets/nc_toast.dart';
 import '../../../workspace/presentation/cubit/workspace_cubit.dart';
 import '../../data/services/csv_exporter.dart';
 import '../widgets/analytics_sections.dart';
@@ -99,8 +100,10 @@ class ReportsScreen extends StatelessWidget {
                 );
               } catch (_) {
                 if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(context.t('saveFailed'))),
+                  NcToast.show(
+                    context,
+                    message: context.t('saveFailed'),
+                    tone: NcToastTone.error,
                   );
                 }
               }

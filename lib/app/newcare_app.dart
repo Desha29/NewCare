@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:toastification/toastification.dart';
 
 import '../l10n/app_localizations.dart';
 import '../core/storage/string_store.dart';
@@ -13,6 +14,7 @@ import 'cubit/app_cubit.dart';
 import 'workspace_shell.dart';
 import '../features/auth/data/repositories/manager_auth_repository.dart';
 import '../features/workspace/data/sources/manager_staff_projection.dart';
+import '../features/sync/data/repositories/cloud_sync_service.dart';
 
 class NewCareApp extends StatelessWidget {
   const NewCareApp({
@@ -20,15 +22,18 @@ class NewCareApp extends StatelessWidget {
     required this.repository,
     required this.store,
     this.authentication,
+    this.syncService,
   });
   final WorkspaceRepository repository;
   final StringStore store;
   final ManagerAuthRepository? authentication;
+  final CloudSyncService? syncService;
   @override
   Widget build(BuildContext context) => MultiRepositoryProvider(
     providers: [
       RepositoryProvider<WorkspaceRepository>.value(value: repository),
       RepositoryProvider<StringStore>.value(value: store),
+      RepositoryProvider<CloudSyncService?>.value(value: syncService),
     ],
     child: MultiBlocProvider(
       providers: [
@@ -47,14 +52,16 @@ class NewCareApp extends StatelessWidget {
         BlocProvider(create: (_) => ManagementCubit(repository)),
       ],
       child: BlocBuilder<AppCubit, AppState>(
-        builder: (context, state) => MaterialApp(
-          onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
-          debugShowCheckedModeBanner: false,
-          theme: AppTheme.light(),
-          locale: state.locale,
-          supportedLocales: AppLocalizations.supportedLocales,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          home: const WorkspaceShell(),
+        builder: (context, state) => ToastificationWrapper(
+          child: MaterialApp(
+            onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
+            debugShowCheckedModeBanner: false,
+            theme: AppTheme.light(),
+            locale: state.locale,
+            supportedLocales: AppLocalizations.supportedLocales,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            home: WorkspaceShell(syncService: syncService),
+          ),
         ),
       ),
     ),

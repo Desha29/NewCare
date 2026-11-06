@@ -98,6 +98,114 @@ abstract class AppLocalizations {
     Locale('en'),
   ];
 
+  /// No description provided for @deleteStockItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete stock item'**
+  String get deleteStockItem;
+
+  /// No description provided for @deleteStockItemHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'This removes the item and its available stock. Supplies recorded in previous cases are preserved.'**
+  String get deleteStockItemHelp;
+
+  /// No description provided for @deleteLabTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete lab test'**
+  String get deleteLabTest;
+
+  /// No description provided for @deleteLabTestHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'This removes the test from the catalogue. Previous orders and payments are preserved.'**
+  String get deleteLabTestHelp;
+
+  /// No description provided for @startupWelcome.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to NewCare'**
+  String get startupWelcome;
+
+  /// No description provided for @startupSetupHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Create the manager account to set up your center.'**
+  String get startupSetupHelp;
+
+  /// No description provided for @startupSignInTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manager sign-in'**
+  String get startupSignInTitle;
+
+  /// No description provided for @startupSignInHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to connect this device to your center.'**
+  String get startupSignInHelp;
+
+  /// No description provided for @startupExistingAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'I already have a manager account'**
+  String get startupExistingAccount;
+
+  /// No description provided for @startupCreateInstead.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a new manager account'**
+  String get startupCreateInstead;
+
+  /// No description provided for @syncVerificationUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud verification unavailable — data is saved locally'**
+  String get syncVerificationUnavailable;
+
+  /// No description provided for @syncVerificationPending.
+  ///
+  /// In en, this message translates to:
+  /// **'New changes exist — verify again after synchronization'**
+  String get syncVerificationPending;
+
+  /// No description provided for @syncVerificationDifferent.
+  ///
+  /// In en, this message translates to:
+  /// **'Local and cloud data differ'**
+  String get syncVerificationDifferent;
+
+  /// No description provided for @syncVerificationMatched.
+  ///
+  /// In en, this message translates to:
+  /// **'Matched — content and revision verified'**
+  String get syncVerificationMatched;
+
+  /// No description provided for @stockMovements.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock movements'**
+  String get stockMovements;
+
+  /// No description provided for @chooseManager.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a manager account'**
+  String get chooseManager;
+
+  /// No description provided for @showPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Show password'**
+  String get showPassword;
+
+  /// No description provided for @hidePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide password'**
+  String get hidePassword;
+
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
@@ -121,6 +229,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cloud sync not configured'**
   String get pendingSync;
+
+  /// No description provided for @syncOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud connected'**
+  String get syncOnline;
+
+  /// No description provided for @syncing.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing operations'**
+  String get syncing;
+
+  /// No description provided for @syncOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline — saved locally'**
+  String get syncOffline;
+
+  /// No description provided for @syncPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get syncPending;
 
   /// No description provided for @nursing.
   ///
@@ -875,7 +1007,7 @@ abstract class AppLocalizations {
   /// No description provided for @previewPassword.
   ///
   /// In en, this message translates to:
-  /// **'Preview password: newcare-demo'**
+  /// **'Default local password: 12345678'**
   String get previewPassword;
 
   /// No description provided for @lockManager.
@@ -1538,6 +1670,24 @@ abstract class AppLocalizations {
   /// **'Open the NewCare manager workspace'**
   String get signInSubtitle;
 
+  /// No description provided for @managerAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Manager account'**
+  String get managerAccount;
+
+  /// No description provided for @managerPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Manager password'**
+  String get managerPassword;
+
+  /// No description provided for @onlineSetupRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Online setup must be completed from the cloud setup screen'**
+  String get onlineSetupRequired;
+
   /// No description provided for @memberInactive.
   ///
   /// In en, this message translates to:
@@ -2198,6 +2348,30 @@ abstract class AppLocalizations {
   /// **'Refresh count baseline'**
   String get refreshDrawer;
 
+  /// No description provided for @resetAndStartSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Data & Start Setup'**
+  String get resetAndStartSetup;
+
+  /// No description provided for @resetWorkspaceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Data Reset'**
+  String get resetWorkspaceTitle;
+
+  /// No description provided for @resetWorkspaceConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to clear all local data and restart from the initial setup screen?'**
+  String get resetWorkspaceConfirm;
+
+  /// No description provided for @confirmReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Reset'**
+  String get confirmReset;
+
   /// No description provided for @editCasePrice.
   ///
   /// In en, this message translates to:
@@ -2645,7 +2819,7 @@ abstract class AppLocalizations {
   /// No description provided for @previewUsername.
   ///
   /// In en, this message translates to:
-  /// **'Preview username: manager'**
+  /// **'Default local username: admin'**
   String get previewUsername;
 
   /// No description provided for @offlineLoginHelp.
@@ -2705,7 +2879,7 @@ abstract class AppLocalizations {
   /// No description provided for @securePasswordHint.
   ///
   /// In en, this message translates to:
-  /// **'Use at least 12 characters'**
+  /// **'Use at least 8 characters'**
   String get securePasswordHint;
 
   /// No description provided for @managerEmailVerificationRequired.
@@ -2725,6 +2899,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Setup failed. Check your connection and authentication settings, then retry. If the account was already created, use Connect existing manager.'**
   String get cloudSetupFailed;
+
+  /// No description provided for @cloudMigrationsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud database migrations are incomplete. Apply all NewCare migrations, then retry.'**
+  String get cloudMigrationsRequired;
+
+  /// No description provided for @managerNotProvisioned.
+  ///
+  /// In en, this message translates to:
+  /// **'This manager is not linked to a center yet. Create the center first or use the original manager account.'**
+  String get managerNotProvisioned;
 
   /// No description provided for @createFirstManager.
   ///

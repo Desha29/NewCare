@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../localization/localization_extensions.dart';
 import '../widgets/nc_card.dart';
+import '../widgets/nc_toast.dart';
 
 /// Development controls are reached only when the debug binding is active.
 class DevicePreviewPanel extends StatelessWidget {
@@ -24,13 +25,14 @@ class DevicePreviewPanel extends StatelessWidget {
     BuildContext context,
     Future<void> Function() change,
   ) async {
-    final messenger = ScaffoldMessenger.of(context),
-        message = context.t('previewFailed');
+    final message = context.t('previewFailed');
     Navigator.pop(context);
     try {
       await change();
     } catch (_) {
-      messenger.showSnackBar(SnackBar(content: Text(message)));
+      if (context.mounted) {
+        NcToast.show(context, message: message, tone: NcToastTone.error);
+      }
     }
   }
 

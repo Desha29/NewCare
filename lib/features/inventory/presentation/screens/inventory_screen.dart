@@ -10,6 +10,7 @@ import '../../../../core/widgets/nc_card.dart';
 import '../../../../core/widgets/nc_empty.dart';
 import '../../../../core/widgets/nc_page_column.dart';
 import '../../../management/presentation/widgets/management_form_dialog.dart';
+import '../../../management/presentation/widgets/catalogue_delete_dialog.dart';
 import '../../../workspace/data/repositories/workspace_repository.dart';
 import '../../../workspace/presentation/cubit/workspace_cubit.dart';
 import '../../data/models/stock_item.dart';
@@ -45,9 +46,11 @@ class _InventoryViewState extends State<_InventoryView> {
     final items = search.trim().isEmpty
         ? allItems
         : allItems
-            .where((i) =>
-                i.name.toLowerCase().contains(search.trim().toLowerCase()))
-            .toList();
+              .where(
+                (i) =>
+                    i.name.toLowerCase().contains(search.trim().toLowerCase()),
+              )
+              .toList();
 
     return NcPageColumn(
       maxWidth: 1000,
@@ -92,10 +95,7 @@ class _InventoryViewState extends State<_InventoryView> {
               NcEmpty(message: context.t('noResults'))
             else
               NcAdaptiveTable(
-                headers: [
-                  context.t('itemName'),
-                  context.t('stockQuantity'),
-                ],
+                headers: [context.t('itemName'), context.t('stockQuantity')],
                 emptyLabel: context.t('noResults'),
                 columnWidths: const [300, 120],
                 rows: List.generate(items.length, (i) => List.filled(2, '')),
@@ -150,9 +150,10 @@ class _InventoryViewState extends State<_InventoryView> {
                         ),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.archive_outlined, size: 18),
-                        tooltip: context.t('archive'),
-                        onPressed: () => _confirmArchive(context, item),
+                        icon: const Icon(Icons.delete_outline, size: 18),
+                        color: AppColors.danger,
+                        tooltip: context.t('delete'),
+                        onPressed: () => _confirmDelete(context, item),
                       ),
                     ],
                   );
@@ -164,27 +165,16 @@ class _InventoryViewState extends State<_InventoryView> {
     );
   }
 
-  void _confirmArchive(BuildContext context, StockItem item) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(context.t('archiveStockItem')),
-        content: Text('${context.t('confirmArchive')} (${item.name})?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(context.t('cancel')),
-          ),
-          NcButton(
-            label: context.t('archive'),
-            style: FilledButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
-            onPressed: () async {
-              Navigator.pop(ctx);
-              await context.read<InventoryCubit>().archiveItem(item.id);
-            },
-          ),
-        ],
-      ),
+  Future<void> _confirmDelete(BuildContext context, StockItem item) {
+    final cubit = context.read<InventoryCubit>();
+    final title = context.t('deleteStockItem');
+    return CatalogueDeleteDialog.open(
+      context,
+      title: title,
+      name: item.name,
+      detail: context.t('deleteStockItemHelp'),
+      action: cubit,
+      onDelete: () => cubit.deleteItem(item.id, title),
     );
   }
 }

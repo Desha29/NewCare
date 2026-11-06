@@ -13,6 +13,10 @@ import 'package:newcare/features/auth/data/repositories/manager_gateway.dart';
 import 'package:newcare/features/auth/data/repositories/supabase_manager_gateway.dart';
 import 'package:newcare/features/auth/data/sources/username_auth_configuration.dart';
 import 'package:newcare/features/auth/data/sources/ephemeral_auth_client.dart';
+import 'package:newcare/features/sync/data/repositories/cloud_sync_service.dart';
+import 'package:newcare/features/workspace/data/repositories/local_workspace_repository.dart';
+
+import '../support/production_workflow_fixture.dart';
 
 class _NetworkSwitch implements ManagerGateway {
   _NetworkSwitch(this.gateway);
@@ -76,6 +80,18 @@ void main() {
         final anonymous = await device.auth.signInAnonymously();
         (owned['userIds'] as List<String>).add(anonymous.user!.id);
         await remember();
+        await expectLater(
+          device.rpc(
+            'pull_workspace_operations',
+            params: {
+              'p_center_id': '00000000-0000-0000-0000-000000000000',
+              'p_after_sequence': 0,
+            },
+          ),
+          throwsA(
+            isA<PostgrestException>().having((e) => e.code, 'code', '42501'),
+          ),
+        );
         final response = await manager.auth.signUp(
           email: ManagerUsername.authAddress(username),
           password: password,
@@ -148,6 +164,15 @@ void main() {
         );
         final secondIdentity = await second.signIn(usernameB, passwordB);
         expect(secondIdentity.manageAccounts, isFalse);
+        final directoryChoices = await gateway.listManagers();
+        expect(
+          directoryChoices.map((m) => m.username),
+          containsAll([username, usernameB]),
+        );
+        expect(
+          directoryChoices.map((m) => m.toJson().keys).expand((k) => k),
+          isNot(contains('email')),
+        );
         await expectLater(
           managerB.rpc(
             'create_manager_invitation',
@@ -208,6 +233,100 @@ void main() {
             ),
           ),
         );
+        final workspace = LocalWorkspaceRepository(store, seedDemo: false);
+        await workspace.initialize();
+        final uploader = CloudSyncService(
+          client: device,
+          centerId: center,
+          store: store,
+          repository: workspace,
+          keyStore: store,
+        );
+        await uploader.sync();
+        expect(uploader.lastError, isNull);
+        expect(workspace.current.procedures, hasLength(20));
+        expect(workspace.current.stockItems, hasLength(15));
+        expect(
+          workspace.current.stockItems.every((s) => s.quantity == 0),
+          isTrue,
+        );
+        expect(
+          workspace.current.procedures.every(
+            (p) => !p.toJson().containsKey('price'),
+          ),
+          isTrue,
+        );
+        await populateProductionWorkflow(workspace);
+        final expected = workspace.current.toJson();
+        final recoveredStore = await SqliteStringStore.open(
+          path: '${directory.path}/recovered.db',
+          cipher: StorageCipher(List<int>.filled(32, 77)),
+        );
+        final recovered = LocalWorkspaceRepository(
+          recoveredStore,
+          seedDemo: false,
+        );
+        await recovered.initialize();
+        final downloader = CloudSyncService(
+          client: device,
+          centerId: center,
+          store: recoveredStore,
+          repository: recovered,
+          keyStore: recoveredStore,
+        );
+        try {
+          await uploader.sync();
+          expect(uploader.lastError, isNull);
+          expect(uploader.state, CloudSyncState.online);
+          expect(await store.pendingCount(), 0);
+          final cloudRows = await device.rpc(
+            'pull_workspace_operations',
+            params: {'p_center_id': center, 'p_after_sequence': 0},
+          ) as List;
+          expect(cloudRows.length, greaterThan(20));
+          final first = Map<String, dynamic>.from(cloudRows.last as Map);
+          // A retry is idempotent, while a changed payload using the same ID
+          // must fail rather than silently discard financial edits.
+          await device.rpc(
+            'push_workspace_operation',
+            params: {
+              'p_center_id': center,
+              'p_operation_id': first['operation_id'],
+              'p_action': first['action'],
+              'p_payload': first['payload'],
+            },
+          );
+          await expectLater(
+            device.rpc(
+              'push_workspace_operation',
+              params: {
+                'p_center_id': center,
+                'p_operation_id': first['operation_id'],
+                'p_action': first['action'],
+                'p_payload': {
+                  'version': 1,
+                  'collections': {},
+                  'settings': {'managerName': 'conflict'},
+                },
+              },
+            ),
+            throwsA(
+              isA<PostgrestException>().having((e) => e.code, 'code', '23505'),
+            ),
+          );
+          await downloader.sync();
+          expect(downloader.lastError, isNull);
+          expect(recovered.current.toJson(), expected);
+          expect(await recoveredStore.pendingCount(), 0);
+          expect((await downloader.verifyWorkspace()).status.name, 'matched');
+          expect(device.auth.currentUser!.isAnonymous, isTrue);
+        } finally {
+          uploader.dispose();
+          downloader.dispose();
+          await workspace.dispose();
+          await recovered.dispose();
+          await recoveredStore.close();
+        }
       } finally {
         await store?.close();
         await directory.delete(recursive: true);

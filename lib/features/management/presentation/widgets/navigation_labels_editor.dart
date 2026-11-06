@@ -6,6 +6,7 @@ import '../../../../app/navigation/app_page.dart';
 import '../../../../app/widgets/workspace_sidebar.dart';
 import '../../../../core/localization/localization_extensions.dart';
 import '../../../../core/widgets/nc_button.dart';
+import '../../../../core/widgets/nc_toast.dart';
 import '../../../../core/widgets/nc_card.dart';
 import '../../../../core/widgets/nc_field.dart';
 
@@ -68,8 +69,11 @@ class _NavigationLabelsEditorState extends State<NavigationLabelsEditor> {
           field.clear();
         }
       }
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(context.t('savedNote'))));
+      NcToast.show(
+        context,
+        message: context.t('savedNote'),
+        tone: NcToastTone.success,
+      );
     } catch (_) {
       if (mounted) setState(() => error = 'settingsSaveFailed');
     } finally {

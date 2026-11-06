@@ -6,6 +6,7 @@ import '../../../../core/localization/localization_extensions.dart';
 import '../../../../core/widgets/nc_card.dart';
 import '../../../../core/widgets/nc_field.dart';
 import '../../../../core/widgets/nc_button.dart';
+import '../../../../core/widgets/nc_toast.dart';
 
 class ManagerPasswordEditor extends StatefulWidget {
   const ManagerPasswordEditor({super.key});
@@ -44,9 +45,11 @@ class _ManagerPasswordEditorState extends State<ManagerPasswordEditor> {
         current.clear();
         next.clear();
         confirm.clear();
-        ScaffoldMessenger.of(
+        NcToast.show(
           context,
-        ).showSnackBar(SnackBar(content: Text(context.t('passwordUpdated'))));
+          message: context.t('passwordUpdated'),
+          tone: NcToastTone.success,
+        );
       } else {
         setState(() => error = failure);
       }
@@ -81,7 +84,7 @@ class _ManagerPasswordEditorState extends State<ManagerPasswordEditor> {
           obscure: true,
           validator: (v) {
             final cloud = context.read<AppCubit>().cloudAuthentication;
-            return (v?.length ?? 0) < (cloud ? 12 : 8)
+            return (v?.length ?? 0) < 8
                 ? context.t(cloud ? 'securePasswordHint' : 'passwordTooShort')
                 : null;
           },

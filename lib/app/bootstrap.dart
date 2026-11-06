@@ -5,13 +5,16 @@ import '../l10n/app_localizations.dart';
 import '../core/storage/preferences_store.dart';
 import '../core/storage/open_app_store.dart';
 import '../core/storage/string_store.dart';
+import '../core/storage/pre_cloud_backup.dart';
 import '../core/theme/app_theme.dart';
 import '../features/launch/presentation/screens/splash_screen.dart';
 import '../features/workspace/data/repositories/local_workspace_repository.dart';
 import 'newcare_app.dart';
 import '../features/auth/data/repositories/cloud_runtime.dart';
 import '../features/auth/presentation/screens/cloud_setup_screen.dart';
-import '../features/staff/data/models/nursing_member.dart';
+import '../features/auth/data/repositories/prepare_center_workspace.dart';
+import '../features/auth/data/models/manager_identity.dart';
+import '../features/sync/data/repositories/cloud_sync_service.dart';
 
 class AppBootstrap extends StatefulWidget {
   const AppBootstrap({super.key});
@@ -33,8 +36,19 @@ class _AppBootstrapState extends State<AppBootstrap> {
     final legacy = PreferencesStore(await SharedPreferences.getInstance());
     final store = await openAppStore(legacy);
     final cloud = await CloudRuntime.open(store);
-    final repository = LocalWorkspaceRepository(store, seedDemo: cloud == null);
+    final repository = LocalWorkspaceRepository(store, seedDemo: false);
     await repository.initialize();
+    if (cloud != null &&
+        cloud.centerId == null &&
+        repository.hasOperationalData) {
+      await createPreCloudBackup(store);
+    }
+    if (cloud != null) {
+      final sync = cloud.attachSync(repository);
+      if (sync != null) {
+        sync.start();
+      }
+    }
     return (store, repository, cloud);
   }
 
@@ -56,19 +70,19 @@ class _AppBootstrapState extends State<AppBootstrap> {
             home: CloudSetupScreen(
               runtime: cloud,
               onReady: (identity) async {
-                await repository.addStaff(
-                  NursingMember(
-                    id: identity.id,
-                    name: identity.name,
-                    isManager: true,
-                  ),
+                final sync = cloud.attachSync(repository, forSetup: true)!;
+                await prepareCenterWorkspace(
+                  repository: repository,
+                  identity: identity,
+                  restore: () async {
+                    await sync.sync();
+                    if (sync.state != CloudSyncState.online) {
+                      throw const ManagerAuthException('cloudSetupFailed');
+                    }
+                  },
+                  markReady: cloud.completeLocalSetup,
                 );
-                await repository.saveSettings(
-                  managerName: identity.name,
-                  managerEmail: identity.email,
-                  setupDone: true,
-                );
-                await cloud.completeLocalSetup();
+                sync.start();
                 if (mounted) {
                   setState(
                     () => initialize = Future.value((store, repository, cloud)),
@@ -83,6 +97,7 @@ class _AppBootstrapState extends State<AppBootstrap> {
             repository: repository,
             store: store,
             authentication: cloud?.authentication,
+            syncService: cloud?.syncService,
           );
         }
       } else {

@@ -79,7 +79,7 @@ class _ManagerAccountEditorState extends State<ManagerAccountEditor> {
           obscure: true,
           enabled: !busy && !submitted,
           validator: (v) =>
-              (v?.length ?? 0) >= 12 ? null : context.t('securePasswordHint'),
+              (v?.length ?? 0) >= 8 ? null : context.t('securePasswordHint'),
         ),
         NcButton(
           label: context.t(submitted ? 'close' : 'addManager'),

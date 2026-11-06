@@ -10,6 +10,66 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
+  String get deleteStockItem => 'حذف المستلزم';
+
+  @override
+  String get deleteStockItemHelp =>
+      'سيُحذف الصنف ورصيده من المخزون. ستظل المستلزمات المسجلة في الحالات السابقة محفوظة.';
+
+  @override
+  String get deleteLabTest => 'حذف التحليل';
+
+  @override
+  String get deleteLabTestHelp =>
+      'سيُحذف التحليل من القائمة. ستظل الطلبات والمدفوعات السابقة محفوظة.';
+
+  @override
+  String get startupWelcome => 'مرحبًا بك في NewCare';
+
+  @override
+  String get startupSetupHelp => 'أنشئ حساب المدير لبدء تجهيز المركز.';
+
+  @override
+  String get startupSignInTitle => 'دخول المدير';
+
+  @override
+  String get startupSignInHelp => 'سجّل الدخول لربط جهاز المركز بحسابك.';
+
+  @override
+  String get startupExistingAccount => 'لدي حساب مدير بالفعل';
+
+  @override
+  String get startupCreateInstead => 'إنشاء حساب مدير جديد';
+
+  @override
+  String get syncVerificationUnavailable =>
+      'تعذّر التحقق من السحابة حاليًا — البيانات محفوظة محليًا';
+
+  @override
+  String get syncVerificationPending =>
+      'توجد تغييرات جديدة — أعد التحقق بعد المزامنة';
+
+  @override
+  String get syncVerificationDifferent =>
+      'البيانات المحلية والسحابية غير متطابقة';
+
+  @override
+  String get syncVerificationMatched =>
+      'متطابقين — تم التحقق من المحتوى والإصدار';
+
+  @override
+  String get stockMovements => 'حركات المخزون';
+
+  @override
+  String get chooseManager => 'اختر حساب المدير';
+
+  @override
+  String get showPassword => 'إظهار كلمة المرور';
+
+  @override
+  String get hidePassword => 'إخفاء كلمة المرور';
+
+  @override
   String get appTitle => 'نيو كير';
 
   @override
@@ -20,6 +80,18 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get pendingSync => 'المزامنة السحابية غير مفعّلة';
+
+  @override
+  String get syncOnline => 'متصل بالسحابة';
+
+  @override
+  String get syncing => 'جارٍ مزامنة العمليات';
+
+  @override
+  String get syncOffline => 'غير متصل — تم الحفظ محليًا';
+
+  @override
+  String get syncPending => 'معلّقة';
 
   @override
   String get nursing => 'التمريض';
@@ -397,7 +469,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get wrongPassword => 'كلمة مرور المعاينة غير صحيحة';
 
   @override
-  String get previewPassword => 'كلمة مرور المعاينة: newcare-demo';
+  String get previewPassword => 'كلمة المرور المحلية الافتراضية: 12345678';
 
   @override
   String get lockManager => 'قفل مساحة المدير';
@@ -731,6 +803,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get signInSubtitle => 'افتح مساحة إدارة نيو كير';
+
+  @override
+  String get managerAccount => 'حساب المدير';
+
+  @override
+  String get managerPassword => 'كلمة مرور المدير';
+
+  @override
+  String get onlineSetupRequired =>
+      'يجب إكمال الإعداد المتصل من شاشة إعداد السحابة';
 
   @override
   String get memberInactive => 'فرد تمريض غير نشط';
@@ -1074,6 +1156,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get refreshDrawer => 'تحديث رصيد المراجعة';
 
   @override
+  String get resetAndStartSetup => 'تصفير البيانات وبدء الإعداد';
+
+  @override
+  String get resetWorkspaceTitle => 'تأكيد تصفير البيانات';
+
+  @override
+  String get resetWorkspaceConfirm =>
+      'هل أنت متأكد من تصفير كافة البيانات المحلية والبدء من جديد من شاشة الإعداد الأولية؟';
+
+  @override
+  String get confirmReset => 'تأكيد التصفير';
+
+  @override
   String get editCasePrice => 'تعديل إجمالي الحالة';
 
   @override
@@ -1304,7 +1399,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get username => 'اسم المستخدم';
 
   @override
-  String get previewUsername => 'اسم المستخدم التجريبي: manager';
+  String get previewUsername => 'اسم المستخدم المحلي الافتراضي: admin';
 
   @override
   String get offlineLoginHelp =>
@@ -1340,7 +1435,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get invalidEmail => 'أدخل بريدًا إلكترونيًا صالحًا';
 
   @override
-  String get securePasswordHint => 'كلمة المرور ١٢ حرفًا على الأقل';
+  String get securePasswordHint => 'كلمة المرور ٨ أحرف على الأقل';
 
   @override
   String get managerEmailVerificationRequired =>
@@ -1353,6 +1448,14 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get cloudSetupFailed =>
       'تعذر إتمام الإعداد. تحقق من الاتصال وإعدادات الدخول، ثم أعد المحاولة. لو الحساب اتعمل بالفعل، استخدم ربط مدير موجود.';
+
+  @override
+  String get cloudMigrationsRequired =>
+      'إعداد قاعدة البيانات السحابية غير مكتمل. طبّق كل migrations الخاصة بـ NewCare ثم أعد المحاولة.';
+
+  @override
+  String get managerNotProvisioned =>
+      'هذا المدير غير مرتبط بمركز بعد. أنشئ المركز أولًا أو استخدم حساب المدير الأصلي.';
 
   @override
   String get createFirstManager => 'إنشاء المدير وإعداد المركز';

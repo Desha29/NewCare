@@ -12,6 +12,7 @@ import '../../../../core/widgets/nc_notice.dart';
 import '../../../../core/widgets/nc_page_column.dart';
 import '../../../launch/presentation/widgets/animated_brand_mark.dart';
 import '../../../workspace/presentation/cubit/workspace_cubit.dart';
+import '../../data/models/manager_choice.dart';
 
 class ManagerLoginScreen extends StatefulWidget {
   const ManagerLoginScreen({super.key});
@@ -24,6 +25,15 @@ class _ManagerLoginScreenState extends State<ManagerLoginScreen> {
   final username = TextEditingController();
   String? error;
   bool loading = false;
+  late Future<List<ManagerChoice>> managers;
+
+  @override
+  void initState() {
+    super.initState();
+    username.text = AppCubit.defaultLocalUsername;
+    final authentication = context.read<AppCubit>().authentication;
+    managers = authentication?.listManagers() ?? Future.value(const []);
+  }
 
   @override
   void dispose() {
@@ -56,11 +66,62 @@ class _ManagerLoginScreenState extends State<ManagerLoginScreen> {
             ),
             if (error != null)
               NcNotice(title: context.t(error!), tone: NoticeTone.danger),
+            if (context.read<AppCubit>().cloudAuthentication)
+              FutureBuilder<List<ManagerChoice>>(
+                future: managers,
+                builder: (context, snapshot) {
+                  final choices = snapshot.data ?? const <ManagerChoice>[];
+                  if (choices.isEmpty) return const SizedBox.shrink();
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(context.t('chooseManager')),
+                      const SizedBox(height: 8),
+                      for (final manager in choices)
+                        Card(
+                          clipBehavior: Clip.antiAlias,
+                          child: ListTile(
+                            key: ValueKey('manager-login-${manager.id}'),
+                            leading: const Icon(Icons.manage_accounts_outlined),
+                            title: Text(manager.name),
+                            subtitle: Text(manager.username),
+                            selected: username.text == manager.username,
+                            trailing: username.text == manager.username
+                                ? const Icon(Icons.check_circle_outline)
+                                : null,
+                            onTap: loading
+                                ? null
+                                : () => setState(() {
+                                    username.text = manager.username;
+                                    password.clear();
+                                    error = null;
+                                  }),
+                          ),
+                        ),
+                    ],
+                  );
+                },
+              ),
             NcField(
               label: context.t('username'),
               controller: username,
               enabled: !loading,
+              onChanged: (_) => setState(() {}),
             ),
+            if (!context.read<AppCubit>().cloudAuthentication)
+              Card(
+                child: ListTile(
+                  leading: const Icon(Icons.manage_accounts_outlined),
+                  title: Text(AppCubit.defaultLocalUsername),
+                  subtitle: Text(context.t('managerAccount')),
+                  selected: username.text == AppCubit.defaultLocalUsername,
+                  onTap: loading
+                      ? null
+                      : () => setState(
+                          () => username.text = AppCubit.defaultLocalUsername,
+                        ),
+                ),
+              ),
             NcField(
               label: context.t('password'),
               controller: password,

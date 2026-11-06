@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/localization/localization_extensions.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/nc_action_row.dart';
 import '../../../../core/widgets/nc_adaptive_table.dart';
 import '../../../../core/widgets/nc_button.dart';
 import '../../../../core/widgets/nc_card.dart';
 import '../../../../core/widgets/nc_empty.dart';
 import '../../../management/presentation/widgets/management_form_dialog.dart';
+import '../../../management/presentation/widgets/catalogue_delete_dialog.dart';
 import '../../../workspace/presentation/cubit/workspace_cubit.dart';
 import '../../data/models/lab_test.dart';
 import '../cubit/laboratory_cubit.dart';
@@ -113,9 +115,10 @@ class _LabCatalogueState extends State<LabCatalogue> {
                         ),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.archive_outlined, size: 18),
-                        tooltip: context.t('archive'),
-                        onPressed: () => _confirmArchive(context, test),
+                        icon: const Icon(Icons.delete_outline, size: 18),
+                        color: AppColors.danger,
+                        tooltip: context.t('delete'),
+                        onPressed: () => _confirmDelete(context, test),
                       ),
                     ],
                   );
@@ -127,26 +130,16 @@ class _LabCatalogueState extends State<LabCatalogue> {
     );
   }
 
-  void _confirmArchive(BuildContext context, LabTest test) {
-    showDialog<void>(
-      context: context,
-      builder: (dialogCtx) => AlertDialog(
-        title: Text(context.t('archiveLabTest')),
-        content: Text('${context.t('confirmArchive')} (${test.name})?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogCtx),
-            child: Text(context.t('cancel')),
-          ),
-          NcButton(
-            label: context.t('archive'),
-            onPressed: () async {
-              Navigator.pop(dialogCtx);
-              await context.read<LaboratoryCubit>().archiveTest(test.id);
-            },
-          ),
-        ],
-      ),
+  Future<void> _confirmDelete(BuildContext context, LabTest test) {
+    final cubit = context.read<LaboratoryCubit>();
+    final title = context.t('deleteLabTest');
+    return CatalogueDeleteDialog.open(
+      context,
+      title: title,
+      name: test.name,
+      detail: context.t('deleteLabTestHelp'),
+      action: cubit,
+      onDelete: () => cubit.deleteTest(test.id, title),
     );
   }
 }

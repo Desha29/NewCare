@@ -60,6 +60,7 @@ abstract interface class WorkspaceRepository {
     Map<String, List<String>>? permissions,
     bool? setupDone,
   });
+  Future<void> resetWorkspace();
   Future<void> dispose();
   Future<void> updateRecord(
     ManagedRecordKind kind,
@@ -68,4 +69,5 @@ abstract interface class WorkspaceRepository {
     String reason,
   );
   Future<void> deleteRecord(ManagedRecordKind kind, String id, String reason);
+  Future<void> applyRemoteChange(Map<String, dynamic> change);
 }

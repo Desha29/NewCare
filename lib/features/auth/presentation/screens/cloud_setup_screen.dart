@@ -7,7 +7,8 @@ import '../../../../core/widgets/nc_card.dart';
 import '../../../../core/widgets/nc_field.dart';
 import '../../../../core/widgets/nc_notice.dart';
 import '../../data/models/manager_identity.dart';
-import '../../data/repositories/cloud_runtime.dart';
+import '../../data/repositories/center_setup_gateway.dart';
+import '../widgets/auth_brand_heading.dart';
 
 class CloudSetupScreen extends StatefulWidget {
   const CloudSetupScreen({
@@ -15,7 +16,7 @@ class CloudSetupScreen extends StatefulWidget {
     required this.runtime,
     required this.onReady,
   });
-  final CloudRuntime runtime;
+  final CenterSetupGateway runtime;
   final Future<void> Function(ManagerIdentity) onReady;
   @override
   State<CloudSetupScreen> createState() => _CloudSetupScreenState();
@@ -28,6 +29,7 @@ class _CloudSetupScreenState extends State<CloudSetupScreen> {
       email = TextEditingController(),
       password = TextEditingController();
   bool busy = false;
+  bool connecting = false;
   String? message;
   bool failure = false;
   @override
@@ -39,7 +41,12 @@ class _CloudSetupScreenState extends State<CloudSetupScreen> {
   }
 
   Future<void> submit(bool activate) async {
-    if (!form.currentState!.validate()) return;
+    if (busy) return;
+    if (activate) {
+      if (!usernameFormValid()) return;
+    } else if (!form.currentState!.validate()) {
+      return;
+    }
     setState(() {
       busy = true;
       message = null;
@@ -69,17 +76,37 @@ class _CloudSetupScreenState extends State<CloudSetupScreen> {
     }
   }
 
+  bool usernameFormValid() {
+    final value = username.text.trim().toLowerCase();
+    final validUsername = RegExp(r'^[a-z0-9_]{3,32}$').hasMatch(value);
+    final validPassword = password.text.length >= 8;
+    if (validUsername && validPassword) return true;
+    setState(() {
+      message = validUsername ? 'securePasswordHint' : 'usernameHint';
+      failure = true;
+    });
+    return false;
+  }
+
   @override
-  Widget build(BuildContext context) => Scaffold(
-    body: NcAuthLayout(
-      child: NcCard(
-        title: context.t('cloudFirstSetup'),
-        children: [
-          Text(context.t('cloudFirstSetupHelp')),
-          Form(
-            key: form,
-            child: Column(
-              children: [
+  Widget build(BuildContext context) => NcAuthLayout(
+    child: NcCard(
+      padding: MediaQuery.sizeOf(context).width < 520 ? 20 : 32,
+      children: [
+        AuthBrandHeading(
+          title: context.t(
+            connecting ? 'startupSignInTitle' : 'startupWelcome',
+          ),
+          subtitle: context.t(
+            connecting ? 'startupSignInHelp' : 'startupSetupHelp',
+          ),
+        ),
+        const SizedBox(height: 8),
+        Form(
+          key: form,
+          child: Column(
+            children: [
+              if (!connecting) ...[
                 NcField(
                   label: context.t('managerName'),
                   controller: name,
@@ -89,17 +116,19 @@ class _CloudSetupScreenState extends State<CloudSetupScreen> {
                       : null,
                 ),
                 const SizedBox(height: 12),
-                NcField(
-                  label: context.t('username'),
-                  controller: username,
-                  enabled: !busy,
-                  hint: context.t('usernameHint'),
-                  validator: (v) =>
-                      RegExp(r'^[a-z0-9_]{3,32}$')
-                          .hasMatch(v?.trim().toLowerCase() ?? '')
-                      ? null
-                      : context.t('usernameHint'),
-                ),
+              ],
+              NcField(
+                label: context.t('username'),
+                controller: username,
+                enabled: !busy,
+                hint: context.t('usernameHint'),
+                validator: (v) =>
+                    RegExp(r'^[a-z0-9_]{3,32}$')
+                        .hasMatch(v?.trim().toLowerCase() ?? '')
+                    ? null
+                    : context.t('usernameHint'),
+              ),
+              if (!connecting) ...[
                 const SizedBox(height: 12),
                 NcField(
                   label: context.t('email'),
@@ -112,37 +141,45 @@ class _CloudSetupScreenState extends State<CloudSetupScreen> {
                       ? null
                       : context.t('invalidEmail'),
                 ),
-                const SizedBox(height: 12),
-                NcField(
-                  label: context.t('password'),
-                  controller: password,
-                  enabled: !busy,
-                  obscure: true,
-                  validator: (v) => (v?.length ?? 0) >= 12
-                      ? null
-                      : context.t('securePasswordHint'),
-                ),
               ],
+              const SizedBox(height: 12),
+              NcField(
+                label: context.t('password'),
+                controller: password,
+                enabled: !busy,
+                obscure: true,
+                validator: (v) => (v?.length ?? 0) >= 8
+                    ? null
+                    : context.t('securePasswordHint'),
+              ),
+            ],
+          ),
+        ),
+        if (message != null)
+          NcNotice(
+            title: context.t(message!),
+            tone: failure ? NoticeTone.danger : NoticeTone.warning,
+          ),
+        NcButton(
+          label: context.t(connecting ? 'signIn' : 'createFirstManager'),
+          onPressed: busy ? null : () => submit(connecting),
+          busy: busy,
+        ),
+        TextButton(
+          onPressed: busy
+              ? null
+              : () => setState(() {
+                  connecting = !connecting;
+                  message = null;
+                  failure = false;
+                }),
+          child: Text(
+            context.t(
+              connecting ? 'startupCreateInstead' : 'startupExistingAccount',
             ),
           ),
-          if (message != null)
-            NcNotice(
-              title: context.t(message!),
-              tone: failure ? NoticeTone.danger : NoticeTone.warning,
-            ),
-          NcButton(
-            label: context.t('createFirstManager'),
-            onPressed: () => submit(false),
-            busy: busy,
-          ),
-          NcButton(
-            label: context.t('activateVerifiedManager'),
-            secondary: true,
-            onPressed: () => submit(true),
-            busy: busy,
-          ),
-        ],
-      ),
+        ),
+      ],
     ),
   );
 }

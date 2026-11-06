@@ -60,7 +60,7 @@ class CaseDetailsScreen extends StatelessWidget {
       if (record.phone.isNotEmpty) context.t('phoneOptional'): record.phone,
     };
     return NcPageColumn(
-      maxWidth: 900,
+      maxWidth: 600,
       children: [
         NcCard(
           title: record.title,

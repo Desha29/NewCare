@@ -9,6 +9,9 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/nc_card.dart';
 import '../../../workspace/data/repositories/workspace_repository.dart';
 import '../cubit/diagnostics_cubit.dart';
+import '../../../../app/navigation/app_page.dart';
+import '../../data/models/reconciliation.dart';
+import '../../data/repositories/cloud_sync_service.dart';
 
 class DeveloperDiagnosticsScreen extends StatelessWidget {
   const DeveloperDiagnosticsScreen({super.key});
@@ -29,6 +32,7 @@ class DeveloperDiagnosticsScreen extends StatelessWidget {
             app.state.managerUnlocked &&
             (!app.cloudAuthentication ||
                 app.managerIdentity?.viewDiagnostics == true),
+        sync: context.read<CloudSyncService?>(),
       )..refresh(),
       child: const _DiagnosticsContent(),
     );
@@ -58,18 +62,72 @@ class _DiagnosticsContent extends StatelessWidget {
               icon: const Icon(Icons.refresh, size: 18),
               label: Text(context.t('diagnosticsRefresh')),
             ),
+            if (!context.read<AppCubit>().cloudAuthentication)
+              OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.danger,
+                ),
+                onPressed: () async {
+                  final confirm = await showDialog<bool>(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: Text(context.t('resetWorkspaceTitle')),
+                      content: Text(context.t('resetWorkspaceConfirm')),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(ctx, false),
+                          child: Text(context.t('cancel')),
+                        ),
+                        FilledButton(
+                          style: FilledButton.styleFrom(
+                            backgroundColor: AppColors.danger,
+                          ),
+                          onPressed: () => Navigator.pop(ctx, true),
+                          child: Text(context.t('confirmReset')),
+                        ),
+                      ],
+                    ),
+                  );
+                  if (confirm == true && context.mounted) {
+                    await context.read<WorkspaceRepository>().resetWorkspace();
+                    if (context.mounted) {
+                      context.read<AppCubit>().navigate(AppPage.setup);
+                    }
+                  }
+                },
+                icon: const Icon(Icons.delete_sweep_outlined, size: 18),
+                label: Text(context.t('resetAndStartSetup')),
+              ),
           ],
         ),
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppColors.warningBg,
+            color: state.status == ReconciliationStatus.matched
+                ? AppColors.tealLight
+                : AppColors.warningBg,
             borderRadius: BorderRadius.circular(8),
           ),
           child: Text(
-            context.t(state.failed ? 'storageFailed' : 'syncNotConfigured'),
-            style: const TextStyle(
-              color: AppColors.warning,
+            context.t(
+              state.failed
+                  ? 'storageFailed'
+                  : state.loading
+                  ? 'syncing'
+                  : switch (state.status) {
+                      ReconciliationStatus.unconfigured => 'syncNotConfigured',
+                      ReconciliationStatus.unavailable =>
+                        'syncVerificationUnavailable',
+                      ReconciliationStatus.pending => 'syncVerificationPending',
+                      ReconciliationStatus.different =>
+                        'syncVerificationDifferent',
+                      ReconciliationStatus.matched => 'syncVerificationMatched',
+                    },
+            ),
+            style: TextStyle(
+              color: state.status == ReconciliationStatus.matched
+                  ? AppColors.navy
+                  : AppColors.warning,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -104,7 +162,16 @@ class _DiagnosticsContent extends StatelessWidget {
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
-                        const DataCell(Text('—')),
+                        DataCell(
+                          Text(
+                            state.remoteCounts[entry.key] == null
+                                ? '—'
+                                : NumberFormat.decimalPattern(
+                                    Localizations.localeOf(context)
+                                        .languageCode,
+                                  ).format(state.remoteCounts[entry.key]),
+                          ),
+                        ),
                       ],
                     ),
                 ],

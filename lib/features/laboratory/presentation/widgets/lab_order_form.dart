@@ -10,6 +10,7 @@ import '../../../../core/widgets/nc_card.dart';
 import '../../../../core/widgets/nc_field.dart';
 import '../../../../core/widgets/nc_tabs.dart';
 import '../../../../core/widgets/operation_error.dart';
+import '../../../../core/widgets/nc_toast.dart';
 import '../../../cases/data/models/case_record.dart';
 import '../../../workspace/presentation/cubit/workspace_cubit.dart';
 import '../../data/models/lab_order.dart';
@@ -52,17 +53,20 @@ class _LabOrderFormState extends State<LabOrderForm> {
 
     staffId ??= activeStaff.firstOrNull?.id;
 
-    final selectedTests =
-        activeTests.where((t) => selectedTestIds.contains(t.id)).toList();
-    final totalMinor =
-        selectedTests.fold<int>(0, (sum, t) => sum + t.priceMinor);
+    final selectedTests = activeTests
+        .where((t) => selectedTestIds.contains(t.id))
+        .toList();
+    final totalMinor = selectedTests.fold<int>(
+      0,
+      (sum, t) => sum + t.priceMinor,
+    );
     final totalEgp = totalMinor / 100;
 
     final filteredTests = testSearch.isEmpty
         ? activeTests
         : activeTests
-            .where((t) => t.name.toLowerCase().contains(testSearch))
-            .toList();
+              .where((t) => t.name.toLowerCase().contains(testSearch))
+              .toList();
 
     return Form(
       key: form,
@@ -75,8 +79,9 @@ class _LabOrderFormState extends State<LabOrderForm> {
             label: context.t('patientName'),
             hint: context.t('patientName'),
             controller: nameController,
-            validator: (v) =>
-                v == null || v.trim().isEmpty ? context.t('requiredField') : null,
+            validator: (v) => v == null || v.trim().isEmpty
+                ? context.t('requiredField')
+                : null,
           ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -281,8 +286,9 @@ class _LabOrderFormState extends State<LabOrderForm> {
                   width: 130,
                   child: TextFormField(
                     controller: paidController,
-                    keyboardType:
-                        const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                     decoration: InputDecoration(
                       labelText: context.t('labPaidNow'),
                       isDense: true,
@@ -325,8 +331,10 @@ class _LabOrderFormState extends State<LabOrderForm> {
             label: context.t('save'),
             onPressed: () async {
               if (selectedTestIds.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(context.t('itemsRequired'))),
+                NcToast.show(
+                  context,
+                  message: context.t('itemsRequired'),
+                  tone: NcToastTone.warning,
                 );
                 return;
               }
@@ -335,11 +343,13 @@ class _LabOrderFormState extends State<LabOrderForm> {
 
               final orderId = const Uuid().v4();
               final orderItems = selectedTests
-                  .map((t) => LabOrderItem(
-                        testId: t.id,
-                        name: t.name,
-                        priceMinor: t.priceMinor,
-                      ))
+                  .map(
+                    (t) => LabOrderItem(
+                      testId: t.id,
+                      name: t.name,
+                      priceMinor: t.priceMinor,
+                    ),
+                  )
                   .toList();
               final age = int.parse(ageController.text.trim());
               final order = LabOrder(
@@ -352,8 +362,7 @@ class _LabOrderFormState extends State<LabOrderForm> {
                 items: orderItems,
               );
 
-              final paidEgp =
-                  double.tryParse(paidController.text.trim()) ?? 0;
+              final paidEgp = double.tryParse(paidController.text.trim()) ?? 0;
               final paidMinor = (paidEgp * 100).round();
 
               LabPayment? initialPayment;
@@ -369,9 +378,9 @@ class _LabOrderFormState extends State<LabOrderForm> {
               }
 
               final success = await context.read<LaboratoryCubit>().addOrder(
-                    order,
-                    initialPayment: initialPayment,
-                  );
+                order,
+                initialPayment: initialPayment,
+              );
               if (success && mounted) {
                 widget.onSaved?.call();
               }

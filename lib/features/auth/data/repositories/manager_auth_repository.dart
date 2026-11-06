@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import '../../../../core/storage/string_store.dart';
 import '../models/manager_identity.dart';
+import '../models/manager_choice.dart';
 import '../sources/password_verifier.dart';
 import 'manager_gateway.dart';
 
@@ -34,6 +35,30 @@ class ManagerAuthRepository {
   static const lockout = Duration(minutes: 15);
   Future<void> _tail = Future.value();
   ManagerSession? currentSession;
+  String get _directoryKey => 'newcare.manager-directory.v1.$centerId';
+
+  Future<List<ManagerChoice>> listManagers() async {
+    if (gateway case final ManagerDirectoryGateway directory) {
+      try {
+        final choices = await directory.listManagers().timeout(
+          const Duration(seconds: 15),
+        );
+        await store.write(
+          _directoryKey,
+          jsonEncode(choices.map((m) => m.toJson()).toList()),
+        );
+        return choices;
+      } catch (_) {
+        // These labels never grant access. Authentication always validates the
+        // password online, or uses its separately bounded offline verifier.
+      }
+    }
+    final raw = await store.read(_directoryKey);
+    if (raw == null || raw.isEmpty) return [];
+    return (jsonDecode(raw) as List)
+        .map((m) => ManagerChoice.fromJson(Map<String, dynamic>.from(m as Map)))
+        .toList();
+  }
 
   String _key(String username) =>
       'newcare.offline-manager.v1.$centerId.$username';
@@ -52,6 +77,8 @@ class ManagerAuthRepository {
       throw const ManagerAuthException('wrongPassword');
     }
     try {
+      // The transport owns timeouts. Timing out this whole operation would
+      // leave its shared Auth session mutation running after the next login.
       final identity = await gateway.signIn(username, password);
       if (identity.centerId != centerId || identity.username != username) {
         await gateway.signOut();
@@ -170,7 +197,7 @@ class ManagerAuthRepository {
 
   Future<void> changePassword(String current, String next) async {
     final accounts = _onlineAccounts();
-    if (next.length < 12) {
+    if (next.length < 8) {
       throw const ManagerAuthException('securePasswordHint');
     }
     final username = currentSession!.identity.username;
@@ -191,7 +218,7 @@ class ManagerAuthRepository {
     if (!currentSession!.identity.manageAccounts) {
       throw const ManagerAuthException('managerRequired');
     }
-    if (password.length < 12) {
+    if (password.length < 8) {
       throw const ManagerAuthException('securePasswordHint');
     }
     return accounts.createManager(

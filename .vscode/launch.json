@@ -2,23 +2,27 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "NewCare",
-      "request": "launch",
-      "type": "dart",
-      "program": "lib/main.dart"
-    },
-    {
       "name": "NewCare · Windows",
       "request": "launch",
       "type": "dart",
       "deviceId": "windows",
-      "program": "lib/main.dart"
+      "program": "lib/main.dart",
+      "args": [
+        "--dart-define-from-file=config/local.json"
+      ]
     },
     {
-      "name": "NewCare · Web",
+      "name": "NewCare · Web (Chrome)",
       "request": "launch",
       "type": "dart",
       "deviceId": "chrome",
+      "program": "lib/main.dart"
+    },
+    {
+      "name": "NewCare · Web (Edge)",
+      "request": "launch",
+      "type": "dart",
+      "deviceId": "edge",
       "program": "lib/main.dart"
     },
     {

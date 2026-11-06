@@ -22,7 +22,7 @@ class NcHeroTitle extends StatelessWidget {
   );
 }
 
-/// Uses a real page route so Hero can keep the source page and its filters alive.
+/// Uses a modal route so Hero can keep the source page and its filters alive.
 class NcDetailPage extends StatelessWidget {
   const NcDetailPage({
     super.key,
@@ -43,6 +43,9 @@ class NcDetailPage extends StatelessWidget {
     final reduceMotion = MediaQuery.disableAnimationsOf(context);
     return Navigator.of(context).push<void>(
       PageRouteBuilder<void>(
+        opaque: false,
+        barrierDismissible: true,
+        barrierColor: Colors.black54,
         transitionDuration: reduceMotion
             ? Duration.zero
             : const Duration(milliseconds: 260),
@@ -59,18 +62,70 @@ class NcDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(
-      leading: BackButton(onPressed: () => Navigator.of(context).pop()),
-      title: NcHeroTitle(tag: tag, title: title),
-    ),
+    backgroundColor: Colors.transparent,
     body: SafeArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 1100),
-            child: child,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => Navigator.of(context).pop(),
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+            child: GestureDetector(
+              behavior: HitTestBehavior.deferToChild,
+              onTap: () {},
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 620),
+                child: Material(
+                  color: Theme.of(context).cardColor,
+                  elevation: 8,
+                  borderRadius: BorderRadius.circular(16),
+                  clipBehavior: Clip.antiAlias,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: Theme.of(context)
+                                  .dividerColor
+                                  .withValues(alpha: 0.15),
+                            ),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            BackButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                            ),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: NcHeroTitle(tag: tag, title: title),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.close, size: 20),
+                              tooltip: MaterialLocalizations.of(
+                                context,
+                              ).closeButtonTooltip,
+                              onPressed: () => Navigator.of(context).pop(),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: child,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
       ),

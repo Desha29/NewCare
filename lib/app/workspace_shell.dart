@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../core/localization/localization_extensions.dart';
 import '../core/responsive/app_breakpoints.dart';
+import '../features/workspace/presentation/cubit/workspace_cubit.dart';
 import 'cubit/app_cubit.dart';
 import 'navigation/app_page.dart';
 import 'navigation/page_builder.dart';
@@ -12,9 +13,11 @@ import 'widgets/workspace_header.dart';
 import 'widgets/workspace_sidebar.dart';
 import 'widgets/workspace_bottom_navigation.dart';
 import 'widgets/workspace_navigation_rail.dart';
+import '../features/sync/data/repositories/cloud_sync_service.dart';
 
 class WorkspaceShell extends StatefulWidget {
-  const WorkspaceShell({super.key});
+  const WorkspaceShell({super.key, this.syncService});
+  final CloudSyncService? syncService;
   @override
   State<WorkspaceShell> createState() => _WorkspaceShellState();
 }
@@ -29,10 +32,13 @@ class _WorkspaceShellState extends State<WorkspaceShell> {
     }
     final app = context.watch<AppCubit>().state;
     final controller = context.read<AppCubit>();
+    final data = context.watch<WorkspaceCubit>().state;
     final storageLabel = controller.offlineManager
         ? 'offlineManagerSession'
         : controller.cloudAuthentication
         ? 'localDataSyncPending'
+        : data.setupDone
+        ? 'localSaved'
         : 'localPreview';
     final size = AppBreakpoints.of(context);
     final compact = size == WindowClass.compact;
@@ -71,6 +77,7 @@ class _WorkspaceShellState extends State<WorkspaceShell> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     WorkspaceHeader(
+                      syncService: widget.syncService,
                       compact: compact,
                       navigationOpen: !compact && sidebarVisible,
                       title: context.pageLabel(displayedPage),

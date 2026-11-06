@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/localization/localization_extensions.dart';
 import '../../../../core/widgets/nc_card.dart';
 import '../../../../core/widgets/nc_page_column.dart';
+import '../../../../core/widgets/nc_toast.dart';
 import '../widgets/case_location_heading.dart';
 import '../widgets/case_ledger_section.dart' show CaseBookColumns;
 import '../../data/models/case_record.dart';
@@ -28,8 +29,11 @@ class _CaseRegisterScreenState extends State<CaseRegisterScreen> {
       }
     });
     if (saved) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(context.t('savedNote'))));
+      NcToast.show(
+        context,
+        message: context.t('savedNote'),
+        tone: NcToastTone.success,
+      );
     }
   }
 

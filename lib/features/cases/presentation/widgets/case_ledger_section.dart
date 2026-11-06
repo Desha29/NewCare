@@ -14,7 +14,7 @@ import '../../../../core/widgets/nc_detail_page.dart';
 import '../../../../core/widgets/nc_status_badge.dart';
 import '../../../workspace/data/models/workspace_snapshot.dart';
 import '../../data/models/case_record.dart';
-import 'case_details_dialog.dart';
+import '../screens/case_details_screen.dart';
 import 'case_payment_dialog.dart';
 
 class CaseLedgerSection extends StatelessWidget {
@@ -84,8 +84,8 @@ class CaseLedgerSection extends StatelessWidget {
                 if (location == CaseLocation.outside) c.title,
                 c.stockUsages.isNotEmpty
                     ? c.stockUsages
-                        .map((u) => '${u.name} × ${u.quantity}')
-                        .join('، ')
+                          .map((u) => '${u.name} × ${u.quantity}')
+                          .join('، ')
                     : (c.supplies.isNotEmpty ? c.supplies.join('، ') : '—'),
                 context.money(c.invoiceMinor),
                 context.money(data.paidFor(c)),
@@ -131,8 +131,9 @@ class CaseLedgerSection extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 12,
                     color: value == '—' ? AppColors.muted : AppColors.text,
-                    fontWeight:
-                        value == '—' ? FontWeight.normal : FontWeight.w600,
+                    fontWeight: value == '—'
+                        ? FontWeight.normal
+                        : FontWeight.w600,
                   ),
                 )
               : column == moneyStart + 3
@@ -158,7 +159,18 @@ class CaseLedgerSection extends StatelessWidget {
                   ),
                 ),
           emptyLabel: context.t('noCases'),
-          onRowTap: (i) => CaseDetailsDialog.open(context, records[i].id),
+          onRowTap: (i) {
+            final c = records[i];
+            NcDetailPage.open(
+              context,
+              tag: 'ledger-${location.name}-${c.id}',
+              title: label(c),
+              child: CaseDetailsScreen(
+                caseId: c.id,
+                onBack: () => Navigator.pop(context),
+              ),
+            );
+          },
           actions: (i) => Row(
             mainAxisSize: MainAxisSize.min,
             children: [

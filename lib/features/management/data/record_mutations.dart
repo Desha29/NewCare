@@ -44,7 +44,10 @@ abstract final class RecordMutations {
       case ManagedRecordKind.labOrder:
         result = data.labOrders.where((x) => x.id == id).firstOrNull?.toJson();
       case ManagedRecordKind.labReceipt:
-        result = data.labPayments.where((x) => x.id == id).firstOrNull?.toJson();
+        result = data.labPayments
+            .where((x) => x.id == id)
+            .firstOrNull
+            ?.toJson();
     }
     if (result == null) throw const WorkspaceException('recordNotFound');
     return result;
@@ -81,8 +84,14 @@ abstract final class RecordMutations {
         if (value.amountMinor < 0 || data.paidFor(value) > value.invoiceMinor) {
           throw const WorkspaceException('invalidPaymentAmount');
         }
-        final stocked = StockChanges.applyUsage(data, CaseRecord.fromJson(before), value);
-        return stocked.copyWith(cases: data.cases.map((x) => x.id == id ? value : x).toList());
+        final stocked = StockChanges.applyUsage(
+          data,
+          CaseRecord.fromJson(before),
+          value,
+        );
+        return stocked.copyWith(
+          cases: data.cases.map((x) => x.id == id ? value : x).toList(),
+        );
       case ManagedRecordKind.caseReceipt:
         json['caseId'] = before['caseId'];
         final payment = CasePayment.fromJson(json);
@@ -174,21 +183,33 @@ abstract final class RecordMutations {
         );
       case ManagedRecordKind.stockItem:
         final value = StockItem.fromJson(json);
-        if (value.name.trim().isEmpty) throw const WorkspaceException('requiredField');
-        if (value.quantity < 0) throw const WorkspaceException('invalidStockQuantity');
+        if (value.name.trim().isEmpty) {
+          throw const WorkspaceException('requiredField');
+        }
+        if (value.quantity < 0) {
+          throw const WorkspaceException('invalidStockQuantity');
+        }
         return data.copyWith(
-          stockItems: data.stockItems.map((x) => x.id == id ? value : x).toList(),
+          stockItems: data.stockItems
+              .map((x) => x.id == id ? value : x)
+              .toList(),
         );
       case ManagedRecordKind.labTest:
         final value = LabTest.fromJson(json);
-        if (value.name.trim().isEmpty) throw const WorkspaceException('requiredField');
-        if (value.priceMinor < 0) throw const WorkspaceException('invalidAmount');
+        if (value.name.trim().isEmpty) {
+          throw const WorkspaceException('requiredField');
+        }
+        if (value.priceMinor < 0) {
+          throw const WorkspaceException('invalidAmount');
+        }
         return data.copyWith(
           labTests: data.labTests.map((x) => x.id == id ? value : x).toList(),
         );
       case ManagedRecordKind.labOrder:
         final value = LabOrder.fromJson(json);
-        if (value.patientName.trim().isEmpty) throw const WorkspaceException('requiredField');
+        if (value.patientName.trim().isEmpty) {
+          throw const WorkspaceException('requiredField');
+        }
         if (value.patientAge < 0) throw const WorkspaceException('invalidAge');
         return data.copyWith(
           labOrders: data.labOrders.map((x) => x.id == id ? value : x).toList(),
@@ -196,18 +217,23 @@ abstract final class RecordMutations {
       case ManagedRecordKind.labReceipt:
         json['orderId'] = before['orderId'];
         final payment = LabPayment.fromJson(json);
-        final order = data.labOrders.where((o) => o.id == payment.orderId).firstOrNull;
+        final order = data.labOrders
+            .where((o) => o.id == payment.orderId)
+            .firstOrNull;
         if (order == null) throw const WorkspaceException('recordNotFound');
         final old = data.labPayments.firstWhere((p) => p.id == id);
         if (payment.amountMinor <= 0 ||
-            payment.amountMinor > data.remainingForLab(order) + old.amountMinor) {
+            payment.amountMinor >
+                data.remainingForLab(order) + old.amountMinor) {
           throw const WorkspaceException('invalidPaymentAmount');
         }
         if (!data.staff.any((n) => n.id == payment.staffId)) {
           throw const WorkspaceException('unknownStaff');
         }
         return data.copyWith(
-          labPayments: data.labPayments.map((p) => p.id == id ? payment : p).toList(),
+          labPayments: data.labPayments
+              .map((p) => p.id == id ? payment : p)
+              .toList(),
         );
     }
   }
@@ -218,6 +244,10 @@ abstract final class RecordMutations {
     String id,
   ) {
     final before = read(data, kind, id);
+    if (kind == ManagedRecordKind.procedure &&
+        data.cases.any((record) => record.procedureId == id)) {
+      throw const WorkspaceException('dependencyExists');
+    }
     return switch (kind) {
       ManagedRecordKind.caseRecord => data.copyWith(
         cases: data.cases.where((x) => x.id != id).toList(),
@@ -236,6 +266,8 @@ abstract final class RecordMutations {
             .toList(),
       ),
       ManagedRecordKind.procedure => data.copyWith(
+        // A procedure used by a case is historical catalogue data and must
+        // remain available for that case's audit trail.
         procedures: data.procedures
             .map(
               (x) => x.id == id
@@ -263,10 +295,10 @@ abstract final class RecordMutations {
             .toList(),
       ),
       ManagedRecordKind.stockItem => data.copyWith(
-        stockItems: data.stockItems.map((x) => x.id == id ? x.copyWith(active: false) : x).toList(),
+        stockItems: data.stockItems.where((x) => x.id != id).toList(),
       ),
       ManagedRecordKind.labTest => data.copyWith(
-        labTests: data.labTests.map((x) => x.id == id ? x.copyWith(active: false) : x).toList(),
+        labTests: data.labTests.where((x) => x.id != id).toList(),
       ),
       ManagedRecordKind.labOrder => data.copyWith(
         labOrders: data.labOrders.where((x) => x.id != id).toList(),

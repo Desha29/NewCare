@@ -3,6 +3,7 @@ import '../../data/models/lab_order.dart';
 import '../../data/models/lab_payment.dart';
 import '../../data/models/lab_test.dart';
 import '../../../workspace/data/repositories/workspace_repository.dart';
+import '../../../management/data/managed_record_kind.dart';
 
 class LaboratoryCubit extends ActionCubit {
   LaboratoryCubit(this.repository);
@@ -11,11 +12,14 @@ class LaboratoryCubit extends ActionCubit {
   Future<bool> saveTest(LabTest test) =>
       execute(() => repository.saveLabTest(test));
 
-  Future<bool> archiveTest(String id) =>
-      execute(() => repository.archiveLabTest(id));
+  Future<bool> deleteTest(String id, String reason) => execute(
+    () => repository.deleteRecord(ManagedRecordKind.labTest, id, reason),
+  );
 
   Future<bool> addOrder(LabOrder order, {LabPayment? initialPayment}) =>
-      execute(() => repository.addLabOrder(order, initialPayment: initialPayment));
+      execute(
+        () => repository.addLabOrder(order, initialPayment: initialPayment),
+      );
 
   Future<bool> addPayment(LabPayment payment) =>
       execute(() => repository.addLabPayment(payment));
@@ -25,12 +29,12 @@ class LaboratoryCubit extends ActionCubit {
     String staffId, {
     required bool received,
     String? reason,
-  }) =>
-      execute(() => repository.setLabReceived(
-            orderId,
-            staffId,
-            received: received,
-            reason: reason,
-          ));
+  }) => execute(
+    () => repository.setLabReceived(
+      orderId,
+      staffId,
+      received: received,
+      reason: reason,
+    ),
+  );
 }
-

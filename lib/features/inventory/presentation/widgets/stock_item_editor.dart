@@ -54,8 +54,9 @@ class _StockItemEditorState extends State<StockItemEditor> {
             label: context.t('itemName'),
             hint: context.t('itemName'),
             controller: nameController,
-            validator: (v) =>
-                v == null || v.trim().isEmpty ? context.t('requiredField') : null,
+            validator: (v) => v == null || v.trim().isEmpty
+                ? context.t('requiredField')
+                : null,
           ),
           NcField(
             label: context.t('stockQuantity'),
@@ -63,9 +64,13 @@ class _StockItemEditorState extends State<StockItemEditor> {
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             validator: (v) {
-              if (v == null || v.trim().isEmpty) return context.t('requiredField');
+              if (v == null || v.trim().isEmpty) {
+                return context.t('requiredField');
+              }
               final parsed = int.tryParse(v);
-              if (parsed == null || parsed < 0) return context.t('invalidAmount');
+              if (parsed == null || parsed < 0) {
+                return context.t('invalidAmount');
+              }
               return null;
             },
           ),
@@ -97,4 +102,3 @@ class _StockItemEditorState extends State<StockItemEditor> {
     );
   }
 }
-

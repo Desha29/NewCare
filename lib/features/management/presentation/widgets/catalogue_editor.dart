@@ -7,6 +7,7 @@ import '../../../../core/widgets/nc_button.dart';
 import '../../../../core/widgets/nc_card.dart';
 import '../../../../core/widgets/nc_field.dart';
 import '../../../../core/widgets/operation_error.dart';
+import '../../../../core/widgets/nc_toast.dart';
 import '../../../catalogue/data/models/procedure.dart';
 import '../cubit/management_cubit.dart';
 
@@ -55,8 +56,11 @@ class _CatalogueEditorState extends State<CatalogueEditor> {
             if (success && context.mounted) {
               ar.clear();
               widget.onSaved?.call();
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text(context.t('added'))));
+              NcToast.show(
+                context,
+                message: context.t('added'),
+                tone: NcToastTone.success,
+              );
             }
           },
         ),

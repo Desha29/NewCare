@@ -4,12 +4,14 @@ import 'package:http/http.dart' as http;
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/manager_identity.dart';
+import '../models/manager_choice.dart';
 import '../models/manager_username.dart';
 import 'manager_gateway.dart';
 
 /// Device and manager MUST be distinct clients. A manager login must never
 /// replace the persistent device identity used by nurses.
-class SupabaseManagerGateway implements ManagerAccountGateway {
+class SupabaseManagerGateway
+    implements ManagerAccountGateway, ManagerDirectoryGateway {
   SupabaseManagerGateway({
     required this.centerId,
     required this.device,
@@ -25,6 +27,20 @@ class SupabaseManagerGateway implements ManagerAccountGateway {
   final SupabaseClient device, manager;
   final SupabaseClient Function()? signupFactory;
   final Future<void> Function()? validateProvisioning;
+
+  @override
+  Future<List<ManagerChoice>> listManagers() async {
+    final rows = await device.rpc(
+      'list_center_login_managers',
+      params: {'p_center_id': centerId},
+    ) as List;
+    return rows
+        .map(
+          (row) =>
+              ManagerChoice.fromJson(Map<String, dynamic>.from(row as Map)),
+        )
+        .toList();
+  }
 
   @override
   Future<ManagerIdentity> signIn(String username, String password) async {

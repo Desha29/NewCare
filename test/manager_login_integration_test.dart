@@ -7,13 +7,18 @@ import 'package:newcare/app/newcare_app.dart';
 import 'package:newcare/core/localization/localization_extensions.dart';
 import 'package:newcare/core/storage/string_store.dart';
 import 'package:newcare/features/auth/data/models/manager_identity.dart';
+import 'package:newcare/features/auth/data/models/manager_choice.dart';
 import 'package:newcare/features/auth/data/repositories/manager_auth_repository.dart';
 import 'package:newcare/features/auth/data/repositories/manager_gateway.dart';
 import 'package:newcare/features/auth/data/sources/password_verifier.dart';
 import 'package:newcare/features/workspace/data/repositories/local_workspace_repository.dart';
 
-class _Gateway implements ManagerGateway {
+class _Gateway implements ManagerGateway, ManagerDirectoryGateway {
   bool offline = false;
+  @override
+  Future<List<ManagerChoice>> listManagers() async => const [
+    ManagerChoice(id: 'manager-b', username: 'manager_b', name: 'Manager B'),
+  ];
   @override
   Future<ManagerIdentity> signIn(String username, String password) async {
     if (offline) throw const ManagerNetworkException();
@@ -68,7 +73,20 @@ void main() {
       app.navigate(AppPage.overview);
       await tester.pumpAndSettle();
       expect(app.state.page, AppPage.login);
-      await tester.enterText(find.byType(TextFormField).at(0), 'manager_b');
+      expect(
+        find.byKey(const ValueKey('manager-login-manager-b')),
+        findsOneWidget,
+      );
+      await tester.tap(find.byKey(const ValueKey('manager-login-manager-b')));
+      await tester.pumpAndSettle();
+      expect(
+        tester
+            .widget<TextFormField>(find.byType(TextFormField).at(0))
+            .controller!
+            .text,
+        'manager_b',
+      );
+      expect(app.state.managerUnlocked, isFalse);
       await tester.enterText(find.byType(TextFormField).at(1), 'test-password');
       await tester.tap(find.text(signInLabel));
       await tester.pumpAndSettle();

@@ -14,7 +14,7 @@ class Procedure {
     'id': id,
     'ar': nameAr,
     'en': nameEn,
-    'price': priceMinor,
+    if (priceMinor != 0) 'price': priceMinor, // Legacy priced records only.
     'active': active,
   };
   factory Procedure.fromJson(Map<String, dynamic> j) => Procedure(

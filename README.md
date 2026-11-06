@@ -2,6 +2,8 @@
 
 Arabic-first Flutter workspace for a nursing center, adapted for phones, tablets, desktop and square monitors.
 
+Windows release preparation and current verification: [4 November 2026](docs/release/2026-11-04-readiness.md). The cloud release opens first-manager setup on an unconfigured device. Only the approved 20 procedure names and 15 stock names are preloaded after setup; they have no prices and stock starts at zero.
+
 Interface labels, hints, accessibility text and system messages are stored in Arabic and English ARB files. `localization_coverage_test.dart` checks referenced keys, enum labels, repository errors, ARB parity, exact runtime translations and hardcoded UI text. Route tests also reject the missing-translation fallback on rendered screens. User-entered names and notes remain record data.
 
 ## Run
@@ -13,14 +15,54 @@ flutter gen-l10n
 flutter run -d chrome
 ```
 
-The app opens with illustrative local data. Initial manager preview password: `newcare-demo` (until changed in Settings).
-The default preview username is `manager`. This local gate is separate from the explicit cloud-auth mode described below.
+The app opens with an empty local workspace. The default local manager username is
+`admin` and the initial password is `12345678`; change it during setup or from
+manager settings. This local gate is separate from explicit cloud-auth mode.
+
+To run with real Supabase authentication and synchronization, pass only the
+public project values at launch:
+
+```powershell
+flutter run -d windows `
+  --dart-define=NEWCARE_CLOUD=true `
+  --dart-define=SUPABASE_URL=https://YOUR_PROJECT.supabase.co `
+  --dart-define=SUPABASE_PUBLISHABLE_KEY=sb_publishable_YOUR_PUBLIC_KEY
+```
+
+Apply every file in `supabase/migrations/` first, in filename order. The
+identity foundation and username-account migrations are required before the
+first manager setup; the workspace sync migration is required for operations
+to synchronize. Do not put a service-role key in the Flutter app.
+
+On Windows, the same values can be kept in the ignored local `.env` file.
+Copy `.env.example` to `.env`, fill in the public Supabase values, and run:
+
+```powershell
+.\tool\run_windows.ps1
+```
+
+For the production Windows executable, build with the same cloud values:
+
+```powershell
+.\tool\build_windows_release.ps1
+```
+
+The executable is created under `build\windows\x64\runner\Release\`.
+Release builds do not read `.env` after they are built; the script embeds the
+values as compile-time `dart-define` settings.
+
+The VS Code `NewCare · Windows` launch configuration uses
+`config/local.json`, which is also ignored locally. Both files are local
+configuration only and must never be committed.
 
 ## Implemented UI and local behavior
 
 - Direct case registration without opening, joining or closing shifts. Historical shift records remain readable in storage for migration compatibility.
 - Two desktop columns for inside/outside cases, with prominent centered headings; small screens switch between the forms using tabs.
-- Inline registration forms, searchable multiple procedure names and a manually entered case total. Procedures have no price field in the catalogue or selection UI. Supplies are removed from new registration and catalogue screens; historical item snapshots are retained.
+- Inline registration forms, searchable multiple procedure names and a manually entered case total. Procedures have no price field in the catalogue or selection UI. Inventory has names and integer quantities, with atomic deduction of quantities used in cases. Historical priced supply snapshots remain readable.
+- Independent laboratory orders store patient name/age, frozen test names/prices, partial or full cash/wallet receipts, and result-delivery status. Delivering a result never creates income.
+- Stock and lab catalogue rows use a red Delete action, not archive. Confirmation removes the catalogue row and synchronizes a deletion; previous case usage, stock movement history, laboratory orders and receipts keep their snapshots. Financial corrections remain possible after stock deletion.
+- The drawer shows operational-day cash and wallet counters from 08:00 Cairo; the physical custody balance carries forward. Daily rollover does not erase history or withdraw money.
 - Paid-at-registration amount, outstanding balance, subsequent cash/wallet receipts and a complete payment history. The outstanding-case filter searches all dates.
 - Nursing can change a saved case price without changing existing receipts. Prices cannot fall below the amount already collected.
 - Two outgoing categories: center outgoings and person outgoings. Person payments choose a purpose (advance, other payment or manager award) and a recipient (nursing staff or another person). Cash income stays separate. The UI has no standalone external-advance category.
@@ -32,7 +74,10 @@ The default preview username is `manager`. This local gate is separate from the 
 - Hero transitions for suitable record details, preserving source filters; reduced-motion settings are respected.
 - Arabic RTL / English LTR, local Cairo Bold, reusable cards, tables, fields, dialogs and adaptive navigation.
 
-The shared nursing device uses staff selection. Manager preview access is separate from cloud-auth mode. Operational cloud synchronization is not activated in this increment.
+The shared nursing device uses staff selection. Manager preview access is
+separate from cloud-auth mode. In cloud mode, the first launch shows center
+setup, then manager login, and the workspace starts synchronization after the
+device is enrolled.
 
 ## Structure
 
@@ -46,7 +91,9 @@ flowchart TD
   Stream --> UI
 ```
 
-The workspace repository persists locally. Optional Supabase manager authentication is implemented as a separate adapter; the operational sync worker remains future work. The diagram describes local case storage.
+The workspace repository persists locally and the optional Supabase adapter
+authenticates managers and synchronizes the protected operation journal after
+the center device is enrolled. The diagram describes local case storage.
 
 Details open on a real Navigator page route through `NcDetailPage`, with a unique `NcHeroTitle` per source record. Selection controls and editing dialogs keep their existing interactions. Tests cover forward/back navigation, retained filters, reduced motion and opening details from the actual feature screens.
 
@@ -83,7 +130,14 @@ Android uses `kotlin.incremental=false` because the local package cache and chec
 
 ## Data and backend boundary
 
-This phase is a working UI and local preview. Shared preferences persist sample records, but are not a production clinical database. Supabase Auth, database/RLS enforcement, multiple real manager accounts, encrypted offline storage, synchronization and conflict resolution remain backend work. No Supabase credentials or cloud project were configured. The visible save indicator means saved on this device; audit queue entries have not been uploaded.
+Without the cloud launch defines, the app is local-only. With them and the
+Supabase migrations applied, manager authentication and operation-journal
+synchronization are enabled. The local journal remains the durable source until
+the server acknowledges each operation. The supported model is one shared Windows
+operational device per center. The server stores validated, center-scoped operation
+envelopes; this is journal replication, not a normalized multiwriter clinical API.
+Concurrent offline editing on multiple devices is not supported: stock and money
+conflict arbitration require additional server-side business validation.
 
 Monthly salary is a stored base amount. The displayed remaining amount subtracts advances in the selected date period. Awards are already-paid cash outgoings and appear separately, so they are not added again to the salary balance. Salary payment receipts, attendance-based calculation, proration and payroll settlement are not implemented. Cash movements and drawer custody transfers operate independently of shifts.
 
@@ -156,6 +210,25 @@ publishable keys are accepted. Supabase must enable anonymous device sign-ins
 and disable Confirm email for this username-only provisioning flow. Provisioning
 refuses to send a confirmation message if that setting is still enabled.
 
-Data diagnostics is locked inside the manager area. Actual operational cloud
-sync and cloud manifests are not implemented yet; the screen explicitly states
-this and never claims that local and cloud data match based on equal counts.
+Data diagnostics is locked inside the manager area. Explicit refresh replays the
+cloud journal, compares canonical SHA-256 content hashes and the committed revision,
+and checks the local pending queue before displaying "متطابقين". All operational
+collections are included. Equal counts alone never prove a match.
+
+The header shows cloud online/offline, active synchronization and pending operations,
+including on narrow screens. Requests retry after local writes, app resume and every
+30 seconds. A failed upload retains its exact operation ID; the server accepts an
+identical retry and rejects a changed payload using that ID. The pull cursor advances
+only after durable local application, and all 500-row pages are drained.
+
+Manager login shows the enrolled center's manager names/usernames as selectable
+cards. Directory labels are cached per center without emails, passwords or grants;
+selecting one still requires password authentication. A new device must connect and
+verify the manager online before offline login is available. Restoring an existing
+center happens before projecting the manager into nursing staff, preserving salary
+and phone data.
+
+Release preparation clears the old test data once. The app never clears data on
+ordinary startup, and it does not guess whether saved records are demonstration data.
+Cloud mode does not expose the local-only reset button, which would otherwise allow
+the server journal to restore deleted local records.

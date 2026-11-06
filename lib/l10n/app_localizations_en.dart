@@ -10,6 +10,67 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get deleteStockItem => 'Delete stock item';
+
+  @override
+  String get deleteStockItemHelp =>
+      'This removes the item and its available stock. Supplies recorded in previous cases are preserved.';
+
+  @override
+  String get deleteLabTest => 'Delete lab test';
+
+  @override
+  String get deleteLabTestHelp =>
+      'This removes the test from the catalogue. Previous orders and payments are preserved.';
+
+  @override
+  String get startupWelcome => 'Welcome to NewCare';
+
+  @override
+  String get startupSetupHelp =>
+      'Create the manager account to set up your center.';
+
+  @override
+  String get startupSignInTitle => 'Manager sign-in';
+
+  @override
+  String get startupSignInHelp =>
+      'Sign in to connect this device to your center.';
+
+  @override
+  String get startupExistingAccount => 'I already have a manager account';
+
+  @override
+  String get startupCreateInstead => 'Create a new manager account';
+
+  @override
+  String get syncVerificationUnavailable =>
+      'Cloud verification unavailable — data is saved locally';
+
+  @override
+  String get syncVerificationPending =>
+      'New changes exist — verify again after synchronization';
+
+  @override
+  String get syncVerificationDifferent => 'Local and cloud data differ';
+
+  @override
+  String get syncVerificationMatched =>
+      'Matched — content and revision verified';
+
+  @override
+  String get stockMovements => 'Stock movements';
+
+  @override
+  String get chooseManager => 'Choose a manager account';
+
+  @override
+  String get showPassword => 'Show password';
+
+  @override
+  String get hidePassword => 'Hide password';
+
+  @override
   String get appTitle => 'NewCare';
 
   @override
@@ -20,6 +81,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pendingSync => 'Cloud sync not configured';
+
+  @override
+  String get syncOnline => 'Cloud connected';
+
+  @override
+  String get syncing => 'Syncing operations';
+
+  @override
+  String get syncOffline => 'Offline — saved locally';
+
+  @override
+  String get syncPending => 'Pending';
 
   @override
   String get nursing => 'Nursing';
@@ -402,7 +475,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get wrongPassword => 'Incorrect preview password';
 
   @override
-  String get previewPassword => 'Preview password: newcare-demo';
+  String get previewPassword => 'Default local password: 12345678';
 
   @override
   String get lockManager => 'Lock manager workspace';
@@ -738,6 +811,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get signInSubtitle => 'Open the NewCare manager workspace';
+
+  @override
+  String get managerAccount => 'Manager account';
+
+  @override
+  String get managerPassword => 'Manager password';
+
+  @override
+  String get onlineSetupRequired =>
+      'Online setup must be completed from the cloud setup screen';
 
   @override
   String get memberInactive => 'Inactive nursing member';
@@ -1084,6 +1167,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get refreshDrawer => 'Refresh count baseline';
 
   @override
+  String get resetAndStartSetup => 'Reset Data & Start Setup';
+
+  @override
+  String get resetWorkspaceTitle => 'Confirm Data Reset';
+
+  @override
+  String get resetWorkspaceConfirm =>
+      'Are you sure you want to clear all local data and restart from the initial setup screen?';
+
+  @override
+  String get confirmReset => 'Confirm Reset';
+
+  @override
   String get editCasePrice => 'Edit case total';
 
   @override
@@ -1317,7 +1413,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get username => 'Username';
 
   @override
-  String get previewUsername => 'Preview username: manager';
+  String get previewUsername => 'Default local username: admin';
 
   @override
   String get offlineLoginHelp =>
@@ -1353,7 +1449,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get invalidEmail => 'Enter a valid email address';
 
   @override
-  String get securePasswordHint => 'Use at least 12 characters';
+  String get securePasswordHint => 'Use at least 8 characters';
 
   @override
   String get managerEmailVerificationRequired =>
@@ -1366,6 +1462,14 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get cloudSetupFailed =>
       'Setup failed. Check your connection and authentication settings, then retry. If the account was already created, use Connect existing manager.';
+
+  @override
+  String get cloudMigrationsRequired =>
+      'Cloud database migrations are incomplete. Apply all NewCare migrations, then retry.';
+
+  @override
+  String get managerNotProvisioned =>
+      'This manager is not linked to a center yet. Create the center first or use the original manager account.';
 
   @override
   String get createFirstManager => 'Create manager and set up center';

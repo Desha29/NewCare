@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../app/cubit/app_cubit.dart';
 import '../../../../core/localization/localization_extensions.dart';
+import '../../../../core/widgets/nc_toast.dart';
 import '../../../workspace/presentation/cubit/workspace_cubit.dart';
 import '../../data/managed_record_kind.dart';
 import '../models/record_editor_specs.dart';
@@ -64,12 +65,12 @@ class RecordActions extends StatelessWidget {
           : DeleteRecordDialog(kind: kind, id: id, title: spec.title),
     );
     if ((changed ?? false) && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            context.t(action == 'edit' ? 'recordUpdated' : 'recordDeleted'),
-          ),
+      NcToast.show(
+        context,
+        message: context.t(
+          action == 'edit' ? 'recordUpdated' : 'recordDeleted',
         ),
+        tone: NcToastTone.success,
       );
     }
   }
