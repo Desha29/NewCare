@@ -23,7 +23,8 @@ void main() {
         .widgetList<CaseFormFields>(find.byType(CaseFormFields))
         .firstWhere((f) => f.outside);
     fields.address.text = 'عنوان قبل إغلاق القائمة';
-    final before = tester.getSize(find.byKey(const ValueKey('workspace-main'))).width;
+    final before =
+        tester.getSize(find.byKey(const ValueKey('workspace-main'))).width;
     await tester.tap(find.byTooltip('إخفاء القائمة الجانبية'));
     await tester.pumpAndSettle();
     expect(
@@ -75,4 +76,3 @@ void main() {
     await repo.dispose();
   });
 }
-
