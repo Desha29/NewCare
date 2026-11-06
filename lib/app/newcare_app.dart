@@ -33,7 +33,6 @@ class NewCareApp extends StatelessWidget {
     providers: [
       RepositoryProvider<WorkspaceRepository>.value(value: repository),
       RepositoryProvider<StringStore>.value(value: store),
-      RepositoryProvider<CloudSyncService?>.value(value: syncService),
     ],
     child: MultiBlocProvider(
       providers: [

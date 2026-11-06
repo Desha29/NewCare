@@ -110,6 +110,7 @@ class _WorkspaceShellState extends State<WorkspaceShell> {
                                 child: buildPage(
                                   app.page,
                                   availableHeight: constraints.maxHeight - 24,
+                                  syncService: widget.syncService,
                                 ),
                               ),
                             ),

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -14,7 +16,9 @@ import '../../data/models/reconciliation.dart';
 import '../../data/repositories/cloud_sync_service.dart';
 
 class DeveloperDiagnosticsScreen extends StatelessWidget {
-  const DeveloperDiagnosticsScreen({super.key});
+  const DeveloperDiagnosticsScreen({super.key, this.syncService});
+
+  final CloudSyncService? syncService;
 
   @override
   Widget build(BuildContext context) {
@@ -25,15 +29,22 @@ class DeveloperDiagnosticsScreen extends StatelessWidget {
       return Center(child: Text(context.t('managerRequired')));
     }
     return BlocProvider(
-      create: (_) => DiagnosticsCubit(
-        context.read<WorkspaceRepository>(),
-        context.read<StringStore>(),
-        () =>
-            app.state.managerUnlocked &&
-            (!app.cloudAuthentication ||
-                app.managerIdentity?.viewDiagnostics == true),
-        sync: context.read<CloudSyncService?>(),
-      )..refresh(),
+      create: (_) {
+        final cubit = DiagnosticsCubit(
+          context.read<WorkspaceRepository>(),
+          context.read<StringStore>(),
+          () =>
+              app.state.managerUnlocked &&
+              (!app.cloudAuthentication ||
+                  app.managerIdentity?.viewDiagnostics == true),
+          sync: syncService,
+        );
+        // The first refresh notifies the sync status header.
+        scheduleMicrotask(() {
+          if (!cubit.isClosed) unawaited(cubit.refresh());
+        });
+        return cubit;
+      },
       child: const _DiagnosticsContent(),
     );
   }

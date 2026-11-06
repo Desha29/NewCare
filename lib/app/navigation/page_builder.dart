@@ -26,10 +26,15 @@ import '../../features/setup/presentation/screens/ready_screen.dart';
 import '../../features/inventory/presentation/screens/inventory_screen.dart';
 import '../../features/laboratory/presentation/screens/laboratory_screen.dart';
 import 'app_page.dart';
+import '../../features/sync/data/repositories/cloud_sync_service.dart';
 import '../../features/sync/presentation/screens/developer_diagnostics_screen.dart';
 import '../../features/transactions/presentation/screens/transactions_screen.dart';
 
-Widget buildPage(AppPage page, {double availableHeight = 0}) => switch (page) {
+Widget buildPage(
+  AppPage page, {
+  double availableHeight = 0,
+  CloudSyncService? syncService,
+}) => switch (page) {
   AppPage.startShift => const CaseRegisterScreen(),
   AppPage.activeShift => CaseRegisterScreen(availableHeight: availableHeight),
   AppPage.insideCase => const CaseFormScreen(outside: false),
@@ -68,7 +73,9 @@ Widget buildPage(AppPage page, {double availableHeight = 0}) => switch (page) {
   AppPage.setupCatalogue => const SetupCatalogueScreen(),
   AppPage.ready => const ReadyScreen(),
   AppPage.transactions => const TransactionsScreen(),
-  AppPage.developerDiagnostics => const DeveloperDiagnosticsScreen(),
+  AppPage.developerDiagnostics => DeveloperDiagnosticsScreen(
+    syncService: syncService,
+  ),
   AppPage.inventory => const InventoryScreen(),
   AppPage.managerLaboratory => const LaboratoryScreen(isManager: true),
 };
