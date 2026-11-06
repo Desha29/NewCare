@@ -1,6 +1,12 @@
+<p align="center">
+  <img src="assets/branding/newcare-logo.png" alt="NewCare Nursing Care Services" width="160">
+</p>
+
 # NewCare
 
-Arabic-first Flutter workspace for a nursing center, adapted for phones, tablets, desktop and square monitors.
+An Arabic-first Flutter workspace for nursing centers. NewCare tracks cases, supplies, lab orders, payments, and drawer balances across phones, tablets, and desktop displays.
+
+[Quick start](#run) · [Windows release](#verify-and-build) · [Error monitoring](#error-monitoring-with-sentry) · [Architecture](docs/architecture.md)
 
 Windows release preparation and current verification: [4 November 2026](docs/release/2026-11-04-readiness.md). The cloud release opens first-manager setup on an unconfigured device. Only the approved 20 procedure names and 15 stock names are preloaded after setup; they have no prices and stock starts at zero.
 
@@ -54,6 +60,16 @@ values as compile-time `dart-define` settings.
 The VS Code `NewCare · Windows` launch configuration uses
 `config/local.json`, which is also ignored locally. Both files are local
 configuration only and must never be committed.
+
+## Error monitoring with Sentry
+
+1. In your Sentry Flutter project, open **Settings → Projects → NewCare → Client Keys (DSN)**.
+2. Add the client DSN as `SENTRY_DSN` in the local `.env` file. API auth tokens are for administrative tools and must stay outside the application and repository.
+3. Build with `.\tool\build_windows_release.ps1`. To verify before distributing a release, run a profile build with `flutter run -d windows --profile --dart-define-from-file=.env` and check for a known test error under the **profile** environment in Sentry Issues.
+
+When a DSN is set, profile and release builds report unhandled Dart and Flutter exceptions and unexpected startup and workspace-action failures. Reports keep exception types, source locations, and release metadata. The app excludes exception messages, request data, user context, breadcrumbs, screenshots, and native crash reports. Monitoring is inactive in debug builds and builds without a DSN.
+
+The official Sentry plugin for Codex uses browser authorization to access Sentry projects and issues. The Flutter app only needs the project client DSN.
 
 ## Implemented UI and local behavior
 

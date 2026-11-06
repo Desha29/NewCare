@@ -6,6 +6,7 @@ import '../core/storage/preferences_store.dart';
 import '../core/storage/open_app_store.dart';
 import '../core/storage/string_store.dart';
 import '../core/storage/pre_cloud_backup.dart';
+import '../core/observability/error_reporting.dart';
 import '../core/theme/app_theme.dart';
 import '../features/launch/presentation/screens/splash_screen.dart';
 import '../features/workspace/data/repositories/local_workspace_repository.dart';
@@ -33,6 +34,16 @@ class _AppBootstrapState extends State<AppBootstrap> {
   }
 
   Future<(StringStore, LocalWorkspaceRepository, CloudRuntime?)> _load() async {
+    try {
+      return await _initializeWorkspace();
+    } catch (error, stackTrace) {
+      ErrorReporting.capture(error, stackTrace);
+      rethrow;
+    }
+  }
+
+  Future<(StringStore, LocalWorkspaceRepository, CloudRuntime?)>
+  _initializeWorkspace() async {
     final legacy = PreferencesStore(await SharedPreferences.getInstance());
     final store = await openAppStore(legacy);
     final cloud = await CloudRuntime.open(store);

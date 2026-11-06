@@ -25,7 +25,10 @@ foreach ($required in @("NEWCARE_CLOUD", "SUPABASE_URL", "SUPABASE_PUBLISHABLE_K
   }
 }
 
+$version = (Select-String -LiteralPath pubspec.yaml -Pattern '^version:\s*(\S+)').Matches.Groups[1].Value
 flutter build windows --release `
   "--dart-define=NEWCARE_CLOUD=$($values.NEWCARE_CLOUD)" `
   "--dart-define=SUPABASE_URL=$($values.SUPABASE_URL)" `
-  "--dart-define=SUPABASE_PUBLISHABLE_KEY=$($values.SUPABASE_PUBLISHABLE_KEY)"
+  "--dart-define=SUPABASE_PUBLISHABLE_KEY=$($values.SUPABASE_PUBLISHABLE_KEY)" `
+  "--dart-define=SENTRY_DSN=$($values.SENTRY_DSN)" `
+  "--dart-define=SENTRY_RELEASE=newcare@$version"

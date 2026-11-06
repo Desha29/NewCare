@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../features/workspace/data/repositories/workspace_repository.dart';
+import '../observability/error_reporting.dart';
 
 class ActionState {
   const ActionState({this.busy = false, this.error});
@@ -23,7 +24,8 @@ abstract class ActionCubit extends Cubit<ActionState> {
     } on FormatException {
       if (!isClosed) emit(const ActionState(error: 'invalidAmount'));
       return false;
-    } catch (_) {
+    } catch (error, stackTrace) {
+      ErrorReporting.capture(error, stackTrace);
       if (!isClosed) emit(const ActionState(error: 'saveFailed'));
       return false;
     }
